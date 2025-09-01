@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme inline{
+  --font-inter: var(--font-inter-tight);
+  --font-serif: var(--font-playfair-display);
+}
+
+@layer base {
+  body {
+    @apply font-inter;
+  }
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background-color: var(--background);
+}
+
+.blurry-bg {
+  inset: 0;
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  background: radial-gradient(circle at 10% 20%, #5cde7e 0%, transparent 40%),
+              radial-gradient(circle at 60% 40%, #5cded0 0%, transparent 50%),
+              radial-gradient(circle at 40% 60%, #5c76de 0%, transparent 50%),
+              radial-gradient(circle at 90% 80%, #b75cde 0%, transparent 40%);
+  background-color: var(--background);
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: blur(80px);
+  z-index: -1;
+}
