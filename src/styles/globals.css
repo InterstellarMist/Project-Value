@@ -43,3 +43,15 @@ body {
   filter: blur(80px);
   z-index: -1;
 }
+
+.neumorphic-inset {
+  box-shadow: inset 4px 4px 4px 0px #00000033, inset -4px -4px 4px 0px #ffffffB3;
+  background-color: color-mix(in oklab, var(--color-gray-200) /* oklch(92.8% 0.006 264.531) = #e5e7eb */ 80%, transparent);
+  border-radius: calc(infinity * 1px);
+}
+
+.neumorphic-outset {
+  box-shadow: 4px 4px 4px 0px #00000033, -2px -2px 4px 0px #ffffffB3;
+  background-color: #f2f2f2;
+  border-radius: calc(infinity * 1px);
+}

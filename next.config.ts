@@ -7,6 +7,14 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   distDir: "dist",
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
+  },
 };
 
 export default nextConfig;

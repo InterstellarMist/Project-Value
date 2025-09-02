@@ -22,11 +22,11 @@ export const TransactionEntry: React.FC<{ category: string, description: string,
         <p className="text-[0.5rem] font-light text-center">{category}</p>
       </div>
       <div className="flex flex-col">
-        <p className="text-lg/4">{description}</p>
+        <p className="text-lg leading-none">{description}</p>
         <p className="text-[0.5rem] font-light">{time}</p>
       </div>
       <div className="flex flex-col">
-        <p className={`text-lg/4 ${amount.startsWith('+') ? 'text-green-500' : 'text-red-500'} text-right`}>{amount}</p>
+        <p className={`text-lg leading-none ${amount.startsWith('+') ? 'text-green-500' : 'text-red-500'} text-right`}>{amount}</p>
         <div className="flex flex-row gap-0.5 justify-end items-center">
           <p className="text-[0.5rem] font-light align-top block">{account}</p>
           <InlineIcon icon={accounts[account]} width="1rem" className="inline" />
@@ -39,7 +39,7 @@ export const TransactionEntry: React.FC<{ category: string, description: string,
 export const RecentTransactions = () => {
   return (
     <CardContainer className="w-9/10">
-      <h2 className="text-2xl/6 font-serif">Recent Transactions<InlineIcon icon="material-symbols-light:arrow-right-alt-rounded" className="inline" /></h2>
+      <h2 className="text-2xl leading-none font-serif">Recent Transactions<InlineIcon icon="material-symbols-light:arrow-right-alt-rounded" className="inline" /></h2>
       <div className="flex flex-col gap-1 mt-2">
         <TransactionEntry
           category="Food"

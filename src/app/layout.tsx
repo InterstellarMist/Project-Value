@@ -1,5 +1,6 @@
-import { Inter_Tight, Playfair_Display } from "next/font/google";
 import "@/styles/globals.css";
+import { Inter_Tight, Playfair_Display } from "next/font/google";
+import { NavigationBar } from "@/components/NavigationBar";
 
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
@@ -21,7 +22,11 @@ export default function RootLayout({
       <body
         className={`${interTight.variable} ${playfairDisplay.variable} antialiased`}
       >
-        {children}
+        <div className="h-screen">
+          <div className="blurry-bg"></div>
+          {children}
+        </div>
+        <NavigationBar />
       </body>
     </html>
   );
