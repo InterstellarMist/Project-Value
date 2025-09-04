@@ -1,16 +1,21 @@
-import { AccountCard } from "@/components/AccountCard";
+import { AccountsList } from "@/components/AccountsList";
+import Link from "next/link";
+
+import * as accountsData from "@/data/accounts.json";
 
 const TopBar = () => {
   return (
     <div className="grid grid-cols-[20%_60%_20%] items-center  pt-8 pb-6 px-[5vw]">
-      <img src="transactions.svg" width={32} className="justify-self-start" />
+      <Link href="/transactions?account=All">
+        <img src="transactions.svg" width={32} className="justify-self-start" />
+      </Link>
       <h1 className="text-2xl text-center font-serif leading-none">Accounts</h1>
       <img src="edit.svg" width={30} className="justify-self-end" />
     </div>
   );
 };
 
-export default function Accounts() {
+export default function AccountsPage() {
   return (
     <div>
       <TopBar />
@@ -29,20 +34,8 @@ export default function Accounts() {
             <p className="text-lg leading-none">$5,680.29</p>
           </div>
         </div>
-        <p className="text-lg font-bold">Assets</p>
-        <div className="w-9/10 grid grid-cols-3 gap-2">
-          <AccountCard icon="fluent-emoji-flat:dollar-banknote" title="Cash" amount="$1,347.05" />
-          <AccountCard icon="fluent-emoji-flat:credit-card" title="Debit Card" amount="$4,633.23" />
-        </div>
-        <p className="text-lg font-bold">Liabilities</p>
-        <div className="w-9/10 grid grid-cols-3 gap-2">
-          <AccountCard icon="noto:credit-card" title="Credit Card" amount="$299.99" />
-        </div>
-        <p className="w-9/10 text-lg text-center text-gray-500 border-t-2 pt-1">Hidden from total</p>
-        <div className="w-9/10 grid grid-cols-3 gap-2">
-          <AccountCard icon="fluent-emoji-flat:money-bag" title="Loans" amount="$21,552.23" />
-        </div>
+        <AccountsList {...accountsData} />
       </div>
-    </div >
+    </div>
   );
 }

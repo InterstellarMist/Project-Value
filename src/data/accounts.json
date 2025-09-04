@@ -1,0 +1,36 @@
+{
+  "accounts": [
+    {
+      "id": "0001",
+      "name": "Cash",
+      "type": "asset",
+      "amount": 1347.05,
+      "currency": "USD",
+      "hidden": false
+    },
+    {
+      "id": "0002",
+      "name": "Debit Card",
+      "type": "asset",
+      "amount": 4633.23,
+      "currency": "USD",
+      "hidden": false
+    },
+    {
+      "id": "0003",
+      "name": "Credit Card",
+      "type": "liability",
+      "amount": 1347.05,
+      "currency": "USD",
+      "hidden": false
+    },
+    {
+      "id": "0004",
+      "name": "Loans",
+      "type": "liability",
+      "amount": 1347.05,
+      "currency": "USD",
+      "hidden": true
+    }
+  ]
+}

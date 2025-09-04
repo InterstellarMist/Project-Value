@@ -1,7 +1,10 @@
-import { AccountCard } from "@/components/AccountCard";
+import { AccountCard, AccountsHomepage } from "@/components/AccountsList";
 import { CardContainer } from "@/components/CardContainer";
-import { RecentTransactions } from "@/components/RecentTransactions";
+import { RecentTransactions } from "@/components/TransactionsList";
 import { Icon } from "@iconify/react/dist/iconify.js";
+
+import * as accountsData from "@/data/accounts.json";
+import * as transactionsData from "@/data/transactions.json";
 
 const TopBar = () => {
   return (
@@ -24,13 +27,9 @@ export default function Home() {
           <h2 className="text-2xl leading-none font-serif">Net Worth</h2>
           <h1 className="text-6xl text-center font-light">$5,680.29</h1>
         </CardContainer>
-        <div className="flex w-9/10 justify-between">
-          <AccountCard icon="fluent-emoji-flat:dollar-banknote" title="Cash" amount="$1,347.05" />
-          <AccountCard icon="fluent-emoji-flat:credit-card" title="Debit Card" amount="$4,633.23" />
-          <AccountCard icon="noto:credit-card" title="Credit Card" amount="$299.99" />
-        </div>
-        <RecentTransactions />
+        <AccountsHomepage {...accountsData} />
+        <RecentTransactions {...transactionsData} />
       </div>
-    </div >
+    </div>
   );
 }
