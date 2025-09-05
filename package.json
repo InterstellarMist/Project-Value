@@ -7,13 +7,18 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "biome check && next lint",
-    "fix": "biome check --fix && next lint --fix",
+    "preview": "serve dist",
+    "lint": "biome check",
+    "format": "biome format --write",
+    "fix": "biome check --fix",
     "test": "vitest",
     "tauri": "tauri"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-tabs": "^1.1.13",
     "@tauri-apps/api": "^2.8.0",
     "@tauri-apps/plugin-opener": "^2.5.0",
     "class-variance-authority": "^0.7.1",
@@ -22,7 +27,8 @@
     "next": "^15.5.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "vaul": "^1.1.2"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.2",
@@ -41,8 +47,9 @@
     "@typescript-eslint/eslint-plugin": "^8.40.0",
     "@typescript-eslint/parser": "^8.40.0",
     "@vitejs/plugin-react": "^5.0.1",
-    "eslint": "^9.31.0",
+    "eslint": "^9.34.0",
     "eslint-config-next": "^15.5.0",
+    "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "jsdom": "^26.1.0",
     "tailwindcss": "^4.1.12",

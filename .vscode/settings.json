@@ -30,5 +30,12 @@
     "editor.lineHighlightBorder": "#9fced11f",
     "minimap.background": "#FFFFFF00",
     "scrollbar.shadow": "#FFFFFF00"
-  }
+  },
+  "cSpell.words": [
+    "activedescendant",
+    "proptypes",
+    "tauri",
+    "textnodes",
+    "turbopack"
+  ]
 }

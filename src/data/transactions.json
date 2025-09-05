@@ -3,6 +3,7 @@
     {
       "id": "0001",
       "category": "Food",
+      "type": "expense",
       "account": "Cash",
       "amount": -20.0,
       "currency": "USD",
@@ -12,6 +13,7 @@
     {
       "id": "0002",
       "category": "Drink",
+      "type": "expense",
       "account": "Debit Card",
       "amount": -7.0,
       "currency": "USD",
@@ -21,6 +23,7 @@
     {
       "id": "0003",
       "category": "Work",
+      "type": "income",
       "account": "Debit Card",
       "amount": 1500.0,
       "currency": "USD",
@@ -30,6 +33,7 @@
     {
       "id": "0004",
       "category": "Rent",
+      "type": "expense",
       "account": "Debit Card",
       "amount": -300.0,
       "currency": "USD",
@@ -39,6 +43,7 @@
     {
       "id": "0005",
       "category": "Electricity",
+      "type": "expense",
       "account": "Debit Card",
       "amount": -107.47,
       "currency": "USD",
@@ -48,6 +53,7 @@
     {
       "id": "0006",
       "category": "Water",
+      "type": "expense",
       "account": "Debit Card",
       "amount": -21.97,
       "currency": "USD",
@@ -57,6 +63,7 @@
     {
       "id": "0007",
       "category": "Grocery",
+      "type": "expense",
       "account": "Debit Card",
       "amount": -32.44,
       "currency": "USD",
@@ -66,6 +73,7 @@
     {
       "id": "0008",
       "category": "Shopping",
+      "type": "expense",
       "account": "Cash",
       "amount": -47.38,
       "currency": "USD",
@@ -75,6 +83,7 @@
     {
       "id": "0009",
       "category": "Shopping",
+      "type": "expense",
       "account": "Cash",
       "amount": -22.01,
       "currency": "USD",
@@ -84,15 +93,17 @@
     {
       "id": "0010",
       "category": "Drink",
+      "type": "expense",
       "account": "Cash",
       "amount": -7.99,
       "currency": "USD",
-      "description": "Starbucks Macha Latte",
+      "description": "Starbucks Matcha Latte",
       "time": "2025-08-25T15:47:00+08:00"
     },
     {
       "id": "0011",
       "category": "Food",
+      "type": "expense",
       "account": "Cash",
       "amount": -26.77,
       "currency": "USD",
@@ -102,6 +113,7 @@
     {
       "id": "0012",
       "category": "Gas",
+      "type": "expense",
       "account": "Cash",
       "amount": -44.27,
       "currency": "USD",
@@ -111,6 +123,7 @@
     {
       "id": "0013",
       "category": "Misc",
+      "type": "expense",
       "account": "Cash",
       "amount": -5.0,
       "currency": "USD",

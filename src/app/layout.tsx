@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import { Inter_Tight, Playfair_Display } from "next/font/google";
+
 import { NavigationBar } from "@/components/NavigationBar";
 
 const interTight = Inter_Tight({

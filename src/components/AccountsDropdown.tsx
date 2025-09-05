@@ -14,7 +14,7 @@ import { AccountEmoji } from "./EmojiLoader";
 export const AccountsDropdown = () => {
   const searchParams = useSearchParams();
   const account = searchParams.get("account");
-  const [value, setValue] = useState(account || "");
+  const [value, setValue] = useState(account ?? "");
   const router = useRouter();
 
   const handleAccountChange = (newAccount: string) => {

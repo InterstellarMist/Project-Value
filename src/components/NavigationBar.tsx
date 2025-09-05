@@ -2,14 +2,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useOptimistic } from "react";
+// import { useState } from "react";
 import AddTransactionIcon from "../../public/add-transaction.svg";
 
 export const NavigationBar = () => {
   const page = usePathname().replace("/", "") || "home";
-  // const [page, setPage] = useState("home");
-
-  useOptimistic;
+  // const [page, _] = useState("home");
 
   return (
     <div className="w-9/10 h-15 p-1.5 rounded-full bg-white/90 border border-gray-300 grid grid-cols-5 gap-2 justify-stretch fixed bottom-4 left-1/2 transform -translate-x-1/2">

@@ -7,6 +7,9 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = tseslint.config(
+  {
+    ignores: ["**/.next/**", "**/node_modules/**"],
+  },
   eslint.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
@@ -111,6 +114,10 @@ const eslintConfig = tseslint.config(
       "@typescript-eslint/prefer-namespace-keyword": "off",
       "@typescript-eslint/prefer-optional-chain": "off",
       "@typescript-eslint/require-await": "off",
+      // Added be me
+      "@typescript-eslint/await-thenable": "off",
+      "@typescript-eslint/no-floating-promises": "off",
+      "@typescript-eslint/no-array-delete": "off",
       // Custom rules
       "@typescript-eslint/restrict-template-expressions": [
         "error",

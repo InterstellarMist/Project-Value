@@ -1,4 +1,6 @@
+"use client";
 import { InlineIcon } from "@iconify/react/dist/iconify.js";
+import { useSearchParams } from "next/dist/client/components/navigation";
 import Link from "next/link";
 import type React from "react";
 import { CardContainer } from "./CardContainer";
@@ -7,6 +9,7 @@ import { AccountEmoji, CategoryEmoji } from "./EmojiLoader";
 interface Transaction {
   id: string;
   category: string;
+  type: string;
   account: string;
   amount: number;
   currency: string;
@@ -30,19 +33,19 @@ const datetimeFormatter = (time: string, isHome: boolean) => {
 
 // Render transactions by date
 const renderTransactionsByDate = (transactions: Transaction[]) => {
-  const grouped = transactions.reduce(
+  const grouped = transactions.reduce<Record<string, Transaction[]>>(
     (acc, transaction) => {
       const date = new Date(transaction.time).toLocaleDateString([], {
         month: "long",
         day: "numeric",
       });
-      if (!acc[date]) {
+      if (!Object.hasOwn(acc, date)) {
         acc[date] = [];
       }
       acc[date].push(transaction);
       return acc;
     },
-    {} as Record<string, Transaction[]>,
+    {},
   );
 
   // if (Object.keys(grouped).length === 0) {
@@ -71,6 +74,7 @@ const renderTransactionsByDate = (transactions: Transaction[]) => {
 
 export const TransactionEntry: React.FC<{
   category: string;
+  type: string;
   account: string;
   amount: number;
   currency: string;
@@ -79,6 +83,7 @@ export const TransactionEntry: React.FC<{
   isHome?: boolean;
 }> = ({
   category,
+  type,
   description,
   time,
   amount,
@@ -89,7 +94,7 @@ export const TransactionEntry: React.FC<{
   return (
     <div className="grid grid-rows-1 grid-cols-[12%_60%_28%] items-center">
       <div className="flex flex-col items-center justify-self-start">
-        <CategoryEmoji category={category} width="2rem" />
+        <CategoryEmoji category={category} categoryType={type} width="2rem" />
         <p className="text-[0.5rem] font-light text-center">{category}</p>
       </div>
       <div className="flex flex-col">
@@ -126,8 +131,8 @@ export const TransactionEntry: React.FC<{
 
 export const TransactionsList: React.FC<{
   transactions: Transaction[];
-  account?: string | null;
-}> = ({ transactions, account = "All" }) => {
+}> = ({ transactions }) => {
+  const account = useSearchParams().get("account");
   return (
     <div className="w-9/10 flex flex-col gap-4">
       {renderTransactionsByDate(
