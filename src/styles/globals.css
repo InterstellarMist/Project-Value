@@ -3,7 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-@theme inline{
+@theme inline {
   --font-inter: var(--font-inter-tight);
   --font-serif: var(--font-playfair-display);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -58,10 +58,11 @@ body {
   position: fixed;
   height: 100vh;
   width: 100vw;
-  background: radial-gradient(circle at 10% 20%, #5cde7e 0%, transparent 40%),
-              radial-gradient(circle at 60% 40%, #5cded0 0%, transparent 50%),
-              radial-gradient(circle at 40% 60%, #5c76de 0%, transparent 50%),
-              radial-gradient(circle at 90% 80%, #b75cde 0%, transparent 40%);
+  background:
+    radial-gradient(circle at 10% 20%, #5cde7e 0%, transparent 40%),
+    radial-gradient(circle at 60% 40%, #5cded0 0%, transparent 50%),
+    radial-gradient(circle at 40% 60%, #5c76de 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, #b75cde 0%, transparent 40%);
   background-color: var(--background);
   background-repeat: no-repeat;
   background-size: cover;
@@ -70,13 +71,21 @@ body {
 }
 
 .neumorphic-inset {
-  box-shadow: inset 4px 4px 4px 0px #00000033, inset -4px -4px 4px 0px #ffffffB3;
-  background-color: color-mix(in oklab, var(--color-gray-200) /* oklch(92.8% 0.006 264.531) = #e5e7eb */ 80%, transparent);
+  box-shadow:
+    inset 4px 4px 4px 0px #00000033,
+    inset -4px -4px 4px 0px #ffffffb3;
+  background-color: color-mix(
+    in oklab,
+    var(--color-gray-200) /* oklch(92.8% 0.006 264.531) = #e5e7eb */ 80%,
+    transparent
+  );
   border-radius: calc(infinity * 1px);
 }
 
 .neumorphic-outset {
-  box-shadow: 4px 4px 4px 0px #00000033, -2px -2px 4px 0px #ffffffB3;
+  box-shadow:
+    4px 4px 4px 0px #00000033,
+    -2px -2px 4px 0px #ffffffb3;
   background-color: #f2f2f2;
   border-radius: calc(infinity * 1px);
 }

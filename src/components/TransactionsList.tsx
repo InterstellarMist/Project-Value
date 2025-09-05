@@ -1,8 +1,8 @@
-import React from "react";
-import { CardContainer } from "./CardContainer";
-import { Icon, InlineIcon } from "@iconify/react/dist/iconify.js";
-import { AccountEmoji, CategoryEmoji } from "./EmojiLoader";
+import { InlineIcon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
+import type React from "react";
+import { CardContainer } from "./CardContainer";
+import { AccountEmoji, CategoryEmoji } from "./EmojiLoader";
 
 interface Transaction {
   id: string;
@@ -24,31 +24,40 @@ const datetimeFormatter = (time: string, isHome: boolean) => {
           hour: "numeric",
           minute: "numeric",
         }
-      : { timeStyle: "short" }
+      : { timeStyle: "short" },
   );
 };
 
 // Render transactions by date
 const renderTransactionsByDate = (transactions: Transaction[]) => {
-  const grouped = transactions.reduce((acc, transaction) => {
-    const date = new Date(transaction.time).toLocaleDateString([], {
-      month: "long",
-      day: "numeric",
-    });
-    if (!acc[date]) {
-      acc[date] = [];
-    }
-    acc[date].push(transaction);
-    return acc;
-  }, {} as Record<string, Transaction[]>);
+  const grouped = transactions.reduce(
+    (acc, transaction) => {
+      const date = new Date(transaction.time).toLocaleDateString([], {
+        month: "long",
+        day: "numeric",
+      });
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(transaction);
+      return acc;
+    },
+    {} as Record<string, Transaction[]>,
+  );
+
+  // if (Object.keys(grouped).length === 0) {
+  //   return (
+  //     <div className="text-center text-gray-500 mt-4">No Transactions</div>
+  //   );
+  // }
 
   return (
     <>
-      {Object.entries(grouped).map(([date, txns]) => (
-        <div>
+      {Object.entries(grouped).map(([date, transactions]) => (
+        <div key={date}>
           <h3 className="text-lg font-semibold text-center mb-2">{date}</h3>
-          <div key={date} className="flex flex-col gap-4">
-            {txns.map((transaction) => (
+          <div className="flex flex-col gap-4">
+            {transactions.map((transaction) => (
               <CardContainer key={transaction.id} className="py-2 px-3">
                 <TransactionEntry {...transaction} />
               </CardContainer>
@@ -125,9 +134,11 @@ export const TransactionsList: React.FC<{
         transactions
           .filter(
             (transaction) =>
-              account === "All" || transaction.account === account
+              account === "All" || transaction.account === account,
           )
-          .toSorted((a: any, b: any) => new Date(b.time) - new Date(a.time))
+          .toSorted(
+            (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
+          ),
       )}
     </div>
   );
@@ -150,7 +161,9 @@ export const RecentTransactions: React.FC<{ transactions: Transaction[] }> = ({
       <div className="flex flex-col gap-1 mt-2">
         {transactions
           .slice(0, 5)
-          .toSorted((a: any, b: any) => new Date(b.time) - new Date(a.time))
+          .toSorted(
+            (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
+          )
           .map((transaction) => (
             <TransactionEntry key={transaction.id} {...transaction} isHome />
           ))}

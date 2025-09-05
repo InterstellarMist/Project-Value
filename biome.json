@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.1/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
   "vcs": {
     "enabled": false,
     "clientKind": "git",
@@ -14,7 +14,7 @@
       "./*.ts",
       "./*.mts",
       "./*.mjs",
-      "!src-tauri/**"
+      "!src-tauri"
     ],
     "experimentalScannerIgnores": ["dist/", "src-tauri/"]
   },
@@ -41,7 +41,8 @@
       "suspicious": {
         "useGoogleFontDisplay": "error",
         "noDocumentImportInPage": "error",
-        "noHeadImportInDocument": "error"
+        "noHeadImportInDocument": "error",
+        "noUnknownAtRules": "off"
       },
       "style": {
         "noHeadElement": "error",

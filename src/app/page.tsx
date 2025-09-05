@@ -1,7 +1,7 @@
-import { AccountCard, AccountsHomepage } from "@/components/AccountsList";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { AccountsHomepage } from "@/components/AccountsList";
 import { CardContainer } from "@/components/CardContainer";
 import { RecentTransactions } from "@/components/TransactionsList";
-import { Icon } from "@iconify/react/dist/iconify.js";
 
 import * as accountsData from "@/data/accounts.json";
 import * as transactionsData from "@/data/transactions.json";

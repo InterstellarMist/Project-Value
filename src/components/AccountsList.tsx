@@ -1,6 +1,5 @@
-import { CardContainer } from "./CardContainer";
-import { Icon } from "@iconify/react";
 import Link from "next/link";
+import { CardContainer } from "./CardContainer";
 import { AccountEmoji } from "./EmojiLoader";
 
 interface Account {
@@ -17,11 +16,10 @@ interface AccountsListProps {
 }
 
 export const AccountCard: React.FC<{
-  id: string;
   name: string;
   amount: number;
   currency: string;
-}> = ({ id, name, amount, currency }) => {
+}> = ({ name, amount, currency }) => {
   return (
     <Link href={`/transactions?account=${name}`}>
       {" "}

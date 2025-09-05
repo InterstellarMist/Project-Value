@@ -1,24 +1,18 @@
 import { AccountsList } from "@/components/AccountsList";
-import Link from "next/link";
+import { TopBar } from "@/components/TopBar";
 
 import * as accountsData from "@/data/accounts.json";
-
-const TopBar = () => {
-  return (
-    <div className="grid grid-cols-[20%_60%_20%] items-center  pt-8 pb-6 px-[5vw]">
-      <Link href="/transactions?account=All">
-        <img src="transactions.svg" width={32} className="justify-self-start" />
-      </Link>
-      <h1 className="text-2xl text-center font-serif leading-none">Accounts</h1>
-      <img src="edit.svg" width={30} className="justify-self-end" />
-    </div>
-  );
-};
 
 export default function AccountsPage() {
   return (
     <div>
-      <TopBar />
+      <TopBar
+        leftIcon="transactions.svg"
+        leftLink="/transactions?account=All"
+        title="Accounts"
+        rightIcon="edit.svg"
+        rightLink="/edit"
+      />
       <div className="flex flex-col gap-2 items-center">
         <div className="w-9/10 h-16 flex justify-space-between gap-2">
           <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-green-400 text-white rounded-2xl">
