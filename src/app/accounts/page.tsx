@@ -1,14 +1,16 @@
-import { AccountsList } from "@/components/AccountsList";
+import { AccountsList, type Account } from "@/components/AccountsList";
 import { TopBar } from "@/components/TopBar";
 
 import * as accountsData from "@/data/accounts.json";
+
+const accounts: { accounts: Account[] } = { ...accountsData };
 
 export default function AccountsPage() {
   return (
     <div>
       <TopBar
         leftIcon="transactions.svg"
-        leftLink="/transactions?account=All"
+        leftLink="/transactions?account=0"
         title="Accounts"
         rightIcon="edit.svg"
         rightLink="/edit"
@@ -28,7 +30,7 @@ export default function AccountsPage() {
             <p className="text-lg leading-none">$5,680.29</p>
           </div>
         </div>
-        <AccountsList {...accountsData} />
+        <AccountsList {...accounts} />
       </div>
     </div>
   );

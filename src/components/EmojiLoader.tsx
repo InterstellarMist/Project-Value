@@ -1,20 +1,25 @@
 import { Icon, InlineIcon } from "@iconify/react/dist/iconify.js";
-import { accounts, expenseCategories, incomeCategories } from "@/data/emojis";
+import { emojiList } from "@/data/emojis";
+import { accountNames } from "@/data/accounts";
+import { cn } from "@/lib/utils";
 
-export const AccountEmoji: React.FC<{
-  account: string;
+interface EmojiTypes {
+  accountId: number;
   inline?: boolean;
-  width?: string | number;
-  height?: string | number;
+  width: string | number;
+  height: string | number;
   className?: string;
-}> = ({ account, inline, width, height, className }) => {
-  const emoji = accounts[account];
-  if (!emoji) return null;
+}
 
-  if (width === undefined && height === undefined) {
-    width = "2rem";
-    height = "2rem";
-  }
+export const AccountEmoji = ({
+  accountId,
+  inline,
+  width = "2rem",
+  height = "2rem",
+  className,
+}: EmojiTypes) => {
+  const emoji = emojiList[accountId];
+  if (!emoji) return null;
 
   return inline ? (
     <InlineIcon
@@ -28,33 +33,18 @@ export const AccountEmoji: React.FC<{
   );
 };
 
-export const CategoryEmoji: React.FC<{
-  category: string;
-  categoryType: string;
-  inline?: boolean;
-  width?: string | number;
-  height?: string | number;
-  className?: string;
-}> = ({ category, categoryType, inline, width, height, className }) => {
-  const emoji =
-    categoryType === "expense"
-      ? expenseCategories[category]
-      : incomeCategories[category];
-  if (!emoji) return null;
-
-  if (width === undefined && height === undefined) {
-    width = "2rem";
-    height = "2rem";
-  }
-
-  return inline ? (
-    <InlineIcon
-      icon={emoji}
-      width={width}
-      height={height}
-      className={className}
-    />
-  ) : (
-    <Icon icon={emoji} width={width} height={height} className={className} />
+export const AccountEmojiWithText = ({
+  accountId,
+  textStyle,
+  className,
+  ...props
+}: EmojiTypes & { textStyle?: string }) => {
+  return (
+    <div className={cn("flex flex-col items-center", className)}>
+      <AccountEmoji accountId={accountId} {...props} />
+      <p className={cn("text-[0.5rem] font-light text-center", textStyle)}>
+        {accountNames[accountId]}
+      </p>
+    </div>
   );
 };

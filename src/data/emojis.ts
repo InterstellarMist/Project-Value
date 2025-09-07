@@ -1,26 +1,25 @@
-export const accounts: Record<string, string> = {
-  All: "fluent-emoji-flat:eyes",
-  Cash: "fluent-emoji-flat:dollar-banknote",
-  "Debit Card": "fluent-emoji-flat:credit-card",
-  "Credit Card": "noto:credit-card",
-  Loans: "fluent-emoji-flat:money-bag",
-};
-
-export const incomeCategories: Record<string, string> = {
-  Work: "fluent-emoji-flat:briefcase",
-  Allowance: "fluent-emoji-flat:coin",
-  Gift: "fluent-emoji-flat:wrapped-gift",
-};
-
-export const expenseCategories: Record<string, string> = {
-  Food: "fluent-emoji-flat:curry-rice",
-  Drink: "fluent-emoji-flat:bubble-tea",
-  Rent: "fluent-emoji-flat:house",
-  Electricity: "fluent-emoji-flat:high-voltage",
-  Water: "fluent-emoji-flat:droplet",
-  Grocery: "fluent-emoji-flat:shopping-cart",
-  Shopping: "fluent-emoji-flat:shopping-bags",
-  Gas: "fluent-emoji-flat:fuel-pump",
-  Transportation: "fluent-emoji-flat:light-rail",
-  Misc: "fluent-emoji-flat:receipt",
+export const emojiList: Record<number, string> = {
+  0: "fluent-emoji-flat:eyes",
+  1: "fluent-emoji-flat:eyes",
+  2: "fluent-emoji-flat:eyes",
+  3: "fluent-emoji-flat:eyes",
+  4: "fluent-emoji-flat:eyes",
+  5: "fluent-emoji-flat:eyes",
+  6: "fluent-emoji-flat:dollar-banknote",
+  7: "fluent-emoji-flat:credit-card",
+  8: "noto:credit-card",
+  9: "fluent-emoji-flat:money-bag",
+  10: "fluent-emoji-flat:briefcase",
+  11: "fluent-emoji-flat:coin",
+  12: "fluent-emoji-flat:wrapped-gift",
+  13: "fluent-emoji-flat:curry-rice",
+  14: "fluent-emoji-flat:bubble-tea",
+  15: "fluent-emoji-flat:house",
+  16: "fluent-emoji-flat:high-voltage",
+  17: "fluent-emoji-flat:droplet",
+  18: "fluent-emoji-flat:shopping-cart",
+  19: "fluent-emoji-flat:shopping-bags",
+  20: "fluent-emoji-flat:fuel-pump",
+  21: "fluent-emoji-flat:light-rail",
+  22: "fluent-emoji-flat:receipt",
 };

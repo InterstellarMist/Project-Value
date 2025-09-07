@@ -23,11 +23,8 @@ export default function RootLayout({
       <body
         className={`${interTight.variable} ${playfairDisplay.variable} antialiased`}
       >
-        <div className="h-screen">
-          <div className="blurry-bg"></div>
-          {children}
-        </div>
-        <NavigationBar />
+        <div className="blurry-bg">{children}</div>
+        <NavigationBar variant="glass" />
       </body>
     </html>
   );

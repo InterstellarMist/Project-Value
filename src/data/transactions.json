@@ -1,132 +1,132 @@
 {
   "transactions": [
     {
-      "id": "0001",
-      "category": "Food",
+      "txnId": "0001",
       "type": "expense",
-      "account": "Cash",
-      "amount": -20.0,
-      "currency": "USD",
+      "postings": [
+        { "accountId": 13, "amount": 20, "currency": "USD" },
+        { "accountId": 6, "amount": -20, "currency": "USD" }
+      ],
       "description": "Domino's Pizza Lunch",
       "time": "2025-09-02T12:30:00+08:00"
     },
     {
-      "id": "0002",
-      "category": "Drink",
+      "txnId": "0002",
       "type": "expense",
-      "account": "Debit Card",
-      "amount": -7.0,
-      "currency": "USD",
+      "postings": [
+        { "accountId": 14, "amount": 7.0, "currency": "USD" },
+        { "accountId": 7, "amount": -7.0, "currency": "USD" }
+      ],
       "description": "Boba Tea",
       "time": "2025-09-02T13:30:00+08:00"
     },
     {
-      "id": "0003",
-      "category": "Work",
+      "txnId": "0003",
       "type": "income",
-      "account": "Debit Card",
-      "amount": 1500.0,
-      "currency": "USD",
+      "postings": [
+        { "accountId": 10, "amount": -1500.0, "currency": "USD" },
+        { "accountId": 7, "amount": 1500.0, "currency": "USD" }
+      ],
       "description": "Work Income",
       "time": "2025-09-01T17:00:00+08:00"
     },
     {
-      "id": "0004",
-      "category": "Rent",
+      "txnId": "0004",
       "type": "expense",
-      "account": "Debit Card",
-      "amount": -300.0,
-      "currency": "USD",
+      "postings": [
+        { "accountId": 15, "amount": 300.0, "currency": "USD" },
+        { "accountId": 7, "amount": -300.0, "currency": "USD" }
+      ],
       "description": "Rent Expense",
       "time": "2025-08-30T15:32:00+08:00"
     },
     {
-      "id": "0005",
-      "category": "Electricity",
+      "txnId": "0005",
       "type": "expense",
-      "account": "Debit Card",
-      "amount": -107.47,
-      "currency": "USD",
+      "postings": [
+        { "accountId": 16, "amount": 107.47, "currency": "USD" },
+        { "accountId": 7, "amount": -107.47, "currency": "USD" }
+      ],
       "description": "Electricity Expense",
       "time": "2025-08-30T15:25:00+08:00"
     },
     {
-      "id": "0006",
-      "category": "Water",
+      "txnId": "0006",
       "type": "expense",
-      "account": "Debit Card",
-      "amount": -21.97,
-      "currency": "USD",
+      "postings": [
+        { "accountId": 17, "amount": 21.97, "currency": "USD" },
+        { "accountId": 7, "amount": -21.97, "currency": "USD" }
+      ],
       "description": "Water Expense",
       "time": "2025-08-30T15:17:00+08:00"
     },
     {
-      "id": "0007",
-      "category": "Grocery",
+      "txnId": "0007",
       "type": "expense",
-      "account": "Debit Card",
-      "amount": -32.44,
-      "currency": "USD",
+      "postings": [
+        { "accountId": 18, "amount": 32.44, "currency": "USD" },
+        { "accountId": 7, "amount": -32.44, "currency": "USD" }
+      ],
       "description": "Pasta and Snacks",
       "time": "2025-08-29T15:17:00+08:00"
     },
     {
-      "id": "0008",
-      "category": "Shopping",
+      "txnId": "0008",
       "type": "expense",
-      "account": "Cash",
-      "amount": -47.38,
-      "currency": "USD",
+      "postings": [
+        { "accountId": 19, "amount": 47.38, "currency": "USD" },
+        { "accountId": 6, "amount": -47.38, "currency": "USD" }
+      ],
       "description": "H&M Haul",
       "time": "2025-08-29T11:32:00+08:00"
     },
     {
-      "id": "0009",
-      "category": "Shopping",
+      "txnId": "0009",
       "type": "expense",
-      "account": "Cash",
-      "amount": -22.01,
-      "currency": "USD",
+      "postings": [
+        { "accountId": 19, "amount": 22.01, "currency": "USD" },
+        { "accountId": 6, "amount": -22.01, "currency": "USD" }
+      ],
       "description": "IKEA Shelf",
       "time": "2025-08-29T09:55:00+08:00"
     },
     {
-      "id": "0010",
-      "category": "Drink",
+      "txnId": "0010",
       "type": "expense",
-      "account": "Cash",
-      "amount": -7.99,
-      "currency": "USD",
+      "postings": [
+        { "accountId": 14, "amount": 7.99, "currency": "USD" },
+        { "accountId": 6, "amount": -7.99, "currency": "USD" }
+      ],
       "description": "Starbucks Matcha Latte",
       "time": "2025-08-25T15:47:00+08:00"
     },
     {
-      "id": "0011",
-      "category": "Food",
+      "txnId": "0011",
       "type": "expense",
-      "account": "Cash",
-      "amount": -26.77,
-      "currency": "USD",
+      "postings": [
+        { "accountId": 13, "amount": 26.77, "currency": "USD" },
+        { "accountId": 6, "amount": -26.77, "currency": "USD" }
+      ],
       "description": "Olive Garden Lunch",
       "time": "2025-08-25T13:14:00+08:00"
     },
     {
-      "id": "0012",
-      "category": "Gas",
+      "txnId": "0012",
       "type": "expense",
-      "account": "Cash",
-      "amount": -44.27,
-      "currency": "USD",
+      "postings": [
+        { "accountId": 20, "amount": 44.27, "currency": "USD" },
+        { "accountId": 6, "amount": -44.27, "currency": "USD" }
+      ],
       "description": "Gas Expense",
       "time": "2025-08-25T10:00:00+08:00"
     },
     {
-      "id": "0013",
-      "category": "Misc",
+      "txnId": "0013",
       "type": "expense",
-      "account": "Cash",
-      "amount": -5.0,
-      "currency": "USD",
+      "postings": [
+        { "accountId": 22, "amount": 5.0, "currency": "USD" },
+        { "accountId": 6, "amount": -5.0, "currency": "USD" }
+      ],
       "description": "Parking Ticket",
       "time": "2025-08-25T19:24:00+08:00"
     }

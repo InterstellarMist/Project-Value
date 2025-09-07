@@ -2,19 +2,23 @@
 import { InlineIcon } from "@iconify/react/dist/iconify.js";
 import { useSearchParams } from "next/dist/client/components/navigation";
 import Link from "next/link";
-import type React from "react";
+import { accountNames } from "@/data/accounts";
 import { CardContainer } from "./CardContainer";
-import { AccountEmoji, CategoryEmoji } from "./EmojiLoader";
+import { AccountEmoji, AccountEmojiWithText } from "./EmojiLoader";
+
+interface Posting {
+  accountId: number;
+  amount: number; // positive or negative
+  currency: string;
+}
 
 interface Transaction {
-  id: string;
-  category: string;
-  type: string;
-  account: string;
-  amount: number;
-  currency: string;
+  txnId: string;
+  type: "expense" | "income" | "transfer";
+  postings: Posting[];
   description: string;
   time: string;
+  tags?: string;
 }
 
 const datetimeFormatter = (time: string, isHome: boolean) => {
@@ -33,26 +37,20 @@ const datetimeFormatter = (time: string, isHome: boolean) => {
 
 // Render transactions by date
 const renderTransactionsByDate = (transactions: Transaction[]) => {
-  const grouped = transactions.reduce<Record<string, Transaction[]>>(
-    (acc, transaction) => {
-      const date = new Date(transaction.time).toLocaleDateString([], {
-        month: "long",
-        day: "numeric",
-      });
-      if (!Object.hasOwn(acc, date)) {
-        acc[date] = [];
-      }
-      acc[date].push(transaction);
-      return acc;
-    },
-    {},
+  const grouped = Object.groupBy(transactions, ({ time }) =>
+    new Date(time).toLocaleDateString([], {
+      month: "long",
+      day: "numeric",
+    }),
   );
 
-  // if (Object.keys(grouped).length === 0) {
-  //   return (
-  //     <div className="text-center text-gray-500 mt-4">No Transactions</div>
-  //   );
-  // }
+  if (Object.keys(grouped).length === 0) {
+    return (
+      <div className="text-center text-gray-500 mt-4">
+        No Transactions Yet...
+      </div>
+    );
+  }
 
   return (
     <>
@@ -60,8 +58,8 @@ const renderTransactionsByDate = (transactions: Transaction[]) => {
         <div key={date}>
           <h3 className="text-lg font-semibold text-center mb-2">{date}</h3>
           <div className="flex flex-col gap-4">
-            {transactions.map((transaction) => (
-              <CardContainer key={transaction.id} className="py-2 px-3">
+            {transactions?.map((transaction) => (
+              <CardContainer key={transaction.txnId} className="py-2 px-3">
                 <TransactionEntry {...transaction} />
               </CardContainer>
             ))}
@@ -72,31 +70,33 @@ const renderTransactionsByDate = (transactions: Transaction[]) => {
   );
 };
 
-export const TransactionEntry: React.FC<{
-  category: string;
-  type: string;
-  account: string;
-  amount: number;
-  currency: string;
-  description: string;
-  time: string;
-  isHome?: boolean;
-}> = ({
-  category,
+export const TransactionEntry = ({
   type,
+  postings,
   description,
   time,
-  amount,
-  account,
-  currency,
   isHome = false,
-}) => {
+}: Transaction & { isHome?: boolean }) => {
+  const sortedPostings = postings.toSorted((a, b) => a.amount - b.amount);
+
+  const left =
+    type === "income" || type === "transfer"
+      ? sortedPostings.at(0)
+      : sortedPostings.at(-1);
+  const right =
+    type === "expense" ? sortedPostings.at(0) : sortedPostings.at(-1);
+
+  const amount = right?.amount ?? 0;
+  const currency = right?.currency ?? "USD";
+
   return (
     <div className="grid grid-rows-1 grid-cols-[12%_60%_28%] items-center">
-      <div className="flex flex-col items-center justify-self-start">
-        <CategoryEmoji category={category} categoryType={type} width="2rem" />
-        <p className="text-[0.5rem] font-light text-center">{category}</p>
-      </div>
+      <AccountEmojiWithText
+        accountId={left?.accountId ?? 1}
+        width="2rem"
+        height="2rem"
+        className="justify-self-start"
+      />
       <div className="flex flex-col">
         <p className="text-lg leading-none">{description}</p>
         <p className="text-[0.5rem] font-light">
@@ -116,11 +116,14 @@ export const TransactionEntry: React.FC<{
           }).format(amount)}
         </p>
         <div className="flex flex-row gap-0.5 justify-end items-center">
-          <p className="text-[0.5rem] font-light align-top block">{account}</p>
+          <p className="text-[0.5rem] font-light align-top block">
+            {accountNames[right?.accountId ?? 1]}
+          </p>
           <AccountEmoji
-            account={account}
+            accountId={right?.accountId ?? 1}
             inline
             width="1rem"
+            height="1rem"
             className="inline"
           />
         </div>
@@ -129,18 +132,24 @@ export const TransactionEntry: React.FC<{
   );
 };
 
-export const TransactionsList: React.FC<{
+const filterTransaction = (transaction: Transaction, account: number) => {
+  if (account === 0) return true;
+  return transaction.postings.reduce((acc, posting) => {
+    return acc || posting.accountId === account;
+  }, false);
+};
+
+export const TransactionsList = ({
+  transactions,
+}: {
   transactions: Transaction[];
-}> = ({ transactions }) => {
-  const account = useSearchParams().get("account");
+}) => {
+  const account = parseInt(useSearchParams().get("account") ?? "0", 10);
   return (
     <div className="w-9/10 flex flex-col gap-4">
       {renderTransactionsByDate(
         transactions
-          .filter(
-            (transaction) =>
-              account === "All" || transaction.account === account,
-          )
+          .filter((transaction) => filterTransaction(transaction, account))
           .toSorted(
             (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
           ),
@@ -149,8 +158,10 @@ export const TransactionsList: React.FC<{
   );
 };
 
-export const RecentTransactions: React.FC<{ transactions: Transaction[] }> = ({
+export const RecentTransactions = ({
   transactions,
+}: {
+  transactions: Transaction[];
 }) => {
   return (
     <CardContainer className="w-9/10">
@@ -170,7 +181,7 @@ export const RecentTransactions: React.FC<{ transactions: Transaction[] }> = ({
             (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
           )
           .map((transaction) => (
-            <TransactionEntry key={transaction.id} {...transaction} isHome />
+            <TransactionEntry key={transaction.txnId} {...transaction} isHome />
           ))}
       </div>
     </CardContainer>

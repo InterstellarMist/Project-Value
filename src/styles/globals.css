@@ -54,20 +54,22 @@ body {
 }
 
 .blurry-bg {
-  inset: 0;
-  position: fixed;
   height: 100vh;
   width: 100vw;
+  overflow-y: scroll;
   background:
     radial-gradient(circle at 10% 20%, #5cde7e 0%, transparent 40%),
     radial-gradient(circle at 60% 40%, #5cded0 0%, transparent 50%),
     radial-gradient(circle at 40% 60%, #5c76de 0%, transparent 50%),
     radial-gradient(circle at 90% 80%, #b75cde 0%, transparent 40%);
-  background-color: var(--background);
+  background-color: rgb(235, 235, 235);
   background-repeat: no-repeat;
   background-size: cover;
-  filter: blur(80px);
-  z-index: -1;
+}
+
+.glass-shadow {
+  filter: drop-shadow(4px 4px 2px rgba(255, 255, 255, 0.7))
+    drop-shadow(-2px -2px 2px rgba(0, 0, 0, 0.15));
 }
 
 .neumorphic-inset {
@@ -86,7 +88,6 @@ body {
   box-shadow:
     4px 4px 4px 0px #00000033,
     -2px -2px 4px 0px #ffffffb3;
-  background-color: #f2f2f2;
   border-radius: calc(infinity * 1px);
 }
 

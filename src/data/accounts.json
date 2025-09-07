@@ -1,36 +1,164 @@
 {
   "accounts": [
     {
-      "id": "0001",
-      "name": "Cash",
-      "type": "asset",
-      "amount": 1347.05,
-      "currency": "USD",
-      "hidden": false
+      "accountId": 1,
+      "name": "Assets",
+      "type": "root",
+      "icon": "fluent-emoji-flat:eyes"
     },
     {
-      "id": "0002",
+      "accountId": 2,
+      "name": "Liabilities",
+      "type": "root",
+      "icon": "fluent-emoji-flat:eyes"
+    },
+    {
+      "accountId": 3,
+      "name": "Income",
+      "type": "root",
+      "icon": "fluent-emoji-flat:eyes"
+    },
+    {
+      "accountId": 4,
+      "name": "Expenses",
+      "type": "root",
+      "icon": "fluent-emoji-flat:eyes"
+    },
+    {
+      "accountId": 5,
+      "name": "Equity",
+      "type": "root",
+      "icon": "fluent-emoji-flat:eyes"
+    },
+    {
+      "accountId": 6,
+      "name": "Cash",
+      "type": "assets",
+      "parentId": 1,
+      "amount": 1347.05,
+      "currency": "USD",
+      "icon": "fluent-emoji-flat:dollar-banknote"
+    },
+    {
+      "accountId": 7,
       "name": "Debit Card",
-      "type": "asset",
+      "type": "assets",
+      "parentId": 1,
       "amount": 4633.23,
       "currency": "USD",
-      "hidden": false
+      "icon": "fluent-emoji-flat:credit-card"
     },
     {
-      "id": "0003",
+      "accountId": 8,
       "name": "Credit Card",
-      "type": "liability",
+      "type": "liabilities",
+      "parentId": 2,
       "amount": 1347.05,
       "currency": "USD",
-      "hidden": false
+      "icon": "noto:credit-card"
     },
     {
-      "id": "0004",
+      "accountId": 9,
       "name": "Loans",
-      "type": "liability",
+      "type": "liabilities",
+      "parentId": 2,
       "amount": 1347.05,
       "currency": "USD",
-      "hidden": true
+      "hidden": true,
+      "icon": "fluent-emoji-flat:money-bag"
+    },
+
+    {
+      "accountId": 10,
+      "name": "Work",
+      "type": "income",
+      "parentId": 3,
+      "icon": "fluent-emoji-flat:briefcase"
+    },
+    {
+      "accountId": 11,
+      "name": "Allowance",
+      "type": "income",
+      "parentId": 3,
+      "icon": "fluent-emoji-flat:coin"
+    },
+    {
+      "accountId": 12,
+      "name": "Gift",
+      "type": "income",
+      "parentId": 3,
+      "icon": "fluent-emoji-flat:wrapped-gift"
+    },
+
+    {
+      "accountId": 13,
+      "name": "Food",
+      "type": "expenses",
+      "parentId": 4,
+      "icon": "fluent-emoji-flat:curry-rice"
+    },
+    {
+      "accountId": 14,
+      "name": "Drink",
+      "type": "expenses",
+      "parentId": 4,
+      "icon": "fluent-emoji-flat:bubble-tea"
+    },
+    {
+      "accountId": 15,
+      "name": "Rent",
+      "type": "expenses",
+      "parentId": 4,
+      "icon": "fluent-emoji-flat:house"
+    },
+    {
+      "accountId": 16,
+      "name": "Electricity",
+      "type": "expenses",
+      "parentId": 4,
+      "icon": "fluent-emoji-flat:high-voltage"
+    },
+    {
+      "accountId": 17,
+      "name": "Water",
+      "type": "expenses",
+      "parentId": 4,
+      "icon": "fluent-emoji-flat:droplet"
+    },
+    {
+      "accountId": 18,
+      "name": "Grocery",
+      "type": "expenses",
+      "parentId": 4,
+      "icon": "fluent-emoji-flat:shopping-cart"
+    },
+    {
+      "accountId": 19,
+      "name": "Shopping",
+      "type": "expenses",
+      "parentId": 4,
+      "icon": "fluent-emoji-flat:shopping-bags"
+    },
+    {
+      "accountId": 20,
+      "name": "Gas",
+      "type": "expenses",
+      "parentId": 4,
+      "icon": "fluent-emoji-flat:fuel-pump"
+    },
+    {
+      "accountId": 21,
+      "name": "Transportation",
+      "type": "expenses",
+      "parentId": 4,
+      "icon": "fluent-emoji-flat:light-rail"
+    },
+    {
+      "accountId": 22,
+      "name": "Misc",
+      "type": "expenses",
+      "parentId": 4,
+      "icon": "fluent-emoji-flat:receipt"
     }
   ]
 }
