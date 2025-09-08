@@ -1,4 +1,4 @@
-import { AccountsList, type Account } from "@/components/AccountsList";
+import { type Account, AccountsList } from "@/components/AccountsList";
 import { TopBar } from "@/components/TopBar";
 
 import * as accountsData from "@/data/accounts.json";

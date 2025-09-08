@@ -13,7 +13,9 @@ export const TopBar: React.FC<{
       <Link href={leftLink} className="justify-self-start">
         <Image src={leftIcon} alt={leftIcon} width={32} height={32} />
       </Link>
-      <h1 className="text-2xl text-center font-serif leading-none">{title}</h1>
+      <h1 className="text-2xl text-center font-serif leading-none select-none">
+        {title}
+      </h1>
       <Link href={rightLink} className="justify-self-end">
         <Image src={rightIcon} alt={rightIcon} width={32} height={32} />
       </Link>

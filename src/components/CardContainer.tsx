@@ -12,7 +12,7 @@ export const CardContainer = ({
   variant?: "glass" | "solid";
 }) => {
   const variants: Record<string, string> = {
-    glass: `bg-white/50 glass-shadow border-white/80 ${className}`,
+    glass: `glass-shadow ${className}`,
     solid: `bg-white/80 border-gray-300 ${className}`,
   };
 
