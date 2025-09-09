@@ -1,29 +1,26 @@
 "use client";
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
+import { cn } from "@/lib/utils";
+import type { ControlType } from "./TransactionForm";
 import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "./ui/form";
 
-export const DateTimePicker = ({ control }) => {
+export const DateTimePicker = ({ control }: ControlType) => {
   return (
     <div className="flex gap-8">
       <FormField
@@ -75,8 +72,7 @@ export const DateTimePicker = ({ control }) => {
             <FormControl>
               <Input
                 type="time"
-                step="1"
-                defaultValue="10:30:00"
+                step="60"
                 className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none glass-shadow bg-white/50 h-10"
                 {...field}
               />

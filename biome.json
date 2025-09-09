@@ -62,6 +62,18 @@
       }
     }
   },
+  "overrides": [
+    {
+      "includes": ["src/components/ui/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useComponentExportOnlyModules": "off"
+          }
+        }
+      }
+    }
+  ],
   "css": {
     "formatter": {
       "quoteStyle": "double"

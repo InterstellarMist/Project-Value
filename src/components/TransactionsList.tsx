@@ -1,25 +1,9 @@
-"use client";
 import { InlineIcon } from "@iconify/react/dist/iconify.js";
-import { useSearchParams } from "next/dist/client/components/navigation";
 import Link from "next/link";
 import { accountNames } from "@/data/accounts";
+import type { Transaction } from "@/types/transaction";
 import { CardContainer } from "./CardContainer";
 import { AccountEmoji, AccountEmojiWithText } from "./EmojiLoader";
-
-interface Posting {
-  accountId: number;
-  amount: number; // positive or negative
-  currency: string;
-}
-
-interface Transaction {
-  txnId: string;
-  type: "expense" | "income" | "transfer";
-  postings: Posting[];
-  description: string;
-  time: string;
-  tags?: string;
-}
 
 const datetimeFormatter = (time: string, isHome: boolean) => {
   return new Date(time).toLocaleString(
@@ -141,10 +125,13 @@ const filterTransaction = (transaction: Transaction, account: number) => {
 
 export const TransactionsList = ({
   transactions,
+  filter,
 }: {
   transactions: Transaction[];
+  filter: string;
 }) => {
-  const account = parseInt(useSearchParams().get("account") ?? "0", 10);
+  const account = parseInt(filter, 10);
+  console.log(filter);
   return (
     <div className="w-9/10 flex flex-col gap-4">
       {renderTransactionsByDate(
@@ -167,7 +154,7 @@ export const RecentTransactions = ({
     <CardContainer className="w-9/10">
       <h2 className="text-2xl leading-none font-serif">
         Recent Transactions
-        <Link href="/transactions?account=All">
+        <Link href="/transactions?account=0">
           <InlineIcon
             icon="material-symbols-light:arrow-right-alt-rounded"
             className="inline"

@@ -1,3 +1,4 @@
+// biome-ignore-all lint/a11y/useSemanticElements: divs are intentional with accessibility
 "use client";
 
 import useEmblaCarousel, {

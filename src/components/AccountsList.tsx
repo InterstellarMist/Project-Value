@@ -1,17 +1,7 @@
 import Link from "next/link";
+import type { Account } from "@/types/accounts";
 import { CardContainer } from "./CardContainer";
 import { AccountEmoji } from "./EmojiLoader";
-
-export interface Account {
-  accountId: number; // unique integer ID
-  name: string; // human-readable name (e.g., "Cash", "Food")
-  type: "assets" | "liabilities" | "income" | "expenses" | "equity" | "root";
-  parentId?: number; // optional parent account ID (undefined for root accounts)
-  icon?: string; // optional icon reference
-  currency?: string; // e.g., "USD" (only relevant for asset/liability)
-  amount?: number; // balance (assets/liabilities only)
-  hidden?: boolean; // hide from UI (e.g., closed accounts)
-}
 
 // TODO: Temporary balance
 export const AccountCard = ({ accountId, name, amount, currency }: Account) => {

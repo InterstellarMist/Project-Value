@@ -1,9 +1,9 @@
-import { z } from "zod";
-import { useForm } from "react-hook-form";
+"use client";
+import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { type Control, useForm, type UseFormWatch } from "react-hook-form";
+import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -12,7 +12,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { AccountsPicker } from "./AccountsPicker";
 import { DateTimePicker } from "./DateTimePicker";
+import { cn } from "@/lib/utils";
+
+export type FormTypes = z.infer<typeof FormSchema>;
+
+export interface ControlType {
+  control: Control<FormTypes>;
+}
 
 const FormSchema = z.object({
   description: z.string().min(2, {
@@ -22,23 +31,35 @@ const FormSchema = z.object({
   amount: z.coerce.number(),
   date: z.date(),
   time: z.iso.time(),
+  txnType: z.string().optional(),
+  debit: z.number(),
+  credit: z.number(),
 });
 
-const AmountInput = ({ control }) => {
+const AmountInput = ({
+  control,
+  watch,
+}: ControlType & { watch: UseFormWatch<FormTypes> }) => {
+  const txnType = watch("txnType");
   return (
     <FormField
       control={control}
       name="amount"
       render={({ field }) => (
-        <FormItem className="glass-shadow flex flex-col items-center rounded-2xl p-2">
+        <FormItem className="glass-shadow flex flex-col items-center rounded-2xl p-2 gap-2">
           <FormLabel className="font-semibold text-lg justify-center">
             Amount
           </FormLabel>
           <FormControl>
             <Input
-              type=""
-              placeholder="+$200.00"
-              className="w-full h-full text-center text-4xl p-2 border-0 shadow-none text-green-500 placeholder:text-green-500"
+              type="text"
+              className={cn(
+                "w-full h-full text-center text-4xl border-0 shadow-none text-blue-500 py-0 ",
+                txnType === "income" &&
+                  "text-green-500 placeholder:text-green-500",
+                txnType === "expense" &&
+                  "text-red-500 placeholder:text-red-500",
+              )}
               {...field}
             />
           </FormControl>
@@ -49,7 +70,7 @@ const AmountInput = ({ control }) => {
   );
 };
 
-const AttachmentInput = ({ control }) => {
+const AttachmentInput = ({ control }: ControlType) => {
   return (
     <FormField
       control={control}
@@ -73,7 +94,7 @@ const AttachmentInput = ({ control }) => {
   );
 };
 
-const DescriptionInput = ({ control }) => {
+const DescriptionInput = ({ control }: ControlType) => {
   return (
     <FormField
       control={control}
@@ -98,25 +119,31 @@ const DescriptionInput = ({ control }) => {
 };
 
 export const TransactionForm = () => {
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const form = useForm<FormTypes>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       description: "",
+      amount: 0,
+      time: format(Date.now(), "HH:mm"),
+      date: new Date(),
+      txnType: "income",
     },
   });
-
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  function onSubmit(data: FormTypes) {
     console.log(JSON.stringify(data, null, 2));
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-8/10 space-y-8">
-        <AmountInput control={form.control} />
-        <DateTimePicker control={form.control} />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-8/10 space-y-4">
+        <AccountsPicker control={form.control} reset={form.resetField} />
+        <AmountInput control={form.control} watch={form.watch} />
         <DescriptionInput control={form.control} />
+        <DateTimePicker control={form.control} />
         <AttachmentInput control={form.control} />
-        <Button type="submit">Submit</Button>
+        <button type="submit" className="absolute top-8 right-6 cursor-pointer">
+          <Image src="check.svg" alt="filter" width={32} height={32} />
+        </button>
       </form>
     </Form>
   );

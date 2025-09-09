@@ -2,14 +2,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-// import { useState } from "react";
+import { useState } from "react";
 import AddTransactionIcon from "../../public/add-transaction.svg";
+import { cn } from "@/lib/utils";
 
 export const NavigationBar: React.FC<{ variant?: "glass" | "solid" }> = ({
   variant = "glass",
 }) => {
-  const page = usePathname().replace("/", "") || "home";
-  // const [page, _] = useState("home");
+  const firstPage = usePathname().replace("/", "") || "home";
+  const [page, setPage] = useState(firstPage);
 
   const baseVariants: Record<string, string> = {
     glass: "bg-white/60 border-white/80 glass-shadow",
@@ -23,28 +24,42 @@ export const NavigationBar: React.FC<{ variant?: "glass" | "solid" }> = ({
 
   return (
     <div
-      className={`${baseVariants[variant]} w-9/10 h-15 p-1.5 rounded-full border grid grid-cols-5 gap-2 justify-stretch fixed bottom-4 left-1/2 transform -translate-x-1/2
-        `}
+      className={cn(
+        "w-9/10 h-15 p-1.5 rounded-full border grid grid-cols-5 gap-2 justify-stretch fixed bottom-4 left-1/2 transform -translate-x-1/2",
+        baseVariants[variant],
+        firstPage === "add-transaction" && "hidden",
+      )}
     >
       <Link
         href="/"
         className={`flex items-center justify-center ${
           page === "home" ? "neumorphic-inset" : ""
         }`}
+        onClick={() => {
+          setPage("home");
+        }}
       >
         <Image src="home.svg" alt="Home" width={30} height={30} />
       </Link>
       <Link
         href="/accounts"
         className={`flex items-center justify-center ${
-          page === "accounts" ? "neumorphic-inset" : ""
+          page === "accounts" || page === "transactions"
+            ? "neumorphic-inset"
+            : ""
         }`}
+        onClick={() => {
+          setPage("accounts");
+        }}
       >
         <Image src="accounts.svg" alt="Accounts" width={30} height={30} />
       </Link>
       <Link
         href="/add-transaction"
         className={`flex items-center justify-center neumorphic-outset ${btnVariants[variant]}`}
+        onClick={() => {
+          setPage("add-transaction");
+        }}
       >
         <AddTransactionIcon className="text-blue-700 w-[30px] drop-shadow-[2px_2px_1px_rgba(0,0,0,0.3)]" />
       </Link>
@@ -53,6 +68,9 @@ export const NavigationBar: React.FC<{ variant?: "glass" | "solid" }> = ({
         className={`flex items-center justify-center ${
           page === "dashboard" ? "neumorphic-inset" : ""
         }`}
+        onClick={() => {
+          setPage("dashboard");
+        }}
       >
         <Image src="dashboard.svg" alt="Dashboard" width={30} height={30} />
       </Link>
@@ -61,6 +79,9 @@ export const NavigationBar: React.FC<{ variant?: "glass" | "solid" }> = ({
         className={`flex items-center justify-center ${
           page === "settings" ? "neumorphic-inset" : ""
         }`}
+        onClick={() => {
+          setPage("settings");
+        }}
       >
         <Image src="settings.svg" alt="Settings" width={30} height={30} />
       </Link>

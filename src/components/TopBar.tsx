@@ -1,13 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export const TopBar: React.FC<{
+interface TopBarProps {
   leftIcon: string;
   leftLink: string;
   title: string;
   rightIcon: string;
   rightLink: string;
-}> = ({ leftIcon, leftLink, title, rightIcon, rightLink }) => {
+}
+
+export const TopBar = ({
+  leftIcon,
+  leftLink,
+  title,
+  rightIcon,
+  rightLink,
+}: TopBarProps) => {
   return (
     <div className="grid grid-cols-[20%_60%_20%] items-center pt-8 pb-4 px-[5vw]">
       <Link href={leftLink} className="justify-self-start">

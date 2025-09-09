@@ -6,37 +6,55 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { accountNames } from "@/data/accounts";
 import * as accountsData from "@/data/accounts.json";
-import type { AcctType } from "./AccountsPicker";
-import { AccountEmojiWithText } from "./EmojiLoader";
+import type { AcctTypeSimple } from "@/types/accounts";
+import { AccountEmoji } from "./EmojiLoader";
 
-const SelectionGrid = ({ accountIds }: { accountIds: number[] }) => {
+const SelectionGrid = ({
+  accountIds,
+  onSelect,
+  setOpen,
+}: {
+  accountIds: number[];
+  onSelect: (value: number) => void;
+  setOpen: (value: boolean) => void;
+}) => {
   return (
     <div className="w-[8/10] grid grid-cols-3 px-4 pb-4 gap-y-3 gap-x-10">
       {accountIds.map((val) => {
         return (
-          <AccountEmojiWithText
+          <button
             key={val}
-            accountId={val}
-            width={64}
-            height={64}
-            className="gap-2 ring-gray-500 rounded-xl p-1"
-            // className="gap-2 ring-2 ring-gray-500 rounded-xl p-1 "
-            textStyle="text-xs font-bold"
-          />
+            type="button"
+            className="flex flex-col items-center justify-items-center gap-2 p-1 rounded-xl"
+            onClick={() => {
+              onSelect(val);
+              setOpen(false);
+            }}
+          >
+            <AccountEmoji accountId={val} width={64} height={64} />
+            <p className="text-xs font-bold text-center">{accountNames[val]}</p>
+          </button>
         );
       })}
     </div>
   );
 };
 
-const generateGridPages = (acctType: AcctType) => {
+const generateGridPages = (acctType: AcctTypeSimple) => {
   const accountIds = accountsData.accounts
-    .filter((acc) =>
-      acctType === "accounts"
-        ? acc.type === "assets" || acc.type === "liabilities"
-        : acc.type === acctType,
-    )
+    .filter((acc) => {
+      switch (acctType) {
+        case "account":
+          return acc.type === "assets" || acc.type === "liabilities";
+
+        case "expense":
+          return acc.type === "expenses";
+        default:
+          return acc.type === acctType;
+      }
+    })
     .map((acc) => acc.accountId);
 
   const chunk = 9;
@@ -45,7 +63,14 @@ const generateGridPages = (acctType: AcctType) => {
   );
 };
 
-export const AccountCarousel = ({ acctType }: { acctType: AcctType }) => {
+export const AccountCarousel = ({
+  acctType,
+  ...props
+}: {
+  acctType: AcctTypeSimple;
+  onSelect: (value: number) => void;
+  setOpen: (value: boolean) => void;
+}) => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [scrollList, setScrollList] = useState<number[]>([]);
@@ -68,7 +93,7 @@ export const AccountCarousel = ({ acctType }: { acctType: AcctType }) => {
           {generateGridPages(acctType).map((page) => {
             return (
               <CarouselItem key={page[0]}>
-                <SelectionGrid accountIds={page} />
+                <SelectionGrid {...props} accountIds={page} />
               </CarouselItem>
             );
           })}
