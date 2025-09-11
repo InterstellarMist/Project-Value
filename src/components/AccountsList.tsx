@@ -1,14 +1,17 @@
+"use client";
 import Link from "next/link";
+import { useFilterStore } from "@/store/useFilterStore";
 import type { Account } from "@/types/accounts";
 import { CardContainer } from "./CardContainer";
 import { AccountEmoji } from "./EmojiLoader";
 
 // TODO: Temporary balance
 export const AccountCard = ({ accountId, name, amount, currency }: Account) => {
+  const setFilter = useFilterStore((s) => s.setFilter);
   return (
-    <Link href={`/transactions?account=${accountId}`}>
+    <Link href="/transactions" onClick={() => setFilter(accountId.toString())}>
       <CardContainer className="w-[33%-4px] flex flex-col items-center pt-0 pb-4">
-        <AccountEmoji accountId={accountId} height="5rem" width="5rem" />
+        <AccountEmoji accountId={accountId} height="5em" width="5em" />
         <p className="font-semibold text-xs">{name}</p>
         <p className="font-light text-lg mt-2 leading-none">
           {new Intl.NumberFormat("en-US", {

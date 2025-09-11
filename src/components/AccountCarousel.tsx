@@ -7,9 +7,11 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { accountNames } from "@/data/accounts";
-import * as accountsData from "@/data/accounts.json";
-import type { AcctTypeSimple } from "@/types/accounts";
+import accountsDataJson from "@/data/accounts.json";
+import type { Account, AcctTypeSimple } from "@/types/accounts";
 import { AccountEmoji } from "./EmojiLoader";
+
+const accountsData = accountsDataJson as { accounts: Account[] };
 
 const SelectionGrid = ({
   accountIds,

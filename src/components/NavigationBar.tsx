@@ -2,15 +2,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-import AddTransactionIcon from "../../public/add-transaction.svg";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { AddTransactionIcon } from "./icons/AddTransactionIcon";
 
 export const NavigationBar: React.FC<{ variant?: "glass" | "solid" }> = ({
   variant = "glass",
 }) => {
-  const firstPage = usePathname().replace("/", "") || "home";
-  const [page, setPage] = useState(firstPage);
+  const urlPage = usePathname().replace("/", "") || "home";
+  const [page, setPage] = useState(urlPage);
+
+  useEffect(() => {
+    setPage(urlPage);
+    console.log(urlPage);
+  }, [urlPage]);
 
   const baseVariants: Record<string, string> = {
     glass: "bg-white/60 border-white/80 glass-shadow",
@@ -27,7 +32,7 @@ export const NavigationBar: React.FC<{ variant?: "glass" | "solid" }> = ({
       className={cn(
         "w-9/10 h-15 p-1.5 rounded-full border grid grid-cols-5 gap-2 justify-stretch fixed bottom-4 left-1/2 transform -translate-x-1/2",
         baseVariants[variant],
-        firstPage === "add-transaction" && "hidden",
+        page === "add-transaction" && "hidden",
       )}
     >
       <Link

@@ -36,10 +36,9 @@ export const DateTimePicker = ({ control }: ControlType) => {
                     variant="outline"
                     className={cn(
                       "w-32 h-10 justify-between font-normal glass-shadow bg-white-50",
-                      !field.value && "color-gray-500",
                     )}
                   >
-                    {field.value ? format(field.value, "PP") : "Select date"}
+                    {format(field.value, "PP")}
                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                   </Button>
                 </FormControl>

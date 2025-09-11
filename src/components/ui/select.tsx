@@ -2,8 +2,8 @@
 
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import Image from "next/image";
 import type * as React from "react";
-import DownIcon from "@/../public/down.svg";
 
 import { cn } from "@/lib/utils";
 
@@ -45,7 +45,7 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <DownIcon className="h-2 w-4 text-white" />
+        <Image src="down.svg" alt="down" className="h-2 w-4 text-white" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );

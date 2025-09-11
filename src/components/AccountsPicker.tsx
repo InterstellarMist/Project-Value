@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerContent,
+  DrawerDescription,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -59,7 +60,7 @@ const AccountsDrawer = ({
       control={control}
       name={postingType}
       render={({ field }) => (
-        <FormItem className="justify-items-center">
+        <FormItem className="justify-items-center content-start">
           <Drawer open={open} onOpenChange={setOpen}>
             <DrawerTrigger asChild>
               <Button asChild>
@@ -76,6 +77,7 @@ const AccountsDrawer = ({
                 <DrawerTitle className="font-serif text-2xl font-normal">
                   {capitalize(acctType)}
                 </DrawerTitle>
+                <DrawerDescription>Select one</DrawerDescription>
               </DrawerHeader>
               <AccountCarousel
                 setOpen={setOpen}
@@ -84,7 +86,7 @@ const AccountsDrawer = ({
               />
             </DrawerContent>
           </Drawer>
-          <FormMessage />
+          <FormMessage className="text-center" />
         </FormItem>
       )}
     />
@@ -149,8 +151,8 @@ export const AccountsPicker = ({
                 src="long-arrow.svg"
                 alt="arrow"
                 width={60}
-                height={60}
-                className="pt-6"
+                height={0}
+                className="pt-6 h-auto"
               />
               <AccountsDrawer
                 control={control}
@@ -170,8 +172,8 @@ export const AccountsPicker = ({
                 src="long-arrow.svg"
                 alt="arrow"
                 width={60}
-                height={60}
-                className="pt-6"
+                height={0}
+                className="pt-6 h-auto"
               />
               <AccountsDrawer
                 control={control}
@@ -191,8 +193,8 @@ export const AccountsPicker = ({
                 src="long-arrow.svg"
                 alt="arrow"
                 width={60}
-                height={60}
-                className="pt-6"
+                height={0}
+                className="pt-6 h-auto"
               />
               <AccountsDrawer
                 control={control}

@@ -1,12 +1,22 @@
 "use client";
-import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { useState } from "react";
-import { AccountsDropdown } from "@/components/AccountsDropdown";
+// import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import AccountsDropdown from "@/components/AccountsDropdown";
 import { TransactionsList } from "@/components/TransactionsList";
-import * as transactionsData from "@/data/transactions.json";
+import transactionsDataJson from "@/data/transactions.json";
+import type { Transaction } from "@/types/transaction";
 
-export const TopBar = () => {
+// const AccountsDropdown = dynamic(
+//   () => import("@/components/AccountsDropdown"),
+//   { ssr: false },
+// );
+
+const transactionsData = transactionsDataJson as {
+  transactions: Transaction[];
+};
+
+const TopBar = () => {
   const router = useRouter();
 
   return (
@@ -31,14 +41,12 @@ export const TopBar = () => {
 };
 
 export default function TransactionPage() {
-  const account = useSearchParams().get("account") ?? "0";
-  const [filter, setFilter] = useState(account);
   return (
     <div>
       <TopBar />
       <div className="flex flex-col items-center justify-center gap-4 pb-24">
-        <AccountsDropdown filter={filter} setFilter={setFilter} />
-        <TransactionsList filter={filter} {...transactionsData} />
+        <AccountsDropdown />
+        <TransactionsList {...transactionsData} />
       </div>
     </div>
   );

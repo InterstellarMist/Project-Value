@@ -1,6 +1,8 @@
-import { InlineIcon } from "@iconify/react/dist/iconify.js";
+"use client";
+import { InlineIcon } from "@iconify/react";
 import Link from "next/link";
 import { accountNames } from "@/data/accounts";
+import { useFilterStore } from "@/store/useFilterStore";
 import type { Transaction } from "@/types/transaction";
 import { CardContainer } from "./CardContainer";
 import { AccountEmoji, AccountEmojiWithText } from "./EmojiLoader";
@@ -77,8 +79,8 @@ export const TransactionEntry = ({
     <div className="grid grid-rows-1 grid-cols-[12%_60%_28%] items-center">
       <AccountEmojiWithText
         accountId={left?.accountId ?? 1}
-        width="2rem"
-        height="2rem"
+        width="2em"
+        height="2em"
         className="justify-self-start"
       />
       <div className="flex flex-col">
@@ -106,8 +108,8 @@ export const TransactionEntry = ({
           <AccountEmoji
             accountId={right?.accountId ?? 1}
             inline
-            width="1rem"
-            height="1rem"
+            width="1em"
+            height="1em"
             className="inline"
           />
         </div>
@@ -125,13 +127,11 @@ const filterTransaction = (transaction: Transaction, account: number) => {
 
 export const TransactionsList = ({
   transactions,
-  filter,
 }: {
   transactions: Transaction[];
-  filter: string;
 }) => {
+  const filter = useFilterStore((s) => s.filter);
   const account = parseInt(filter, 10);
-  console.log(filter);
   return (
     <div className="w-9/10 flex flex-col gap-4">
       {renderTransactionsByDate(
@@ -150,11 +150,17 @@ export const RecentTransactions = ({
 }: {
   transactions: Transaction[];
 }) => {
+  const setFilter = useFilterStore((s) => s.setFilter);
   return (
     <CardContainer className="w-9/10">
       <h2 className="text-2xl leading-none font-serif">
         Recent Transactions
-        <Link href="/transactions?account=0">
+        <Link
+          href="/transactions"
+          onClick={() => {
+            setFilter("0");
+          }}
+        >
           <InlineIcon
             icon="material-symbols-light:arrow-right-alt-rounded"
             className="inline"

@@ -1,8 +1,9 @@
 "use client";
-import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { type Control, useForm, type UseFormWatch } from "react-hook-form";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { type Control, type UseFormWatch, useForm } from "react-hook-form";
 import { z } from "zod";
 import {
   Form,
@@ -13,9 +14,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { AccountsPicker } from "./AccountsPicker";
 import { DateTimePicker } from "./DateTimePicker";
-import { cn } from "@/lib/utils";
 
 export type FormTypes = z.infer<typeof FormSchema>;
 
@@ -24,16 +25,14 @@ export interface ControlType {
 }
 
 const FormSchema = z.object({
-  description: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
+  description: z.string().min(1, "What's the transaction?"),
   attachment: z.file().optional(),
-  amount: z.coerce.number(),
-  date: z.date(),
+  amount: z.transform(Number).pipe(z.number("Enter a number")),
+  date: z.date("Pick a date"),
   time: z.iso.time(),
   txnType: z.string().optional(),
-  debit: z.number(),
-  credit: z.number(),
+  debit: z.number("Oops, choose one."),
+  credit: z.number("Oops, choose one."),
 });
 
 const AmountInput = ({
@@ -75,7 +74,7 @@ const AttachmentInput = ({ control }: ControlType) => {
     <FormField
       control={control}
       name="attachment"
-      render={({ field }) => (
+      render={({ field: { ref, name, onBlur, onChange } }) => (
         <FormItem className="w-[85%]">
           <FormLabel className="px-1 text-lg font-semibold">
             Attachment
@@ -84,7 +83,12 @@ const AttachmentInput = ({ control }: ControlType) => {
             <Input
               type="file"
               className="h-10 pt-2 text-xs glass-shadow bg-white/50"
-              {...field}
+              ref={ref}
+              name={name}
+              onBlur={onBlur}
+              onChange={(e) => {
+                onChange(e.target.files?.[0]);
+              }}
             />
           </FormControl>
           <FormMessage />
@@ -119,6 +123,8 @@ const DescriptionInput = ({ control }: ControlType) => {
 };
 
 export const TransactionForm = () => {
+  const router = useRouter();
+
   const form = useForm<FormTypes>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -129,13 +135,19 @@ export const TransactionForm = () => {
       txnType: "income",
     },
   });
-  function onSubmit(data: FormTypes) {
+  const onSubmit = (data: FormTypes) => {
     console.log(JSON.stringify(data, null, 2));
-  }
+    router.back();
+  };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-8/10 space-y-4">
+      <form
+        onSubmit={(e) => {
+          form.handleSubmit(onSubmit)(e);
+        }}
+        className="w-8/10 space-y-4"
+      >
         <AccountsPicker control={form.control} reset={form.resetField} />
         <AmountInput control={form.control} watch={form.watch} />
         <DescriptionInput control={form.control} />

@@ -1,10 +1,18 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { Icon } from "@iconify/react";
 import { AccountsHomepage } from "@/components/AccountsList";
 import { CardContainer } from "@/components/CardContainer";
 import { RecentTransactions } from "@/components/TransactionsList";
 
-import * as accountsData from "@/data/accounts.json";
-import * as transactionsData from "@/data/transactions.json";
+import accountsDataJson from "@/data/accounts.json";
+import transactionsDataJson from "@/data/transactions.json";
+import type { Account } from "@/types/accounts";
+import type { Transaction } from "@/types/transaction";
+
+const accountsData = accountsDataJson as { accounts: Account[] };
+
+const transactionsData = transactionsDataJson as {
+  transactions: Transaction[];
+};
 
 const TopBar = () => {
   return (

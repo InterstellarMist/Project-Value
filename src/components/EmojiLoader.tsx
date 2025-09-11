@@ -1,4 +1,4 @@
-import { Icon, InlineIcon } from "@iconify/react/dist/iconify.js";
+import { Icon, InlineIcon } from "@iconify/react";
 import { accountNames } from "@/data/accounts";
 import { emojiList } from "@/data/emojis";
 import { cn } from "@/lib/utils";

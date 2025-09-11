@@ -1,9 +1,9 @@
 "use client";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { TransactionForm } from "@/components/TransactionForm";
 
-export const TopBar = () => {
+const TopBar = () => {
   const router = useRouter();
 
   return (

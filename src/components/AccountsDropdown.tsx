@@ -1,7 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
-import type { Dispatch, SetStateAction } from "react";
-
 import {
   Select,
   SelectContent,
@@ -9,28 +6,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useFilterStore } from "@/store/useFilterStore";
 import { AccountEmoji } from "./EmojiLoader";
 
-interface FilterProps {
-  filter: string;
-  setFilter: Dispatch<SetStateAction<string>>;
-}
-
-export const AccountsDropdown = ({ filter, setFilter }: FilterProps) => {
-  const router = useRouter();
-
-  const handleAccountChange = (newAccount: string) => {
-    router.replace(`/transactions?account=${newAccount}`);
-    setFilter(newAccount);
-  };
+const AccountsDropdown = () => {
+  const filter = useFilterStore((s) => s.filter);
+  const setFilter = useFilterStore((s) => s.setFilter);
 
   return (
-    <Select value={filter} onValueChange={handleAccountChange}>
+    <Select value={filter} onValueChange={setFilter}>
       <SelectTrigger className="border-0 bg-zinc-800 rounded-full text-white gap-3 point cursor-pointer">
         <AccountEmoji
           accountId={parseInt(filter, 10)}
-          height="1.5rem"
-          width="1.5rem"
+          height="1.5em"
+          width="1.5em"
         />
         <SelectValue placeholder="Account" />
       </SelectTrigger>
@@ -44,3 +33,5 @@ export const AccountsDropdown = ({ filter, setFilter }: FilterProps) => {
     </Select>
   );
 };
+
+export default AccountsDropdown;
