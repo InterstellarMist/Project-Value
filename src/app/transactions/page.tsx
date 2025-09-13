@@ -1,16 +1,10 @@
 "use client";
 import Image from "next/image";
-// import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import AccountsDropdown from "@/components/AccountsDropdown";
 import { TransactionsList } from "@/components/TransactionsList";
 import transactionsDataJson from "@/data/transactions.json";
 import type { Transaction } from "@/types/transaction";
-
-// const AccountsDropdown = dynamic(
-//   () => import("@/components/AccountsDropdown"),
-//   { ssr: false },
-// );
 
 const transactionsData = transactionsDataJson as {
   transactions: Transaction[];

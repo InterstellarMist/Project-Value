@@ -1,3 +1,5 @@
+"use client";
+import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import { AccountsHomepage } from "@/components/AccountsList";
 import { CardContainer } from "@/components/CardContainer";
@@ -7,6 +9,8 @@ import accountsDataJson from "@/data/accounts.json";
 import transactionsDataJson from "@/data/transactions.json";
 import type { Account } from "@/types/accounts";
 import type { Transaction } from "@/types/transaction";
+
+import { readAccounts, readTransactions } from "@/data/SQLData";
 
 const accountsData = accountsDataJson as { accounts: Account[] };
 
@@ -27,6 +31,13 @@ const TopBar = () => {
 };
 
 export default function Home() {
+  // const [data, setData] = useState(null);
+
+  useEffect(() => {
+    readTransactions().then(console.log);
+    readAccounts().then(console.log);
+  });
+
   return (
     <div className="min-h-screen">
       <TopBar />
