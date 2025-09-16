@@ -2,16 +2,15 @@ export type PostingType = "debit" | "credit";
 export type TxnType = "income" | "expense" | "transfer";
 
 export interface Posting {
-  accountId: number;
+  acctId: number;
   amount: number; // positive or negative
   currency: string;
 }
 export interface Transaction {
-  txnId: string;
-  type: TxnType;
-  postings: Posting[];
+  txnId: number;
+  txnType: TxnType;
   description: string;
-  time: string;
+  date: string;
   tags?: string;
   attachment?: string;
 }

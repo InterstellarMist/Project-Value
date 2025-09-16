@@ -1,7 +1,13 @@
 "use client";
 import { InlineIcon } from "@iconify/react";
 import Link from "next/link";
-import { accountNames } from "@/data/accounts";
+import useSWR from "swr";
+import {
+  getAccNames,
+  getAccTransactions,
+  getAllTransactions,
+  getTxnPostings,
+} from "@/data/SQLData";
 import { useFilterStore } from "@/store/useFilterStore";
 import type { Transaction } from "@/types/transaction";
 import { CardContainer } from "./CardContainer";
@@ -23,8 +29,8 @@ const datetimeFormatter = (time: string, isHome: boolean) => {
 
 // Render transactions by date
 const renderTransactionsByDate = (transactions: Transaction[]) => {
-  const grouped = Object.groupBy(transactions, ({ time }) =>
-    new Date(time).toLocaleDateString([], {
+  const grouped = Object.groupBy(transactions, ({ date }) =>
+    new Date(date).toLocaleDateString([], {
       month: "long",
       day: "numeric",
     }),
@@ -57,28 +63,37 @@ const renderTransactionsByDate = (transactions: Transaction[]) => {
 };
 
 export const TransactionEntry = ({
-  type,
-  postings,
+  txnId,
+  txnType,
   description,
-  time,
+  date,
   isHome = false,
 }: Transaction & { isHome?: boolean }) => {
-  const sortedPostings = postings.toSorted((a, b) => a.amount - b.amount);
+  const { data: accNames } = useSWR("/db/account/names", getAccNames);
+  const { data: postings, isLoading } = useSWR(
+    ["/db/posting", txnId],
+    getTxnPostings,
+  );
+
+  if (isLoading) return <p>Loading...</p>;
+  if (!postings) return <p>No data</p>;
 
   const left =
-    type === "income" || type === "transfer"
-      ? sortedPostings.at(0)
-      : sortedPostings.at(-1);
-  const right =
-    type === "expense" ? sortedPostings.at(0) : sortedPostings.at(-1);
+    txnType === "income" || txnType === "transfer"
+      ? postings.at(0)
+      : postings.at(-1);
+  const right = txnType === "expense" ? postings.at(0) : postings.at(-1);
 
   const amount = right?.amount ?? 0;
   const currency = right?.currency ?? "USD";
 
   return (
-    <div className="grid grid-rows-1 grid-cols-[12%_60%_28%] items-center">
+    <div
+      className="grid grid-rows-1 grid-cols-[12%_60%_28%] items-center"
+      key={txnId}
+    >
       <AccountEmojiWithText
-        accountId={left?.accountId ?? 1}
+        acctId={left?.acctId ?? 1}
         width="2em"
         height="2em"
         className="justify-self-start"
@@ -86,7 +101,7 @@ export const TransactionEntry = ({
       <div className="flex flex-col">
         <p className="text-lg leading-none">{description}</p>
         <p className="text-[0.5rem] font-light">
-          {datetimeFormatter(time, isHome)}
+          {datetimeFormatter(date, isHome)}
         </p>
       </div>
       <div className="flex flex-col">
@@ -103,10 +118,10 @@ export const TransactionEntry = ({
         </p>
         <div className="flex flex-row gap-0.5 justify-end items-center">
           <p className="text-[0.5rem] font-light align-top block">
-            {accountNames[right?.accountId ?? 1]}
+            {accNames ? accNames[right?.acctId ?? 1] : "All Accounts"}
           </p>
           <AccountEmoji
-            accountId={right?.accountId ?? 1}
+            acctId={right?.acctId ?? 1}
             inline
             width="1em"
             height="1em"
@@ -118,39 +133,34 @@ export const TransactionEntry = ({
   );
 };
 
-const filterTransaction = (transaction: Transaction, account: number) => {
-  if (account === 0) return true;
-  return transaction.postings.reduce((acc, posting) => {
-    return acc || posting.accountId === account;
-  }, false);
-};
-
-export const TransactionsList = ({
-  transactions,
-}: {
-  transactions: Transaction[];
-}) => {
+export const TransactionsList = () => {
   const filter = useFilterStore((s) => s.filter);
   const account = parseInt(filter, 10);
+  const { data: transactions, isLoading } = useSWR(
+    ["/db/transactions", account],
+    getAccTransactions,
+  );
+
+  if (isLoading) return <p>Loading...</p>;
+  if (!transactions) return <p>No data</p>;
+
   return (
     <div className="w-9/10 flex flex-col gap-4">
-      {renderTransactionsByDate(
-        transactions
-          .filter((transaction) => filterTransaction(transaction, account))
-          .toSorted(
-            (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
-          ),
-      )}
+      {renderTransactionsByDate(transactions)}
     </div>
   );
 };
 
-export const RecentTransactions = ({
-  transactions,
-}: {
-  transactions: Transaction[];
-}) => {
+export const RecentTransactions = () => {
   const setFilter = useFilterStore((s) => s.setFilter);
+  const { data: transactions, isLoading } = useSWR(
+    "/db/transactions",
+    getAllTransactions,
+  );
+
+  if (isLoading) return <p>Loading...</p>;
+  if (!transactions) return <p>No data</p>;
+
   return (
     <CardContainer className="w-9/10">
       <h2 className="text-2xl leading-none font-serif">
@@ -168,14 +178,9 @@ export const RecentTransactions = ({
         </Link>
       </h2>
       <div className="flex flex-col gap-1 mt-2">
-        {transactions
-          .slice(0, 5)
-          .toSorted(
-            (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime(),
-          )
-          .map((transaction) => (
-            <TransactionEntry key={transaction.txnId} {...transaction} isHome />
-          ))}
+        {transactions.slice(0, 5).map((transaction) => (
+          <TransactionEntry key={transaction.txnId} {...transaction} isHome />
+        ))}
       </div>
     </CardContainer>
   );

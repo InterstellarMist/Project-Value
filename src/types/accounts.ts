@@ -1,4 +1,4 @@
-export type AcctTypeSimple = "income" | "expense" | "account";
+export type AcctTypeSimple = "income" | "expenses" | "accounts";
 
 export type AcctTypeBase =
   | "assets"
@@ -9,12 +9,12 @@ export type AcctTypeBase =
   | "root";
 
 export interface Account {
-  accountId: number; // unique integer ID
-  name: string; // human-readable name (e.g., "Cash", "Food")
-  type: AcctTypeBase;
-  parentId?: number; // optional parent account ID (undefined for root accounts)
-  icon?: string; // optional icon reference
-  currency?: string; // e.g., "USD" (only relevant for asset/liability)
-  amount?: number; // balance (assets/liabilities only)
-  hidden?: boolean; // hide from UI (e.g., closed accounts)
+  acctId: number;
+  name: string;
+  acctType: AcctTypeBase;
+  parentId?: number;
+  icon: string;
+  currency?: string;
+  amount?: number; // TODO: remove
+  hidden?: boolean;
 }

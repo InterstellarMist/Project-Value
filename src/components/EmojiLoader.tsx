@@ -1,10 +1,10 @@
 import { Icon, InlineIcon } from "@iconify/react";
-import { accountNames } from "@/data/accounts";
-import { emojiList } from "@/data/emojis";
+import useSWR from "swr";
+import { getAccEmojis, getAccNames } from "@/data/SQLData";
 import { cn } from "@/lib/utils";
 
 interface EmojiTypes {
-  accountId: number;
+  acctId: number;
   inline?: boolean;
   width: string | number;
   height: string | number;
@@ -12,14 +12,15 @@ interface EmojiTypes {
 }
 
 export const AccountEmoji = ({
-  accountId,
+  acctId,
   inline,
   width = "2rem",
   height = "2rem",
   className,
 }: EmojiTypes) => {
-  const emoji = emojiList[accountId];
-  if (!emoji) return null;
+  const { data: emojiList } = useSWR("/db/account/emojis", getAccEmojis);
+  const emoji =
+    emojiList && acctId !== 0 ? emojiList[acctId] : "fluent-emoji-flat:eyes";
 
   return inline ? (
     <InlineIcon
@@ -34,16 +35,17 @@ export const AccountEmoji = ({
 };
 
 export const AccountEmojiWithText = ({
-  accountId,
+  acctId: accountId,
   textStyle,
   className,
   ...props
 }: EmojiTypes & { textStyle?: string }) => {
+  const { data: accNames } = useSWR("/db/account/names", getAccNames);
   return (
     <div className={cn("flex flex-col items-center", className)}>
-      <AccountEmoji accountId={accountId} {...props} />
+      <AccountEmoji acctId={accountId} {...props} />
       <p className={cn("text-[0.5rem] font-light text-center", textStyle)}>
-        {accountNames[accountId]}
+        {accNames ? accNames[accountId] : "All Accounts"}
       </p>
     </div>
   );

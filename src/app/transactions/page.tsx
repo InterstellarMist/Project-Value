@@ -3,12 +3,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import AccountsDropdown from "@/components/AccountsDropdown";
 import { TransactionsList } from "@/components/TransactionsList";
-import transactionsDataJson from "@/data/transactions.json";
-import type { Transaction } from "@/types/transaction";
-
-const transactionsData = transactionsDataJson as {
-  transactions: Transaction[];
-};
 
 const TopBar = () => {
   const router = useRouter();
@@ -40,7 +34,7 @@ export default function TransactionPage() {
       <TopBar />
       <div className="flex flex-col items-center justify-center gap-4 pb-24">
         <AccountsDropdown />
-        <TransactionsList {...transactionsData} />
+        <TransactionsList />
       </div>
     </div>
   );

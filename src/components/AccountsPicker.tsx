@@ -11,12 +11,10 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { accountNames } from "@/data/accounts";
-import { capitalize } from "@/lib/utils";
 import type { AcctTypeSimple } from "@/types/accounts";
 import type { PostingType } from "@/types/transaction";
 import { AccountCarousel } from "./AccountCarousel";
-import { AccountEmoji } from "./EmojiLoader";
+import { AccountEmojiWithText } from "./EmojiLoader";
 import type { ControlType, FormTypes } from "./TransactionForm";
 import {
   FormControl,
@@ -26,6 +24,12 @@ import {
   FormMessage,
 } from "./ui/form";
 
+const labels = {
+  income: "Income",
+  expenses: "Expense",
+  accounts: "Account",
+};
+
 const AccountSelectorField = ({
   accountId,
   className,
@@ -33,15 +37,17 @@ const AccountSelectorField = ({
 }: ComponentProps<"button"> & { accountId?: number }) => {
   return (
     <button
-      className="size-16 flex flex-col items-center justify-center gap-1 glass-shadow rounded-2xl"
+      className="size-16 flex flex-col items-center justify-center glass-shadow rounded-2xl"
       {...props}
     >
       {accountId && (
-        <AccountEmoji accountId={accountId} width={40} height={40} />
+        <AccountEmojiWithText
+          acctId={accountId}
+          width={40}
+          height={40}
+          className="gap-0"
+        />
       )}
-      <p className="text-[0.5rem] font-light text-center">
-        {accountId && accountNames[accountId]}
-      </p>
     </button>
   );
 };
@@ -70,12 +76,12 @@ const AccountsDrawer = ({
               </Button>
             </DrawerTrigger>
             <FormLabel className="text-lg text-center font-normal">
-              {capitalize(acctType)}
+              {labels[acctType]}
             </FormLabel>
             <DrawerContent>
               <DrawerHeader className="pt-2">
                 <DrawerTitle className="font-serif text-2xl font-normal">
-                  {capitalize(acctType)}
+                  {labels[acctType]}
                 </DrawerTitle>
                 <DrawerDescription>Select one</DrawerDescription>
               </DrawerHeader>
@@ -157,7 +163,7 @@ export const AccountsPicker = ({
               <AccountsDrawer
                 control={control}
                 postingType="debit"
-                acctType="account"
+                acctType="accounts"
               />
             </div>
           </TabsContent>
@@ -166,7 +172,7 @@ export const AccountsPicker = ({
               <AccountsDrawer
                 control={control}
                 postingType="credit"
-                acctType="account"
+                acctType="accounts"
               />
               <Image
                 src="long-arrow.svg"
@@ -178,7 +184,7 @@ export const AccountsPicker = ({
               <AccountsDrawer
                 control={control}
                 postingType="debit"
-                acctType="expense"
+                acctType="expenses"
               />
             </div>
           </TabsContent>
@@ -187,7 +193,7 @@ export const AccountsPicker = ({
               <AccountsDrawer
                 control={control}
                 postingType="credit"
-                acctType="account"
+                acctType="accounts"
               />
               <Image
                 src="long-arrow.svg"
@@ -199,7 +205,7 @@ export const AccountsPicker = ({
               <AccountsDrawer
                 control={control}
                 postingType="debit"
-                acctType="account"
+                acctType="accounts"
               />
             </div>
           </TabsContent>

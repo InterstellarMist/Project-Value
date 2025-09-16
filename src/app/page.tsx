@@ -1,22 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import { AccountsHomepage } from "@/components/AccountsList";
 import { CardContainer } from "@/components/CardContainer";
 import { RecentTransactions } from "@/components/TransactionsList";
-
-import accountsDataJson from "@/data/accounts.json";
-import transactionsDataJson from "@/data/transactions.json";
-import type { Account } from "@/types/accounts";
-import type { Transaction } from "@/types/transaction";
-
-import { readAccounts, readTransactions } from "@/data/SQLData";
-
-const accountsData = accountsDataJson as { accounts: Account[] };
-
-const transactionsData = transactionsDataJson as {
-  transactions: Transaction[];
-};
 
 const TopBar = () => {
   return (
@@ -31,13 +17,6 @@ const TopBar = () => {
 };
 
 export default function Home() {
-  // const [data, setData] = useState(null);
-
-  useEffect(() => {
-    readTransactions().then(console.log);
-    readAccounts().then(console.log);
-  });
-
   return (
     <div className="min-h-screen">
       <TopBar />
@@ -46,8 +25,8 @@ export default function Home() {
           <h2 className="text-2xl leading-none font-serif">Net Worth</h2>
           <h1 className="text-6xl text-center font-light">$5,680.29</h1>
         </CardContainer>
-        <AccountsHomepage {...accountsData} />
-        <RecentTransactions {...transactionsData} />
+        <AccountsHomepage />
+        <RecentTransactions />
       </div>
     </div>
   );

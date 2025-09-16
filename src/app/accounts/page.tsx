@@ -2,12 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AccountsList } from "@/components/AccountsList";
-
-import accountsDataJson from "@/data/accounts.json";
 import { useFilterStore } from "@/store/useFilterStore";
-import type { Account } from "@/types/accounts";
-
-const accountsData = accountsDataJson as { accounts: Account[] };
 
 const TopBar = () => {
   const setFilter = useFilterStore((s) => s.setFilter);
@@ -54,7 +49,7 @@ export default function AccountsPage() {
             <p className="text-lg leading-none">$5,680.29</p>
           </div>
         </div>
-        <AccountsList {...accountsData} />
+        <AccountsList />
       </div>
     </div>
   );

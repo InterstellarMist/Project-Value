@@ -17,7 +17,7 @@ const AccountsDropdown = () => {
     <Select value={filter} onValueChange={setFilter}>
       <SelectTrigger className="border-0 bg-zinc-800 rounded-full text-white gap-3 point cursor-pointer">
         <AccountEmoji
-          accountId={parseInt(filter, 10)}
+          acctId={parseInt(filter, 10)}
           height="1.5em"
           width="1.5em"
         />

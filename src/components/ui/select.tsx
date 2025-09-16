@@ -45,7 +45,13 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <Image src="down.svg" alt="down" className="h-2 w-4 text-white" />
+        <Image
+          src="down.svg"
+          alt="down"
+          width={16}
+          height={8}
+          className="text-white"
+        />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
