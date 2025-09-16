@@ -8,3 +8,10 @@ export function cn(...inputs: ClassValue[]) {
 export function capitalize(word: string) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
+
+export function dateTimeMerge(date: Date, time: string) {
+  const [hours, minutes] = time.split(":").map(Number);
+  const merged = new Date(date);
+  merged.setHours(hours, minutes);
+  return merged.toISOString();
+}

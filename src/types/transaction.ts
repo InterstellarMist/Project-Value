@@ -12,5 +12,20 @@ export interface Transaction {
   description: string;
   date: string;
   tags?: string;
-  attachment?: string;
+  attachment?: File;
+}
+
+export interface AddTransaction {
+  txnType: TxnType;
+  description: string;
+  date: string;
+  tags?: string;
+  attachment?: File;
+}
+
+export interface AddPosting {
+  debit: number;
+  credit: number;
+  amount: number;
+  currency: string;
 }

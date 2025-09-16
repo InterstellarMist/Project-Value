@@ -1,6 +1,11 @@
 import Database from "@tauri-apps/plugin-sql";
 import type { Account, AcctTypeBase, AcctTypeSimple } from "@/types/accounts";
-import type { Posting, Transaction } from "@/types/transaction";
+import type {
+  Posting,
+  AddTransaction,
+  TxnType,
+  AddPosting,
+} from "@/types/transaction";
 
 interface EmojiEntry {
   acctId: string;
@@ -12,7 +17,13 @@ interface AccountName {
   name: string;
 }
 
+interface TxnTypeTable {
+  txnTypeId: number;
+  txnType: TxnType;
+}
+
 let db: Database | null = null;
+let txnTypeRef: Record<TxnType, number> | null = null;
 
 const loadDb = async () => {
   if (!db) {
@@ -21,6 +32,25 @@ const loadDb = async () => {
   return db;
 };
 
+// ========================= INITIALIZE REFERENCE TABLES ===========================================
+
+// Lazy loads an object mapping of (TxnType) -> (TxnTypeId)
+export const getTxnTypeRef = async (): Promise<Record<string, number>> => {
+  if (!txnTypeRef) {
+    db = await loadDb();
+    const data: TxnTypeTable[] = await db.select(
+      "SELECT txnTypeId,txnType FROM txnType",
+    );
+    txnTypeRef = Object.fromEntries(
+      data.map((row) => [row.txnType, row.txnTypeId]),
+    ) as Record<TxnType, number>;
+  }
+  return txnTypeRef;
+};
+
+// ============================== READ METHODS =====================================================
+
+// Returns all transaction data
 export const getAllTransactions = async (): Promise<Transaction[]> => {
   db = await loadDb();
   return await db.select(
@@ -29,6 +59,7 @@ export const getAllTransactions = async (): Promise<Transaction[]> => {
   );
 };
 
+// Returns transaction data related to a single account
 export const getAccTransactions = async ([_, acctId]: [
   string,
   number,
@@ -49,6 +80,7 @@ export const getAccTransactions = async ([_, acctId]: [
   );
 };
 
+// Returns postings data of the specified transaction
 export const getTxnPostings = async ([_, txnId]: [string, number]): Promise<
   Posting[]
 > => {
@@ -60,6 +92,7 @@ export const getTxnPostings = async ([_, txnId]: [string, number]): Promise<
   );
 };
 
+// Returns an object mapping of (AccountId) -> (Emoji Icon)
 export const getAccEmojis = async (): Promise<Record<string, string>> => {
   db = await loadDb();
   const emojiList: EmojiEntry[] = await db.select(
@@ -68,6 +101,7 @@ export const getAccEmojis = async (): Promise<Record<string, string>> => {
   return Object.fromEntries(emojiList.map((row) => [row.acctId, row.icon]));
 };
 
+// Returns an object mapping of (AccountId) -> (Account Name)
 export const getAccNames = async (): Promise<Record<string, string>> => {
   db = await loadDb();
   const accNames: AccountName[] = await db.select(
@@ -76,6 +110,7 @@ export const getAccNames = async (): Promise<Record<string, string>> => {
   return Object.fromEntries(accNames.map((row) => [row.acctId, row.name]));
 };
 
+// Returns all account data
 export const getAllAccounts = async (): Promise<Account[]> => {
   db = await loadDb();
   return db.select(
@@ -84,6 +119,7 @@ export const getAllAccounts = async (): Promise<Account[]> => {
   );
 };
 
+// Returns account data of the specified account type (acctType)
 export const getAccountType = async ([_, acctType]: [
   string,
   AcctTypeBase,
@@ -97,6 +133,7 @@ export const getAccountType = async ([_, acctType]: [
   );
 };
 
+// Returns a list of accounts based on a simplified account type ("income","expenses","accounts")
 export const getAccountIdSimple = async ([_, acctType]: [
   string,
   AcctTypeSimple,
@@ -120,7 +157,58 @@ export const getAccountIdSimple = async ([_, acctType]: [
   return data.map((acc) => acc.acctId);
 };
 
-// export const readTransactions = async () => {
-//   const db = await Database.load("sqlite:data.db");
-//   return await db.execute("SELECT * FROM transactions");
-// };
+// ============================== CREATE METHODS ===================================================
+
+// TODO: support multiple postings
+const createPostings = (postingData: AddPosting) => {
+  postingData.credit;
+  const post1: Posting = {
+    acctId: postingData.credit,
+    amount: -postingData.amount,
+    currency: postingData.currency,
+  };
+  const post2: Posting = {
+    acctId: postingData.debit,
+    amount: postingData.amount,
+    currency: postingData.currency,
+  };
+  return [post1, post2];
+};
+
+// TODO: proper file attachment
+export const addTransaction = async (
+  txnData: AddTransaction,
+  postingData: AddPosting,
+) => {
+  txnTypeRef = await getTxnTypeRef();
+  db = await loadDb();
+
+  const result = [];
+  const posts = createPostings(postingData);
+
+  const res = await db.execute(
+    `INSERT INTO transactions (txnTypeId,description,date,tags,attachment)
+    VALUES ($1,$2,$3,$4,$5) `,
+    [
+      txnTypeRef[txnData.txnType],
+      txnData.description,
+      txnData.date,
+      txnData.tags,
+      txnData.attachment,
+    ],
+  );
+
+  result.push(res);
+
+  for (const post of posts) {
+    result.push(
+      await db.execute(
+        `INSERT INTO postings (txnId,acctId,amount,currency)
+      VALUES ($1,$2,$3,$4)`,
+        [res.lastInsertId, post.acctId, post.amount, post.currency],
+      ),
+    );
+  }
+  console.log(result);
+  return result;
+};

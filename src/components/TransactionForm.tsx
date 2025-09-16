@@ -14,9 +14,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { cn, dateTimeMerge } from "@/lib/utils";
 import { AccountsPicker } from "./AccountsPicker";
 import { DateTimePicker } from "./DateTimePicker";
+import { addTransaction } from "@/data/SQLData";
+import { startOfToday } from "date-fns";
 
 export type FormTypes = z.infer<typeof FormSchema>;
 
@@ -26,11 +28,12 @@ export interface ControlType {
 
 const FormSchema = z.object({
   description: z.string().min(1, "What's the transaction?"),
+  tags: z.string().optional(),
   attachment: z.file().optional(),
   amount: z.transform(Number).pipe(z.number("Enter a number")),
   date: z.date("Pick a date"),
   time: z.iso.time(),
-  txnType: z.string().optional(),
+  txnType: z.literal(["income", "expense", "transfer"]),
   debit: z.number("Oops, choose one."),
   credit: z.number("Oops, choose one."),
 });
@@ -131,13 +134,29 @@ export const TransactionForm = () => {
       description: "",
       amount: 0,
       time: format(Date.now(), "HH:mm"),
-      date: new Date(),
+      date: startOfToday(),
       txnType: "income",
     },
   });
-  const onSubmit = (data: FormTypes) => {
+  const onSubmit = async (data: FormTypes) => {
     console.log(JSON.stringify(data, null, 2));
     router.back();
+    await addTransaction(
+      {
+        txnType: data.txnType,
+        description: data.description,
+        date: dateTimeMerge(data.date, data.time),
+        tags: data.tags,
+        attachment: data.attachment,
+      },
+      {
+        debit: data.debit,
+        credit: data.credit,
+        amount: data.amount,
+        currency: "USD",
+        // TODO: fix currency selection
+      },
+    );
   };
 
   return (
