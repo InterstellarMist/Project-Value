@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { format, startOfDay } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -14,4 +15,11 @@ export function dateTimeMerge(date: Date, time: string) {
   const merged = new Date(date);
   merged.setHours(hours, minutes);
   return merged.toISOString();
+}
+
+export function dateTimeSplit(datetime: string) {
+  const dateObj = new Date(datetime);
+  const date = startOfDay(dateObj);
+  const time = format(dateObj, "HH:mm");
+  return { date, time };
 }

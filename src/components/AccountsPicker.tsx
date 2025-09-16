@@ -34,7 +34,7 @@ const AccountSelectorField = ({
   accountId,
   className,
   ...props
-}: ComponentProps<"button"> & { accountId?: number }) => {
+}: ComponentProps<"button"> & { accountId?: number | null }) => {
   return (
     <button
       className="size-16 flex flex-col items-center justify-center glass-shadow rounded-2xl"

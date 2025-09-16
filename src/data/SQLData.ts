@@ -1,10 +1,12 @@
 import Database from "@tauri-apps/plugin-sql";
 import type { Account, AcctTypeBase, AcctTypeSimple } from "@/types/accounts";
 import type {
-  Posting,
-  AddTransaction,
-  TxnType,
   AddPosting,
+  AddTransaction,
+  Posting,
+  PostingFull,
+  Transaction,
+  TxnType,
 } from "@/types/transaction";
 
 interface EmojiEntry {
@@ -32,7 +34,7 @@ const loadDb = async () => {
   return db;
 };
 
-// ========================= INITIALIZE REFERENCE TABLES ===========================================
+// ====================== INITIALIZE REFERENCE TABLES =============================
 
 // Lazy loads an object mapping of (TxnType) -> (TxnTypeId)
 export const getTxnTypeRef = async (): Promise<Record<string, number>> => {
@@ -48,7 +50,7 @@ export const getTxnTypeRef = async (): Promise<Record<string, number>> => {
   return txnTypeRef;
 };
 
-// ============================== READ METHODS =====================================================
+// ============================== READ METHODS ====================================
 
 // Returns all transaction data
 export const getAllTransactions = async (): Promise<Transaction[]> => {
@@ -82,11 +84,11 @@ export const getAccTransactions = async ([_, acctId]: [
 
 // Returns postings data of the specified transaction
 export const getTxnPostings = async ([_, txnId]: [string, number]): Promise<
-  Posting[]
+  PostingFull[]
 > => {
   db = await loadDb();
   return await db.select(
-    `SELECT acctId,amount,currency
+    `SELECT postingId,acctId,amount,currency
     FROM postings WHERE txnId = $1 ORDER BY amount ASC`,
     [txnId],
   );
@@ -157,11 +159,10 @@ export const getAccountIdSimple = async ([_, acctType]: [
   return data.map((acc) => acc.acctId);
 };
 
-// ============================== CREATE METHODS ===================================================
+// ============================== CREATE METHODS =================================
 
 // TODO: support multiple postings
 const createPostings = (postingData: AddPosting) => {
-  postingData.credit;
   const post1: Posting = {
     acctId: postingData.credit,
     amount: -postingData.amount,
@@ -211,4 +212,63 @@ export const addTransaction = async (
   }
   console.log(result);
   return result;
+};
+
+// ============================== UPDATE METHODS =================================
+
+// TODO: proper file attachment
+export const editTransaction = async (
+  txnId: number,
+  postingIds: number[],
+  txnData: AddTransaction,
+  postingData: AddPosting,
+) => {
+  txnTypeRef = await getTxnTypeRef();
+  db = await loadDb();
+
+  const result = [];
+  const posts = createPostings(postingData);
+
+  const res = await db.execute(
+    `UPDATE transactions 
+    SET txnTypeId = $1, description = $2,
+        date = $3, tags = $4, attachment = $5
+    WHERE txnId = $6`,
+    [
+      txnTypeRef[txnData.txnType],
+      txnData.description,
+      txnData.date,
+      txnData.tags,
+      txnData.attachment,
+      txnId,
+    ],
+  );
+
+  result.push(res);
+
+  for (const [key, post] of posts.entries()) {
+    result.push(
+      await db.execute(
+        `UPDATE postings
+        SET txnId =$1, acctId = $2, amount = $3, currency = $4
+        WHERE postingId = $5`,
+        [txnId, post.acctId, post.amount, post.currency, postingIds[key]],
+      ),
+    );
+  }
+  console.log(result);
+  return result;
+};
+
+// ============================== DELETE METHODS =================================
+
+export const deleteTransaction = async (txnId: number) => {
+  db = await loadDb();
+  const res = await db.execute(
+    `DELETE FROM transactions 
+    WHERE txnId = $1`,
+    [txnId],
+  );
+  console.log(res);
+  return res;
 };

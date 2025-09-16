@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
+import { format, startOfToday } from "date-fns";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { type Control, type UseFormWatch, useForm } from "react-hook-form";
@@ -14,13 +14,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { cn, dateTimeMerge } from "@/lib/utils";
+import {
+  addTransaction,
+  deleteTransaction,
+  editTransaction,
+} from "@/data/SQLData";
+import { cn, dateTimeMerge, dateTimeSplit } from "@/lib/utils";
+import { useTxnStore } from "@/store/useTxnStore";
+import type { AddPosting, AddTransaction } from "@/types/transaction";
 import { AccountsPicker } from "./AccountsPicker";
 import { DateTimePicker } from "./DateTimePicker";
-import { addTransaction } from "@/data/SQLData";
-import { startOfToday } from "date-fns";
+import { Button } from "./ui/button";
+import { Archive } from "lucide-react";
 
 export type FormTypes = z.infer<typeof FormSchema>;
+
+type FormDefaults = Omit<FormTypes, "debit" | "credit"> & {
+  debit: number | undefined;
+  credit: number | undefined;
+};
 
 export interface ControlType {
   control: Control<FormTypes>;
@@ -28,8 +40,8 @@ export interface ControlType {
 
 const FormSchema = z.object({
   description: z.string().min(1, "What's the transaction?"),
-  tags: z.string().optional(),
-  attachment: z.file().optional(),
+  tags: z.string().optional().nullable(),
+  attachment: z.file().optional().nullable(),
   amount: z.transform(Number).pipe(z.number("Enter a number")),
   date: z.date("Pick a date"),
   time: z.iso.time(),
@@ -125,23 +137,58 @@ const DescriptionInput = ({ control }: ControlType) => {
   );
 };
 
-export const TransactionForm = () => {
+// get selected transaction from store
+const editTxValues = () => {
+  const txSelected = useTxnStore((s) => s.txnSelected);
+  let credit: number = 0,
+    debit: number = 0;
+
+  const { txnId, date, ...values } = txSelected.transaction;
+  const amount = Math.abs(txSelected.postings[0].amount);
+  const postingIds = txSelected.postings.map((post) => post.postingId);
+
+  if (txSelected.postings?.[0].amount < 0) {
+    [credit, debit] = txSelected.postings.map((post) => post.acctId);
+  } else if (txSelected.postings?.[0].amount > 0) {
+    [debit, credit] = txSelected.postings.map((post) => post.acctId);
+  }
+
+  const txValues = {
+    ...values,
+    ...dateTimeSplit(date),
+    amount: amount,
+    credit: credit,
+    debit: debit,
+  };
+  return { txnId, postingIds, txValues };
+};
+
+export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
   const router = useRouter();
+
+  const { txnId, postingIds, txValues } = editTxValues();
+
+  const defaultValues: FormDefaults = isEdit
+    ? txValues
+    : {
+        description: "",
+        amount: 0,
+        time: format(Date.now(), "HH:mm"),
+        date: startOfToday(),
+        txnType: "expense",
+        credit: undefined,
+        debit: undefined,
+      };
 
   const form = useForm<FormTypes>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      description: "",
-      amount: 0,
-      time: format(Date.now(), "HH:mm"),
-      date: startOfToday(),
-      txnType: "income",
-    },
+    defaultValues: defaultValues,
   });
   const onSubmit = async (data: FormTypes) => {
     console.log(JSON.stringify(data, null, 2));
     router.back();
-    await addTransaction(
+
+    const formattedData: [AddTransaction, AddPosting] = [
       {
         txnType: data.txnType,
         description: data.description,
@@ -156,17 +203,24 @@ export const TransactionForm = () => {
         currency: "USD",
         // TODO: fix currency selection
       },
-    );
+    ];
+    if (isEdit) {
+      await editTransaction(txnId, postingIds, ...formattedData);
+    } else {
+      await addTransaction(...formattedData);
+    }
+  };
+
+  const onDelete = () => {
+    console.log("Delete", txnId);
+    deleteTransaction(txnId);
+    router.back();
+    return;
   };
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={(e) => {
-          form.handleSubmit(onSubmit)(e);
-        }}
-        className="w-8/10 space-y-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-8/10 space-y-4">
         <AccountsPicker control={form.control} reset={form.resetField} />
         <AmountInput control={form.control} watch={form.watch} />
         <DescriptionInput control={form.control} />
@@ -176,6 +230,16 @@ export const TransactionForm = () => {
           <Image src="check.svg" alt="filter" width={32} height={32} />
         </button>
       </form>
+      {isEdit && (
+        <Button
+          variant="destructive"
+          className="font-normal h-8"
+          onClick={onDelete}
+        >
+          <Archive />
+          Archive
+        </Button>
+      )}
     </Form>
   );
 };

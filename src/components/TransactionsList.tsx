@@ -9,6 +9,7 @@ import {
   getTxnPostings,
 } from "@/data/SQLData";
 import { useFilterStore } from "@/store/useFilterStore";
+import { useTxnStore } from "@/store/useTxnStore";
 import type { Transaction } from "@/types/transaction";
 import { CardContainer } from "./CardContainer";
 import { AccountEmoji, AccountEmojiWithText } from "./EmojiLoader";
@@ -63,17 +64,19 @@ const renderTransactionsByDate = (transactions: Transaction[]) => {
 };
 
 export const TransactionEntry = ({
-  txnId,
-  txnType,
-  description,
-  date,
   isHome = false,
+  ...transaction
 }: Transaction & { isHome?: boolean }) => {
+  const { txnId, txnType, description, date } = transaction;
+  // Fetch data from db
   const { data: accNames } = useSWR("/db/account/names", getAccNames);
   const { data: postings, isLoading } = useSWR(
     ["/db/posting", txnId],
     getTxnPostings,
   );
+
+  // Transaction store
+  const setTxnSelected = useTxnStore((s) => s.setTxnSelected);
 
   if (isLoading) return <p>Loading...</p>;
   if (!postings) return <p>No data</p>;
@@ -88,48 +91,58 @@ export const TransactionEntry = ({
   const currency = right?.currency ?? "USD";
 
   return (
-    <div
-      className="grid grid-rows-1 grid-cols-[12%_60%_28%] items-center"
-      key={txnId}
+    <Link
+      href="/edit-transaction"
+      onClick={() => {
+        setTxnSelected({
+          transaction: transaction,
+          postings: postings,
+        });
+      }}
     >
-      <AccountEmojiWithText
-        acctId={left?.acctId ?? 1}
-        width="2em"
-        height="2em"
-        className="justify-self-start"
-      />
-      <div className="flex flex-col">
-        <p className="text-lg leading-none">{description}</p>
-        <p className="text-[0.5rem] font-light">
-          {datetimeFormatter(date, isHome)}
-        </p>
-      </div>
-      <div className="flex flex-col">
-        <p
-          className={`text-lg leading-none ${
-            amount < 0 ? "text-red-500" : "text-green-500"
-          } text-right`}
-        >
-          {amount > 0 ? "+" : ""}
-          {new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: currency,
-          }).format(amount)}
-        </p>
-        <div className="flex flex-row gap-0.5 justify-end items-center">
-          <p className="text-[0.5rem] font-light align-top block">
-            {accNames ? accNames[right?.acctId ?? 1] : "All Accounts"}
+      <div
+        className="grid grid-rows-1 grid-cols-[12%_60%_28%] items-center"
+        key={txnId}
+      >
+        <AccountEmojiWithText
+          acctId={left?.acctId ?? 1}
+          width="2em"
+          height="2em"
+          className="justify-self-start"
+        />
+        <div className="flex flex-col">
+          <p className="text-lg leading-none">{description}</p>
+          <p className="text-[0.5rem] font-light">
+            {datetimeFormatter(date, isHome)}
           </p>
-          <AccountEmoji
-            acctId={right?.acctId ?? 1}
-            inline
-            width="1em"
-            height="1em"
-            className="inline"
-          />
+        </div>
+        <div className="flex flex-col">
+          <p
+            className={`text-lg leading-none ${
+              amount < 0 ? "text-red-500" : "text-green-500"
+            } text-right`}
+          >
+            {amount > 0 ? "+" : ""}
+            {new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: currency,
+            }).format(amount)}
+          </p>
+          <div className="flex flex-row gap-0.5 justify-end items-center">
+            <p className="text-[0.5rem] font-light align-top block">
+              {accNames ? accNames[right?.acctId ?? 1] : "All Accounts"}
+            </p>
+            <AccountEmoji
+              acctId={right?.acctId ?? 1}
+              inline
+              width="1em"
+              height="1em"
+              className="inline"
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
