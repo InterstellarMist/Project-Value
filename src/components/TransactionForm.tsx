@@ -1,6 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format, startOfToday } from "date-fns";
+import { Archive } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { type Control, type UseFormWatch, useForm } from "react-hook-form";
@@ -20,12 +21,11 @@ import {
   editTransaction,
 } from "@/data/SQLData";
 import { cn, dateTimeMerge, dateTimeSplit } from "@/lib/utils";
-import { TxnSelected, useTxnStore } from "@/store/useTxnStore";
+import { useTxnStore } from "@/store/useTxnStore";
 import type { AddPosting, AddTransaction } from "@/types/transaction";
 import { AccountsPicker } from "./AccountsPicker";
 import { DateTimePicker } from "./DateTimePicker";
 import { Button } from "./ui/button";
-import { Archive } from "lucide-react";
 
 export type FormTypes = z.infer<typeof FormSchema>;
 

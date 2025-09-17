@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { PostingFull, Transaction } from "@/types/transaction";
 
-export interface TxnSelected {
+interface TxnSelected {
   transaction: Transaction;
   postings: PostingFull[];
 }

@@ -1,4 +1,11 @@
 import Database from "@tauri-apps/plugin-sql";
+import type {
+  AccountName,
+  BalanceSheet,
+  BalanceSummary,
+  EmojiEntry,
+  TxnTypeTable,
+} from "@/data/dbTypes";
 import type { Account, AcctTypeBase, AcctTypeSimple } from "@/types/accounts";
 import type {
   AddPosting,
@@ -9,37 +16,12 @@ import type {
   TxnType,
 } from "@/types/transaction";
 
-interface EmojiEntry {
-  acctId: string;
-  icon: string;
-}
-
-interface AccountName {
-  acctId: string;
-  name: string;
-}
-
-interface TxnTypeTable {
-  txnTypeId: number;
-  txnType: TxnType;
-}
-
-interface BalanceSheet {
-  acctId: number;
-  balance: number;
-}
-
-interface BalanceSummary {
-  acctType: AcctTypeBase;
-  balance: number;
-}
-
 let db: Database | null = null;
 let txnTypeRef: Record<TxnType, number> | null = null;
 
 const loadDb = async () => {
   if (!db) {
-    db = await Database.load("sqlite:data.db");
+    db = await Database.load("sqlite:app.db");
   }
   return db;
 };

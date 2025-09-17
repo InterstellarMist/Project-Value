@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { AccountsList, AccountSummary } from "@/components/AccountsList";
+import { AccountSummary, AccountsList } from "@/components/AccountsList";
 import { useFilterStore } from "@/store/useFilterStore";
 
 const TopBar = () => {

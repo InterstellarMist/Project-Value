@@ -99,7 +99,7 @@ const AccountCard = ({ acctId, name, currency }: Account) => {
           {new Intl.NumberFormat("en-US", {
             style: "currency",
             currency: currency,
-          }).format(Math.abs(balances[acctId]) ?? 0)}
+          }).format(Math.abs(balances[acctId] ?? 0))}
         </p>
       </CardContainer>
     </Link>

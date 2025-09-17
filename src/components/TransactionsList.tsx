@@ -52,7 +52,10 @@ const renderTransactionsByDate = (transactions: Transaction[]) => {
           <h3 className="text-lg font-semibold text-center mb-2">{date}</h3>
           <div className="flex flex-col gap-4">
             {transactions?.map((transaction) => (
-              <CardContainer key={transaction.txnId} className="py-2 px-3">
+              <CardContainer
+                key={transaction.txnId}
+                className="flex flex-col w-full h-16 py-0 px-3 justify-center"
+              >
                 <TransactionEntry {...transaction} />
               </CardContainer>
             ))}
@@ -100,23 +103,21 @@ export const TransactionEntry = ({
         });
       }}
     >
-      <div
-        className="grid grid-rows-1 grid-cols-[12%_60%_28%] items-center"
-        key={txnId}
-      >
+      <div className="flex items-center w-full" key={txnId}>
         <AccountEmojiWithText
           acctId={left?.acctId ?? 1}
           width="2em"
           height="2em"
-          className="justify-self-start"
+          className="flex-none w-10 mr-2"
+          textStyle="max-w-full overflow-hidden leading-2"
         />
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-auto">
           <p className="text-lg leading-none">{description}</p>
           <p className="text-[0.5rem] font-light">
             {datetimeFormatter(date, isHome)}
           </p>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-none">
           <p
             className={`text-lg leading-none ${
               amount < 0 ? "text-red-500" : "text-green-500"
