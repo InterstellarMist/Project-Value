@@ -15,6 +15,5 @@ export interface Account {
   parentId?: number;
   icon: string;
   currency?: string;
-  amount?: number; // TODO: remove
   hidden?: boolean;
 }

@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { AccountsList } from "@/components/AccountsList";
+import { AccountsList, AccountSummary } from "@/components/AccountsList";
 import { useFilterStore } from "@/store/useFilterStore";
 
 const TopBar = () => {
@@ -35,20 +35,7 @@ export default function AccountsPage() {
     <div>
       <TopBar />
       <div className="flex flex-col gap-2 items-center">
-        <div className="w-9/10 h-16 flex justify-space-between gap-2">
-          <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-green-400 text-white rounded-2xl">
-            <p className="text-xs font-bold leading-none">Assets</p>
-            <p className="text-lg leading-none">$5,980.28</p>
-          </div>
-          <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-red-400 text-white rounded-2xl">
-            <p className="text-xs font-bold leading-none">Liabilities</p>
-            <p className="text-lg leading-none">$299.99</p>
-          </div>
-          <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-zinc-800 text-white rounded-2xl">
-            <p className="text-xs font-bold leading-none">Net Worth</p>
-            <p className="text-lg leading-none">$5,680.29</p>
-          </div>
-        </div>
+        <AccountSummary />
         <AccountsList />
       </div>
     </div>

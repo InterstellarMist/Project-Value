@@ -24,6 +24,16 @@ interface TxnTypeTable {
   txnType: TxnType;
 }
 
+interface BalanceSheet {
+  acctId: number;
+  balance: number;
+}
+
+interface BalanceSummary {
+  acctType: AcctTypeBase;
+  balance: number;
+}
+
 let db: Database | null = null;
 let txnTypeRef: Record<TxnType, number> | null = null;
 
@@ -157,6 +167,62 @@ export const getAccountIdSimple = async ([_, acctType]: [
     );
   }
   return data.map((acc) => acc.acctId);
+};
+
+// =================== BALANCE METHODS =========================
+
+// Returns balance for all accounts [TRIAL BALANCE]
+export const getTrialBalance = async () => {
+  db = await loadDb();
+  return await db.select(
+    `SELECT acctId, SUM(amount) FROM postings
+    GROUP BY acctId`,
+  );
+};
+
+// Returns balance for each asset and liability [BALANCE SHEET]
+export const getBalanceSheet = async (): Promise<Record<number, number>> => {
+  db = await loadDb();
+  const balances: BalanceSheet[] = await db.select(
+    `SELECT p.acctId, SUM(amount) balance
+    FROM postings p
+    JOIN accounts a ON a.acctId = p.acctId 
+    JOIN acctType t ON t.acctTypeId = a.acctTypeId 
+    WHERE t.acctType IN ("liabilities","assets")
+    GROUP BY p.acctId `,
+  );
+  return Object.fromEntries(balances.map((row) => [row.acctId, row.balance]));
+};
+
+// Returns balance summary for assets and liabilities [BALANCE SHEET SUMMARY]
+export const getBalanceSummary = async (): Promise<
+  Record<AcctTypeBase, number>
+> => {
+  db = await loadDb();
+  const balances: BalanceSummary[] = await db.select(
+    `SELECT t.acctType , SUM(amount) balance
+    FROM postings p
+    JOIN accounts a ON a.acctId = p.acctId 
+    JOIN acctType t ON t.acctTypeId = a.acctTypeId 
+    WHERE t.acctType IN ("liabilities","assets")
+    GROUP BY t.acctType`,
+  );
+  return Object.fromEntries(
+    balances.map((row) => [row.acctType, row.balance]),
+  ) as Record<AcctTypeBase, number>;
+};
+
+// Returns balance for a given account
+export const getAccBalance = async ([_, acctId]: [
+  string,
+  number,
+]): Promise<number> => {
+  db = await loadDb();
+  return await db.select(
+    `SELECT SUM(amount) FROM postings
+    WHERE acctId = $1`,
+    [acctId],
+  );
 };
 
 // ============================== CREATE METHODS =================================

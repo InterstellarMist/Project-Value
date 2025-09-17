@@ -20,7 +20,7 @@ import {
   editTransaction,
 } from "@/data/SQLData";
 import { cn, dateTimeMerge, dateTimeSplit } from "@/lib/utils";
-import { useTxnStore } from "@/store/useTxnStore";
+import { TxnSelected, useTxnStore } from "@/store/useTxnStore";
 import type { AddPosting, AddTransaction } from "@/types/transaction";
 import { AccountsPicker } from "./AccountsPicker";
 import { DateTimePicker } from "./DateTimePicker";
@@ -139,18 +139,18 @@ const DescriptionInput = ({ control }: ControlType) => {
 
 // get selected transaction from store
 const editTxValues = () => {
-  const txSelected = useTxnStore((s) => s.txnSelected);
+  const txnSelected = useTxnStore((s) => s.txnSelected);
   let credit: number = 0,
     debit: number = 0;
 
-  const { txnId, date, ...values } = txSelected.transaction;
-  const amount = Math.abs(txSelected.postings[0].amount);
-  const postingIds = txSelected.postings.map((post) => post.postingId);
+  const { txnId, date, ...values } = txnSelected.transaction;
+  const amount = Math.abs(txnSelected.postings[0].amount);
+  const postingIds = txnSelected.postings.map((post) => post.postingId);
 
-  if (txSelected.postings?.[0].amount < 0) {
-    [credit, debit] = txSelected.postings.map((post) => post.acctId);
-  } else if (txSelected.postings?.[0].amount > 0) {
-    [debit, credit] = txSelected.postings.map((post) => post.acctId);
+  if (txnSelected.postings?.[0].amount < 0) {
+    [credit, debit] = txnSelected.postings.map((post) => post.acctId);
+  } else if (txnSelected.postings?.[0].amount > 0) {
+    [debit, credit] = txnSelected.postings.map((post) => post.acctId);
   }
 
   const txValues = {
@@ -165,9 +165,7 @@ const editTxValues = () => {
 
 export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
   const router = useRouter();
-
   const { txnId, postingIds, txValues } = editTxValues();
-
   const defaultValues: FormDefaults = isEdit
     ? txValues
     : {
