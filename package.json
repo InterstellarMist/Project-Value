@@ -12,7 +12,8 @@
     "format": "biome format --write",
     "fix": "biome check --fix",
     "test": "vitest",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "android-dev": "tauri android dev"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

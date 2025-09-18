@@ -63,7 +63,7 @@ export const AccountSummary = () => {
           {new Intl.NumberFormat("en-US", {
             style: "currency",
             currency: "USD",
-          }).format(Math.abs(liabilities))}
+          }).format(-liabilities)}
         </p>
       </div>
       <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-zinc-800 text-white rounded-2xl">
@@ -79,12 +79,17 @@ export const AccountSummary = () => {
   );
 };
 
-const AccountCard = ({ acctId, name, currency }: Account) => {
+const AccountCard = ({ acctId, acctType, name, currency }: Account) => {
   const setFilter = useFilterStore((s) => s.setFilter);
   const { data: balances, isLoading } = useSWR("/db/balances", getBalanceSheet);
 
   if (isLoading) return <p>Loading...</p>;
   if (!balances) return <p>No data</p>;
+
+  // Prettify output: negate liabilities, zero empty accounts
+  const balance =
+    (acctType === "liabilities" && balances[acctId] !== undefined ? -1 : 1) *
+    (balances[acctId] ?? 0);
 
   return (
     <Link
@@ -99,7 +104,7 @@ const AccountCard = ({ acctId, name, currency }: Account) => {
           {new Intl.NumberFormat("en-US", {
             style: "currency",
             currency: currency,
-          }).format(Math.abs(balances[acctId] ?? 0))}
+          }).format(balance)}
         </p>
       </CardContainer>
     </Link>

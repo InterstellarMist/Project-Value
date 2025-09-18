@@ -5,6 +5,7 @@ import { Archive } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { type Control, type UseFormWatch, useForm } from "react-hook-form";
+import { type ScopedMutator, useSWRConfig } from "swr";
 import { z } from "zod";
 import {
   Form,
@@ -21,6 +22,7 @@ import {
   editTransaction,
 } from "@/data/SQLData";
 import { cn, dateTimeMerge, dateTimeSplit } from "@/lib/utils";
+import { useFilterStore } from "@/store/useFilterStore";
 import { useTxnStore } from "@/store/useTxnStore";
 import type { AddPosting, AddTransaction } from "@/types/transaction";
 import { AccountsPicker } from "./AccountsPicker";
@@ -137,6 +139,14 @@ const DescriptionInput = ({ control }: ControlType) => {
   );
 };
 
+// TODO: port swr to zustand
+const revalidateTransactions = (mutate: ScopedMutator, account: number) => {
+  mutate(["/db/transactions", account]);
+  mutate((key) => Array.isArray(key) && key[0] === "/db/posting");
+  mutate("/db/balances");
+  mutate("/db/balance/summary");
+};
+
 // get selected transaction from store
 const editTxValues = () => {
   const txnSelected = useTxnStore((s) => s.txnSelected);
@@ -165,6 +175,10 @@ const editTxValues = () => {
 
 export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
   const router = useRouter();
+  const { mutate } = useSWRConfig();
+  const filter = useFilterStore((s) => s.filter);
+  const account = parseInt(filter, 10);
+
   const { txnId, postingIds, txValues } = editTxValues();
   const defaultValues: FormDefaults = isEdit
     ? txValues
@@ -207,11 +221,13 @@ export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
     } else {
       await addTransaction(...formattedData);
     }
+    revalidateTransactions(mutate, account);
   };
 
   const onDelete = () => {
     console.log("Delete", txnId);
     deleteTransaction(txnId);
+    revalidateTransactions(mutate, account);
     router.back();
     return;
   };
