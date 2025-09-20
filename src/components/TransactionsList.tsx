@@ -159,7 +159,7 @@ export const TransactionsList = () => {
   if (!transactions) return <p>No data</p>;
 
   return (
-    <div className="w-9/10 flex flex-col gap-4">
+    <div className="w-[calc(90%+2rem)] flex flex-col gap-4 flex-1 overflow-y-auto pb-24 px-4">
       {renderTransactionsByDate(transactions)}
     </div>
   );

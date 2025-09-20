@@ -78,7 +78,7 @@ const AccountsDrawer = ({
             <FormLabel className="text-lg text-center font-normal">
               {labels[acctType]}
             </FormLabel>
-            <DrawerContent>
+            <DrawerContent className="pb-[calc(env(safe-area-inset-bottom)/2)]">
               <DrawerHeader className="pt-2">
                 <DrawerTitle className="font-serif text-2xl font-normal">
                   {labels[acctType]}

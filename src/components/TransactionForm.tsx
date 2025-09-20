@@ -92,14 +92,14 @@ const AttachmentInput = ({ control }: ControlType) => {
       control={control}
       name="attachment"
       render={({ field: { ref, name, onBlur, onChange } }) => (
-        <FormItem className="w-[85%]">
+        <FormItem className="max-w-40">
           <FormLabel className="px-1 text-lg font-semibold">
             Attachment
           </FormLabel>
           <FormControl>
             <Input
               type="file"
-              className="h-10 pt-2 text-xs glass-shadow bg-white/50"
+              className="h-10 pt-2 text-xs glass-shadow bg-white/50 text-right"
               ref={ref}
               name={name}
               onBlur={onBlur}
@@ -240,7 +240,10 @@ export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
         <DescriptionInput control={form.control} />
         <DateTimePicker control={form.control} />
         <AttachmentInput control={form.control} />
-        <button type="submit" className="absolute top-8 right-6 cursor-pointer">
+        <button
+          type="submit"
+          className="absolute top-[calc(2rem+env(safe-area-inset-bottom)/2)] right-6 cursor-pointer"
+        >
           <Image src="check.svg" alt="filter" width={32} height={32} />
         </button>
       </form>

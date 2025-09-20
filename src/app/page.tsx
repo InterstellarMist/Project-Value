@@ -5,7 +5,7 @@ import { RecentTransactions } from "@/components/TransactionsList";
 
 const TopBar = () => {
   return (
-    <div className="flex self-start items-center gap-2 p-6 px-[5vw]">
+    <div className="flex self-start items-center gap-2 p-6 pt-8 px-[5vw]">
       <Icon icon="stash:user-avatar-light" width={64} />
       <div className="flex flex-col">
         <span className="font-serif text-gray-500">Welcome back,</span>
@@ -17,9 +17,9 @@ const TopBar = () => {
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <div>
       <TopBar />
-      <div className="flex flex-col gap-4 items-center">
+      <div className="w-full flex flex-col gap-4 items-center pb-24">
         <NetWorthHomepage />
         <AccountsHomepage />
         <RecentTransactions />

@@ -8,7 +8,7 @@ const TopBar = () => {
   const router = useRouter();
 
   return (
-    <div className="grid grid-cols-[20%_60%_20%] items-center pt-8 pb-4 px-[5vw]">
+    <div className="w-full grid grid-cols-[20%_60%_20%] items-center pt-8 px-[5vw]">
       <button
         type="button"
         className="justify-self-start cursor-pointer"
@@ -30,12 +30,10 @@ const TopBar = () => {
 
 export default function TransactionPage() {
   return (
-    <div>
+    <div className="flex flex-col items-center gap-4 h-screen">
       <TopBar />
-      <div className="flex flex-col items-center justify-center gap-4 pb-24">
-        <AccountsDropdown />
-        <TransactionsList />
-      </div>
+      <AccountsDropdown />
+      <TransactionsList />
     </div>
   );
 }

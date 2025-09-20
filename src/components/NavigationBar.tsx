@@ -30,7 +30,7 @@ export const NavigationBar: React.FC<{ variant?: "glass" | "solid" }> = ({
   return (
     <div
       className={cn(
-        "w-9/10 h-15 p-1.5 rounded-full border grid grid-cols-5 gap-2 justify-stretch fixed bottom-4 left-1/2 transform -translate-x-1/2",
+        "w-9/10 h-15 p-1.5 rounded-full border grid grid-cols-5 gap-2 justify-stretch absolute bottom-[calc(1rem+env(safe-area-inset-bottom)/2)] left-1/2 transform -translate-x-1/2",
         baseVariants[variant],
         (page === "add-transaction" || page === "edit-transaction") && "hidden",
       )}

@@ -34,7 +34,7 @@ export default function AccountsPage() {
   return (
     <div>
       <TopBar />
-      <div className="flex flex-col gap-2 items-center">
+      <div className="flex flex-col gap-2 items-center pb-24">
         <AccountSummary />
         <AccountsList />
       </div>
