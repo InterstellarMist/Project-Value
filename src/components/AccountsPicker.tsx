@@ -124,7 +124,7 @@ export const AccountsPicker = ({
             handleTabChange(val, field.onChange, reset);
           }}
           defaultValue="income"
-          className="w-full items-center mt-8"
+          className="w-full items-center"
         >
           <TabsList className="bg-transparent gap-6">
             <TabsTrigger
@@ -154,7 +154,7 @@ export const AccountsPicker = ({
                 acctType="income"
               />
               <Image
-                src="long-arrow.svg"
+                src="/long-arrow.svg"
                 alt="arrow"
                 width={60}
                 height={0}
@@ -175,7 +175,7 @@ export const AccountsPicker = ({
                 acctType="accounts"
               />
               <Image
-                src="long-arrow.svg"
+                src="/long-arrow.svg"
                 alt="arrow"
                 width={60}
                 height={0}
@@ -196,7 +196,7 @@ export const AccountsPicker = ({
                 acctType="accounts"
               />
               <Image
-                src="long-arrow.svg"
+                src="/long-arrow.svg"
                 alt="arrow"
                 width={60}
                 height={0}

@@ -3,17 +3,14 @@ import { TopBar } from "@/components/TopBar";
 
 export default function AccountsPage() {
   return (
-    <div>
+    <div className="flex flex-col gap-4 items-center pb-24">
       <TopBar
         leftIcon="transactions-button"
         title="Accounts"
-        rightIcon="edit.svg"
-        rightLink="/edit"
+        rightIcon="edit-accounts-button"
       />
-      <div className="flex flex-col gap-2 items-center pb-24">
-        <AccountSummary />
-        <AccountsList />
-      </div>
+      <AccountSummary />
+      <AccountsList />
     </div>
   );
 }

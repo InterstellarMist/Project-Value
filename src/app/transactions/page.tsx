@@ -1,4 +1,4 @@
-import AccountsDropdown from "@/components/AccountsDropdown";
+import { AccountsDropdown } from "@/components/dropdowns/AccountsDropdown";
 import { TopBar } from "@/components/TopBar";
 import { TransactionsList } from "@/components/TransactionsList";
 

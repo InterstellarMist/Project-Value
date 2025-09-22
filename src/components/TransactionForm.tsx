@@ -22,7 +22,7 @@ import {
   editTransaction,
 } from "@/data/SQLData";
 import { cn, dateTimeMerge, dateTimeSplit } from "@/lib/utils";
-import { useFilterStore } from "@/store/useFilterStore";
+import { useAccountFilterStore } from "@/store/dropdownStores";
 import { useTxnStore } from "@/store/useTxnStore";
 import type { AddPosting, AddTransaction } from "@/types/transaction";
 import { AccountsPicker } from "./AccountsPicker";
@@ -63,7 +63,7 @@ const AmountInput = ({
       name="amount"
       render={({ field }) => (
         <FormItem className="glass-shadow flex flex-col items-center rounded-2xl p-2 gap-2">
-          <FormLabel className="font-semibold text-lg justify-center">
+          <FormLabel className="font-bold text-lg justify-center">
             Amount
           </FormLabel>
           <FormControl>
@@ -92,14 +92,12 @@ const AttachmentInput = ({ control }: ControlType) => {
       control={control}
       name="attachment"
       render={({ field: { ref, name, onBlur, onChange } }) => (
-        <FormItem className="max-w-40">
-          <FormLabel className="px-1 text-lg font-semibold">
-            Attachment
-          </FormLabel>
+        <FormItem className="max-w-65">
+          <FormLabel className="px-1 text-lg font-bold">Attachment</FormLabel>
           <FormControl>
             <Input
               type="file"
-              className="h-10 pt-2 text-xs glass-shadow bg-white/50 text-right"
+              className="h-10 pt-2 text-xs glass-shadow text-right"
               ref={ref}
               name={name}
               onBlur={onBlur}
@@ -122,13 +120,11 @@ const DescriptionInput = ({ control }: ControlType) => {
       name="description"
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="px-1 text-lg font-semibold">
-            Description
-          </FormLabel>
+          <FormLabel className="px-1 text-lg font-bold">Description</FormLabel>
           <FormControl>
             <Input
               placeholder="Add description here"
-              className="w-full h-10 p-2 placeholder:text-gray-500 glass-shadow bg-white/50"
+              className="w-full h-10 p-2 placeholder:text-gray-500 glass-shadow"
               {...field}
             />
           </FormControl>
@@ -176,7 +172,7 @@ const editTxValues = () => {
 export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
   const router = useRouter();
   const { mutate } = useSWRConfig();
-  const filter = useFilterStore((s) => s.filter);
+  const filter = useAccountFilterStore((s) => s.filter);
   const account = parseInt(filter, 10);
 
   const { txnId, postingIds, txValues } = editTxValues();
@@ -244,7 +240,7 @@ export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
           type="submit"
           className="absolute top-[calc(2rem+env(safe-area-inset-bottom)/2)] right-6 cursor-pointer"
         >
-          <Image src="check.svg" alt="filter" width={32} height={32} />
+          <Image src="/check.svg" alt="filter" width={32} height={32} />
         </button>
       </form>
       {isEdit && (

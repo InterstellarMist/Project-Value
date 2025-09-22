@@ -35,7 +35,7 @@ export const DateTimePicker = ({ control }: ControlType) => {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-32 h-10 justify-between font-normal glass-shadow bg-white-50",
+                      "w-32 h-10 justify-between font-normal glass-shadow rounded-lg bg-white-50",
                     )}
                   >
                     {format(field.value, "PP")}
@@ -72,7 +72,7 @@ export const DateTimePicker = ({ control }: ControlType) => {
               <Input
                 type="time"
                 step="60"
-                className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none glass-shadow bg-white/50 h-10"
+                className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none glass-shadow h-10"
                 {...field}
               />
             </FormControl>

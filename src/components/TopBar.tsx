@@ -3,29 +3,36 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { useFilterStore } from "@/store/useFilterStore";
+import { useAccountFilterStore } from "@/store/dropdownStores";
+
+type Buttons =
+  | "transactions-button"
+  | "back-button"
+  | "filter-button"
+  | "edit-accounts-button";
 
 interface ClassName {
   className: string;
 }
 
-interface PageButton {
-  icon: string;
-  link?: string;
+interface OnClick {
+  onClick?: (val: boolean) => void;
 }
 
-interface TopBarProps {
-  leftIcon?: string;
-  leftLink?: string;
+interface PageButtonProps extends OnClick, ClassName {
+  icon: Buttons;
+}
+
+interface TopBarProps extends OnClick {
+  leftIcon?: Buttons;
   title: string;
-  rightIcon?: string;
-  rightLink?: string;
+  rightIcon?: Buttons;
 }
 
 const FilterButton = ({ className }: ClassName) => {
   return (
     <button type="button" className={cn("cursor-pointer", className)}>
-      <Image src="filter.svg" alt="filter" width={32} height={32} />
+      <Image src="/filter.svg" alt="filter" width={32} height={32} />
     </button>
   );
 };
@@ -40,25 +47,47 @@ const BackButton = ({ className }: ClassName) => {
         router.back();
       }}
     >
-      <Image src="back.svg" alt="back" width={32} height={32} />
+      <Image src="/back.svg" alt="back" width={32} height={32} />
     </button>
   );
 };
 
 const TransactionsButton = ({ className }: ClassName) => {
-  const setFilter = useFilterStore((s) => s.setFilter);
+  const setFilter = useAccountFilterStore((s) => s.setFilter);
   return (
     <Link
       href="/transactions"
       onClick={() => setFilter("0")}
       className={className}
     >
-      <Image src="transactions.svg" alt="transactions" width={32} height={32} />
+      <Image
+        src="/transactions.svg"
+        alt="transactions"
+        width={32}
+        height={32}
+      />
     </Link>
   );
 };
 
-const PageButtonBase = ({ icon, link, className }: PageButton & ClassName) => {
+const EditAccountsButton = ({
+  onClick: setOpen,
+  className,
+}: ClassName & OnClick) => {
+  return (
+    <button
+      type="button"
+      className={cn("cursor-pointer", className)}
+      onClick={() => {
+        setOpen?.(true);
+      }}
+    >
+      <Image src="/edit.svg" alt="edit" width={32} height={32} />
+    </button>
+  );
+};
+
+const PageButtonBase = ({ icon, onClick, className }: PageButtonProps) => {
   switch (icon) {
     case "transactions-button":
       return <TransactionsButton className={className} />;
@@ -66,40 +95,39 @@ const PageButtonBase = ({ icon, link, className }: PageButton & ClassName) => {
       return <BackButton className={className} />;
     case "filter-button":
       return <FilterButton className={className} />;
+    case "edit-accounts-button":
+      return <EditAccountsButton onClick={onClick} className={className} />;
     default:
       return (
-        link && (
-          <Link href={link} className={className}>
-            <Image src={icon} alt={icon} width={32} height={32} />
-          </Link>
-        )
+        <div className={className}>
+          <Image src={icon} alt={icon} width={32} height={32} />
+        </div>
       );
   }
 };
 
 export const TopBar = ({
   leftIcon,
-  leftLink,
   title,
   rightIcon,
-  rightLink,
+  onClick,
 }: TopBarProps) => {
   return (
-    <div className="w-full grid grid-cols-[20%_60%_20%] items-center pt-8 pb-4 px-[5vw]">
+    <div className="w-full grid grid-cols-[20%_60%_20%] items-center pt-8 px-[5vw]">
       {leftIcon && (
         <PageButtonBase
           icon={leftIcon}
-          link={leftLink}
+          onClick={onClick}
           className="col-1 justify-self-start"
         />
       )}
-      <h1 className="col-2 text-2xl text-center font-serif leading-none select-none">
+      <h1 className="col-2 text-2xl text-center font-serif select-none">
         {title}
       </h1>
       {rightIcon && (
         <PageButtonBase
           icon={rightIcon}
-          link={rightLink}
+          onClick={onClick}
           className="col-3 justify-self-end"
         />
       )}

@@ -44,7 +44,7 @@ export const NavigationBar: React.FC<{ variant?: "glass" | "solid" }> = ({
           setPage("home");
         }}
       >
-        <Image src="home.svg" alt="Home" width={30} height={30} />
+        <Image src="/home.svg" alt="Home" width={30} height={30} />
       </Link>
       <Link
         href="/accounts"
@@ -57,7 +57,7 @@ export const NavigationBar: React.FC<{ variant?: "glass" | "solid" }> = ({
           setPage("accounts");
         }}
       >
-        <Image src="accounts.svg" alt="Accounts" width={30} height={30} />
+        <Image src="/accounts.svg" alt="Accounts" width={30} height={30} />
       </Link>
       <Link
         href="/add-transaction"
@@ -77,7 +77,7 @@ export const NavigationBar: React.FC<{ variant?: "glass" | "solid" }> = ({
           setPage("dashboard");
         }}
       >
-        <Image src="dashboard.svg" alt="Dashboard" width={30} height={30} />
+        <Image src="/dashboard.svg" alt="Dashboard" width={30} height={30} />
       </Link>
       <Link
         href="/settings"
@@ -88,7 +88,7 @@ export const NavigationBar: React.FC<{ variant?: "glass" | "solid" }> = ({
           setPage("settings");
         }}
       >
-        <Image src="settings.svg" alt="Settings" width={30} height={30} />
+        <Image src="/settings.svg" alt="Settings" width={30} height={30} />
       </Link>
     </div>
   );

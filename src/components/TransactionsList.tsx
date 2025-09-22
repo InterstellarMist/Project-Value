@@ -8,7 +8,7 @@ import {
   getAllTransactions,
   getTxnPostings,
 } from "@/data/SQLData";
-import { useFilterStore } from "@/store/useFilterStore";
+import { useAccountFilterStore } from "@/store/dropdownStores";
 import { useTxnStore } from "@/store/useTxnStore";
 import type { Transaction } from "@/types/transaction";
 import { CardContainer } from "./CardContainer";
@@ -49,7 +49,7 @@ const renderTransactionsByDate = (transactions: Transaction[]) => {
     <>
       {Object.entries(grouped).map(([date, transactions]) => (
         <div key={date}>
-          <h3 className="text-lg font-semibold text-center mb-2">{date}</h3>
+          <h3 className="text-lg font-bold text-center mb-2">{date}</h3>
           <div className="flex flex-col gap-4">
             {transactions?.map((transaction) => (
               <CardContainer
@@ -148,7 +148,7 @@ export const TransactionEntry = ({
 };
 
 export const TransactionsList = () => {
-  const filter = useFilterStore((s) => s.filter);
+  const filter = useAccountFilterStore((s) => s.filter);
   const account = parseInt(filter, 10);
   const { data: transactions, isLoading } = useSWR(
     ["/db/transactions", account],
@@ -166,7 +166,7 @@ export const TransactionsList = () => {
 };
 
 export const RecentTransactions = () => {
-  const setFilter = useFilterStore((s) => s.setFilter);
+  const setFilter = useAccountFilterStore((s) => s.setFilter);
   const { data: transactions, isLoading } = useSWR(
     "/db/transactions",
     getAllTransactions,

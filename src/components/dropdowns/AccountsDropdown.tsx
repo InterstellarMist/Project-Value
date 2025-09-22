@@ -6,16 +6,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useFilterStore } from "@/store/useFilterStore";
-import { AccountEmoji } from "./EmojiLoader";
+import { useAccountFilterStore } from "@/store/dropdownStores";
+import { AccountEmoji } from "../EmojiLoader";
 
-const AccountsDropdown = () => {
-  const filter = useFilterStore((s) => s.filter);
-  const setFilter = useFilterStore((s) => s.setFilter);
+// TODO: dynamic accounts
+export const AccountsDropdown = () => {
+  const filter = useAccountFilterStore((s) => s.filter);
+  const setFilter = useAccountFilterStore((s) => s.setFilter);
 
   return (
     <Select value={filter} onValueChange={setFilter}>
-      <SelectTrigger className="border-0 bg-zinc-800 rounded-full text-white gap-3 point cursor-pointer">
+      <SelectTrigger
+        dark
+        size="sm"
+        className="border-0 bg-zinc-800 rounded-full text-white cursor-pointer"
+      >
         <AccountEmoji
           acctId={parseInt(filter, 10)}
           height="1.5em"
@@ -33,5 +38,3 @@ const AccountsDropdown = () => {
     </Select>
   );
 };
-
-export default AccountsDropdown;

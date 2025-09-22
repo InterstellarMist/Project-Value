@@ -6,7 +6,7 @@ import {
   getBalanceSheet,
   getBalanceSummary,
 } from "@/data/SQLData";
-import { useFilterStore } from "@/store/useFilterStore";
+import { useAccountFilterStore } from "@/store/dropdownStores";
 import type { Account } from "@/types/accounts";
 import { CardContainer } from "./CardContainer";
 import { AccountEmoji } from "./EmojiLoader";
@@ -80,7 +80,7 @@ export const AccountSummary = () => {
 };
 
 const AccountCard = ({ acctId, acctType, name, currency }: Account) => {
-  const setFilter = useFilterStore((s) => s.setFilter);
+  const setFilter = useAccountFilterStore((s) => s.setFilter);
   const { data: balances, isLoading } = useSWR("/db/balances", getBalanceSheet);
 
   if (isLoading) return <p>Loading...</p>;

@@ -1,9 +1,10 @@
 // biome-ignore-all lint/style/useComponentExportOnlyModules: valid Next.js exports
 import "@/styles/globals.css";
+import type { Viewport } from "next";
 import { Inter_Tight, Playfair_Display } from "next/font/google";
 import { Suspense } from "react";
 import { NavigationBar } from "@/components/NavigationBar";
-import type { Viewport } from "next";
+import { IconLoader } from "@/components/init/iconLoader";
 
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
@@ -30,7 +31,9 @@ export default function RootLayout({
         className={`${interTight.variable} ${playfairDisplay.variable} antialiased`}
       >
         <Suspense fallback={<>...Loading</>}>
-          <div className="blurry-bg min-w-[24rem]">{children}</div>
+          <div className="blurry-bg min-w-[24rem]">
+            <IconLoader>{children}</IconLoader>
+          </div>
         </Suspense>
         <NavigationBar variant="glass" />
       </body>

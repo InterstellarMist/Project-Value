@@ -50,10 +50,10 @@
 }
 
 @utility glass-shadow {
-  filter: drop-shadow(4px 4px 2px rgba(255, 255, 255, 0.7))
-    drop-shadow(-2px -2px 2px rgba(0, 0, 0, 0.15));
+  box-shadow: 4px 4px 4px rgba(255, 255, 255, 0.4), -3px -3px 2px rgba(0, 0, 0, 0.05),
+  inset -4px -4px 4px rgba(255, 255, 255, 0.1), inset 2px 2px 2px rgba(0, 0, 0, 0.1) ;
   border: 1px solid rgba(255, 255, 255, 0.8);
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.65);
 }
 
 body {
