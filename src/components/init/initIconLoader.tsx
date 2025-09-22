@@ -2,7 +2,7 @@
 import { type ReactNode, useEffect } from "react";
 import { loadEmojis } from "@/data/iconifyFetch";
 
-export const IconLoader = ({ children }: { children: ReactNode }) => {
+export const InitIconLoader = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     async function initLoadEmojis() {
       await loadEmojis();

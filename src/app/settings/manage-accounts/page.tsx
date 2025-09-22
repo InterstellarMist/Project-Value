@@ -1,5 +1,5 @@
 "use client";
-import { Icon, listIcons } from "@iconify/react/dist/iconify.js";
+import { Icon } from "@iconify/react";
 import { useState } from "react";
 import { CardContainer } from "@/components/CardContainer";
 import { AccountEmoji } from "@/components/EmojiLoader";
@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { CircleCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getIconCategories } from "@/data/iconifyFetch";
+import { getIconCategories, searchIcons } from "@/data/iconifyFetch";
 
 interface AccEmojis {
   name: string;
@@ -70,7 +70,7 @@ export const IconCategorySelect = ({
 }) => {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="border-2 rounded-lg max-w-35">
+      <SelectTrigger className="border-2 rounded-lg max-w-40 gap-0">
         <SelectValue placeholder="Category" />
       </SelectTrigger>
       <SelectContent>
@@ -89,13 +89,13 @@ export default function ManageAccounts() {
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
   const [emojiSelection, setEmojiSelection] = useState("");
   const [emojiCategory, setEmojiCategory] = useState("All");
+  const [search, setSearch] = useState("");
 
+  const snapPoints = [0.65, 1];
+  const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
+
+  // Temporary search replacement
   const categories = getIconCategories();
-  const icons = listIcons("", "fluent-emoji-flat");
-
-  const loadEmojis = (category: string) => {
-    return category === "All" ? icons : categories[category];
-  };
 
   return (
     <div className="flex flex-col gap-4 items-center h-screen">
@@ -124,21 +124,32 @@ export default function ManageAccounts() {
           </div>
         ))}
       </div>
-      <Drawer open={openDrawer} onOpenChange={setOpenDrawer}>
-        <DrawerContent className="pb-[calc(env(safe-area-inset-bottom)/2)] bg-slate-200">
+      <Drawer
+        open={openDrawer}
+        onOpenChange={setOpenDrawer}
+        snapPoints={snapPoints}
+        activeSnapPoint={snap}
+        setActiveSnapPoint={setSnap}
+      >
+        <DrawerContent className="pb-[calc(env(safe-area-inset-bottom)/2)] min-w-[24rem] bg-slate-200">
           <DrawerHeader className="pt-2">
             <DrawerTitle className="font-serif text-2xl font-normal">
               Expenses
             </DrawerTitle>
             <DrawerDescription> </DrawerDescription>
           </DrawerHeader>
-          <div className="flex flex-col items-center gap-8 mb-8">
+          <div className="flex flex-col items-center gap-8 mb-8 overflow-y-auto">
             <AcctTypeDropdown />
             <button
               type="button"
-              onClick={() => setOpenEmojiPicker(!openEmojiPicker)}
+              onClick={() => {
+                setOpenEmojiPicker(!openEmojiPicker);
+                openEmojiPicker
+                  ? setSnap(snapPoints[0])
+                  : setSnap(snapPoints[1]);
+              }}
               className={cn(
-                "size-20 flex flex-col items-center justify-center glass-shadow rounded-2xl ring-blue-700",
+                "size-20 flex flex-col shrink-0 items-center justify-center glass-shadow rounded-2xl ring-blue-700",
                 openEmojiPicker && "empty:ring-4",
               )}
             >
@@ -156,51 +167,56 @@ export default function ManageAccounts() {
                 className="w-46 h-10 p-2 placeholder:text-gray-500 glass-shadow"
               />
             </div>
-            {openEmojiPicker && (
-              <CardContainer className="w-9/10 ">
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Search Icon..."
-                    className="w-46 h-10 p-2 flex-1 placeholder:text-gray-500 border-2 rounded-lg mb-2"
-                  />
-                  <IconCategorySelect
-                    categoryList={Object.keys(categories)}
-                    value={emojiCategory}
-                    onChange={setEmojiCategory}
-                  />
-                  <Button
-                    size="icon"
-                    variant="secondary"
-                    className="size-10 border-2 bg-transparent rounded-lg"
-                  >
-                    <CircleCheck />
-                  </Button>
-                </div>
-                <div className="w-full h-58 rounded-lg py-2 px-1 border-2 grid grid-cols-8 place-items-center gap-y-1 overflow-y-auto overflow-x-hidden">
-                  {loadEmojis(emojiCategory)
-                    .slice(0, 120)
-                    .map((icon) => (
+            <CardContainer className="w-9/10 ">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Search Icon..."
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    console.log(searchIcons(e.target.value, emojiCategory));
+                  }}
+                  className="w-46 h-10 p-2 flex-1 placeholder:text-gray-500 border-2 rounded-lg mb-2"
+                />
+                <IconCategorySelect
+                  categoryList={categories}
+                  value={emojiCategory}
+                  onChange={setEmojiCategory}
+                />
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="size-10 border-2 bg-transparent rounded-lg"
+                >
+                  <CircleCheck />
+                </Button>
+              </div>
+              <div className="w-full h-58 rounded-lg py-2 px-1 border-2 grid grid-cols-8 auto-rows-min justify-items-center gap-y-1 overflow-y-auto overflow-x-hidden">
+                {searchIcons(search, emojiCategory)
+                  .slice(0, 265)
+                  .map((icon) => {
+                    const iconFmtd =
+                      !search && emojiCategory !== "All"
+                        ? `fluent-emoji-flat:${icon}`
+                        : icon;
+                    return (
                       <div
-                        key={icon}
+                        key={iconFmtd}
                         className={cn(
-                          "p-1 rounded-sm ring-blue-700",
-                          emojiSelection === icon ? "ring-2" : "",
+                          "size-10 p-1 rounded-sm ring-blue-700",
+                          emojiSelection === iconFmtd ? "ring-2" : "",
                         )}
                       >
                         <Icon
-                          icon={
-                            emojiCategory === "All"
-                              ? icon
-                              : `fluent-emoji-flat:${icon}`
-                          }
+                          icon={iconFmtd}
                           fontSize={32}
-                          onClick={() => setEmojiSelection(icon)}
+                          onClick={() => setEmojiSelection(iconFmtd)}
                         />
                       </div>
-                    ))}
-                </div>
-              </CardContainer>
-            )}
+                    );
+                  })}
+              </div>
+            </CardContainer>
           </div>
         </DrawerContent>
       </Drawer>
