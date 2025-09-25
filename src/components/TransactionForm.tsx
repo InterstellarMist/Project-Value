@@ -161,9 +161,9 @@ const editTxValues = () => {
   const txValues = {
     ...values,
     ...dateTimeSplit(date),
-    amount: amount,
-    credit: credit,
-    debit: debit,
+    amount,
+    credit,
+    debit,
   };
   return { txnId, postingIds, txValues };
 };

@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/select";
 import { useAcctTypeFilterStore } from "@/store/dropdownStores";
 
-// TODO: dynamic accounts
 export const AcctTypeDropdown = () => {
   const filter = useAcctTypeFilterStore((s) => s.filter);
   const setFilter = useAcctTypeFilterStore((s) => s.setFilter);
@@ -25,8 +24,8 @@ export const AcctTypeDropdown = () => {
       <SelectContent>
         <SelectItem value="1">Assets</SelectItem>
         <SelectItem value="2">Liabilities</SelectItem>
-        <SelectItem value="3">Expenses</SelectItem>
-        <SelectItem value="4">Income</SelectItem>
+        <SelectItem value="3">Income</SelectItem>
+        <SelectItem value="4">Expenses</SelectItem>
       </SelectContent>
     </Select>
   );

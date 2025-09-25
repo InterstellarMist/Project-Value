@@ -35,6 +35,10 @@ import { getIconCategories, searchIcons } from "@/data/iconifyFetch";
 import { cn } from "@/lib/utils";
 import { useAcctTypeFilterStore } from "@/store/dropdownStores";
 import { useDrawerState } from "@/store/uiStateStores";
+import type { AddAccount } from "@/types/accounts";
+import { addAccount } from "@/data/SQLData";
+import { type ScopedMutator, useSWRConfig } from "swr";
+import { useAcctStore } from "@/store/useAcctStore";
 
 type FormTypes = z.infer<typeof FormSchema>;
 
@@ -47,7 +51,7 @@ const FormSchema = z.object({
     .transform(Number)
     .pipe(z.number("Enter a number"))
     .optional(),
-  parentId: z.string(),
+  parentId: z.string().refine((val) => Number(val) > 0, "Choose a category"),
   icon: z.string("Select an icon").min(1, "Select an icon"),
 });
 
@@ -238,22 +242,52 @@ const EmojiSelectionField = ({
   );
 };
 
+const revalidateAccounts = (mutate: ScopedMutator, acctTypeId: number) => {
+  mutate(["/db/accounts", acctTypeId]);
+};
+
 const AddAccountForm = ({ setSnap }: SetSnap) => {
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
-  const filter = useAcctTypeFilterStore((s) => s.filter);
+  const acctTypeId = Number(useAcctTypeFilterStore((s) => s.filter));
+  const acctSelected = useAcctStore((s) => s.AcctSelected);
+  const isEdit = useDrawerState((s) => s.isEdit);
+  const setOpenDrawer = useDrawerState((s) => s.setOpenDrawer);
+  const { mutate } = useSWRConfig();
+
+  console.log(isEdit, acctSelected);
+
+  const defaultValues = isEdit
+    ? {
+        name: acctSelected.name,
+        parentId: acctSelected.parentId?.toString(),
+        icon: acctSelected.icon,
+        openingBalance: undefined,
+      }
+    : {
+        parentId: "0",
+        name: "",
+        openingBalance: undefined,
+      };
 
   const form = useForm<FormTypes>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      parentId: "1",
-      name: "",
-    },
+    defaultValues: defaultValues,
   });
 
-  const onSubmit = (data: FormTypes) => {
-    console.log(
-      JSON.stringify({ ...data, acctType: filter, currency: "USD" }, null, 2),
-    );
+  const onSubmit = async (data: FormTypes) => {
+    setOpenDrawer(false, false);
+    const formattedData: AddAccount = {
+      name: data.name,
+      parentId: Number(data.parentId),
+      icon: data.icon,
+      acctTypeId: acctTypeId,
+      currency: "USD",
+    };
+
+    console.log(JSON.stringify(formattedData, null, 2));
+
+    await addAccount(formattedData);
+    revalidateAccounts(mutate, acctTypeId);
   };
 
   return (
@@ -312,7 +346,7 @@ export const AddAccountDrawer = () => {
   return (
     <Drawer
       open={openDrawer}
-      onOpenChange={setOpenDrawer}
+      onOpenChange={(open) => setOpenDrawer(open, false)}
       snapPoints={snapPoints}
       activeSnapPoint={snap}
       setActiveSnapPoint={setSnap}

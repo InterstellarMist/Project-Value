@@ -93,11 +93,10 @@ const AddAccountButton = ({ className }: ClassName) => {
       type="button"
       className={cn(buttonStyle, openDrawer && "border-2 bg-white", className)}
       onClick={() => {
-        setOpenDrawer(!openDrawer);
+        setOpenDrawer(!openDrawer, false);
       }}
     >
       <Grid2X2Plus size={30} strokeWidth={1.25} />
-      {/* <SquarePen size={30} strokeWidth={1.25} /> */}
     </button>
   );
 };

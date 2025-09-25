@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS accounts (
   acctTypeId INTEGER NOT NULL,
   name TEXT NOT NULL,
   parentId INTEGER,
-  icon TEXT NOT NULL,
+  icon TEXT,
   currency TEXT NOT NULL,
   hidden INTEGER NOT NULL,
   FOREIGN KEY (acctTypeId) REFERENCES acctType (acctTypeId) ON

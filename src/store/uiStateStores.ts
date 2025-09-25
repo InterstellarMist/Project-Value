@@ -1,11 +1,13 @@
 import { create } from "zustand";
 
 interface DrawerStore {
+  isEdit: boolean;
   openDrawer: boolean;
-  setOpenDrawer: (state: boolean) => void;
+  setOpenDrawer: (openDrawer: boolean, isEdit: boolean) => void;
 }
 
 export const useDrawerState = create<DrawerStore>((set) => ({
+  isEdit: false,
   openDrawer: false,
-  setOpenDrawer: (state) => set({ openDrawer: state }),
+  setOpenDrawer: (openDrawer, isEdit) => set({ openDrawer, isEdit }),
 }));

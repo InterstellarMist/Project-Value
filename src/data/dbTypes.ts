@@ -1,4 +1,4 @@
-import type { AcctTypeBase } from "@/types/accounts";
+import type { AcctTypeBase, Account } from "@/types/accounts";
 import type { TxnType } from "@/types/transaction";
 
 export interface EmojiEntry {
@@ -16,6 +16,11 @@ export interface TxnTypeTable {
   txnType: TxnType;
 }
 
+export interface AcctTypeTable {
+  acctTypeId: number;
+  acctType: AcctTypeBase;
+}
+
 export interface BalanceSheet {
   acctId: number;
   balance: number;
@@ -24,4 +29,12 @@ export interface BalanceSheet {
 export interface BalanceSummary {
   acctType: AcctTypeBase;
   balance: number;
+}
+
+export interface AccountNode extends Account {
+  children: AccountNode[];
+}
+
+export interface AccountNodeFull extends Omit<AccountNode, "acctType"> {
+  acctTypeId: number;
 }

@@ -7,10 +7,15 @@ import {
   getBalanceSheet,
   getBalanceSummary,
 } from "@/data/SQLData";
-import { useAccountFilterStore } from "@/store/dropdownStores";
+import {
+  useAccountFilterStore,
+  useAcctTypeFilterStore,
+} from "@/store/dropdownStores";
 import type { Account } from "@/types/accounts";
 import { CardContainer } from "./CardContainer";
-import { AccountEmoji } from "./EmojiLoader";
+import { AccountEmoji, AccountEmojiWithText } from "./EmojiLoader";
+import { useAcctStore } from "@/store/useAcctStore";
+import { useDrawerState } from "@/store/uiStateStores";
 
 export const NetWorthHomepage = () => {
   const { data: balances, isLoading } = useSWR(
@@ -124,7 +129,7 @@ export const AccountsHomepage = () => {
   return (
     <div className="w-9/10 grid grid-cols-3 gap-2">
       {accounts
-        .filter((account) => !account.hidden && account.acctType !== "root")
+        .filter((account) => !account.hidden)
         .slice(0, 3) // TODO: Temporary Preview
         .map((account) => (
           <AccountCard key={account.acctId} {...account} />
@@ -176,72 +181,81 @@ export const AccountsList = () => {
   );
 };
 
-interface AccEmojis {
-  name: string;
-  icon: string;
-}
-
-const data: Record<string, AccEmojis[]> = {
-  Food: [
-    { name: "Restaurant", icon: "fluent-emoji-flat:curry-rice" },
-    { name: "Drink", icon: "fluent-emoji-flat:bubble-tea" },
-    { name: "Snack", icon: "fluent-emoji-flat:hot-dog" },
-    { name: "Grocery", icon: "fluent-emoji-flat:shopping-cart" },
-  ],
-  Utilities: [
-    { name: "Rent", icon: "fluent-emoji-flat:house" },
-    { name: "Water", icon: "fluent-emoji-flat:droplet" },
-    { name: "Electricity", icon: "fluent-emoji-flat:high-voltage" },
-    { name: "Internet", icon: "fluent-emoji-flat:wireless" },
-  ],
-  Transportation: [
-    { name: "Commute", icon: "fluent-emoji-flat:light-rail" },
-    { name: "Gas", icon: "fluent-emoji-flat:fuel-pump" },
-    { name: "Maintenance", icon: "fluent-emoji-flat:wrench" },
-  ],
-  Personal: [
-    { name: "Clothes", icon: "fluent-emoji-flat:coat" },
-    { name: "Shopping", icon: "fluent-emoji-flat:shopping-bags" },
-    { name: "Subscriptions", icon: "fluent-emoji-flat:mobile-phone" },
-    { name: "Leisure", icon: "fluent-emoji-flat:man-cartwheeling" },
-    { name: "Online Purchase", icon: "fluent-emoji-flat:credit-card" },
-    { name: "Misc", icon: "fluent-emoji-flat:receipt" },
-  ],
-};
-
 export const ManageAccountsList = () => {
-  const acctType = "expenses";
+  const acctTypeId = Number(useAcctTypeFilterStore((s) => s.filter));
+  const setAcctSelected = useAcctStore((s) => s.setAcctSelected);
+  const setOpenDrawer = useDrawerState((s) => s.setOpenDrawer);
 
   const { data: accounts, isLoading } = useSWR(
-    ["/db/accounts", acctType],
+    ["/db/accounts", acctTypeId],
     getAccountType,
   );
 
   if (isLoading) return <p>Loading...</p>;
   if (!accounts) return <p>No data</p>;
 
-  console.log(accounts[0].children);
+  const uncategorized = accounts[0].children.filter(
+    (acc) => acc.children.length === 0 && acc.icon,
+  );
 
   return (
     <div className="w-[calc(90%+2rem)] flex flex-col gap-4 flex-1 overflow-y-auto pb-24 px-4">
-      {accounts[0].children.map((categoryNode) => (
-        <div key={categoryNode.acctId} className="flex flex-col items-center">
-          <h2 className="text-lg font-bold text-center mb-2">
-            {categoryNode.name}
-          </h2>
-          <CardContainer className="w-full grid grid-cols-4 gap-y-2 px-0 place-items-center">
-            {categoryNode.children.map((acc) => (
-              <div
-                key={acc.name}
-                className="flex flex-col items-center gap-1 w-18"
+      {accounts[0].children
+        .filter((categoryNode) => !categoryNode.icon)
+        .map((categoryNode) => (
+          <div key={categoryNode.acctId} className="flex flex-col items-center">
+            <h2 className="text-lg font-bold text-center mb-2">
+              {categoryNode.name}
+            </h2>
+            <CardContainer className="w-full min-h-30 grid grid-cols-4 gap-y-2 px-0 py-2 place-items-center">
+              {categoryNode.children.map((acc) => (
+                <button
+                  key={acc.acctId}
+                  type="button"
+                  onClick={() => {
+                    setAcctSelected(acc);
+                    setOpenDrawer(true, true);
+                  }}
+                  className="h-full cursor-pointer hover:bg-black/10 active:bg-white/70 rounded-2xl p-1"
+                >
+                  <AccountEmojiWithText
+                    acctId={acc.acctId}
+                    width={64}
+                    height={64}
+                    className="gap-1 w-18"
+                    textStyle="text-xs font-bold"
+                  />
+                </button>
+              ))}
+            </CardContainer>
+          </div>
+        ))}
+      {uncategorized.length > 0 && (
+        <div className="flex flex-col items-center">
+          <h2 className="text-lg font-bold text-center mb-2">Uncategorized</h2>
+          <CardContainer className="w-full min-h-30 grid grid-cols-4 gap-y-2 px-0 py-2 place-items-center">
+            {uncategorized.map((acc) => (
+              <button
+                key={acc.acctId}
+                type="button"
+                onClick={() => {
+                  setAcctSelected(acc);
+                  setOpenDrawer(true, true);
+                }}
+                className="h-full cursor-pointer hover:bg-black/10 active:bg-white/70 rounded-2xl p-1"
               >
-                <AccountEmoji acctId={acc.acctId} width={64} height={64} />
-                <p className="text-xs font-bold text-center">{acc.name}</p>
-              </div>
+                <AccountEmojiWithText
+                  acctId={acc.acctId}
+                  width={64}
+                  height={64}
+                  className="gap-1 w-18"
+                  textStyle="text-xs font-bold"
+                />
+              </button>
             ))}
           </CardContainer>
         </div>
-      ))}
+      )}
     </div>
   );
 };

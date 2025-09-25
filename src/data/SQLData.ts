@@ -1,12 +1,19 @@
 import Database from "@tauri-apps/plugin-sql";
 import type {
   AccountName,
+  AcctTypeTable,
   BalanceSheet,
   BalanceSummary,
   EmojiEntry,
   TxnTypeTable,
+  AccountNodeFull,
 } from "@/data/dbTypes";
-import type { Account, AcctTypeBase, AcctTypeSimple } from "@/types/accounts";
+import type {
+  Account,
+  AcctTypeBase,
+  AcctTypeSimple,
+  AddAccount,
+} from "@/types/accounts";
 import type {
   AddPosting,
   AddTransaction,
@@ -16,12 +23,9 @@ import type {
   TxnType,
 } from "@/types/transaction";
 
-interface AccountNode extends Account {
-  children: AccountNode[];
-}
-
 let db: Database | null = null;
 let txnTypeRef: Record<TxnType, number> | null = null;
+let acctTypeRef: Record<AcctTypeBase, number> | null = null;
 
 const loadDb = async () => {
   if (!db) {
@@ -44,6 +48,20 @@ export const getTxnTypeRef = async (): Promise<Record<string, number>> => {
     ) as Record<TxnType, number>;
   }
   return txnTypeRef;
+};
+
+// Lazy loads an object mapping of (acctType) -> (acctTypeId)
+export const getAcctTypeRef = async (): Promise<Record<string, number>> => {
+  if (!acctTypeRef) {
+    db = await loadDb();
+    const data: AcctTypeTable[] = await db.select(
+      "SELECT acctTypeId,acctType FROM acctType",
+    );
+    acctTypeRef = Object.fromEntries(
+      data.map((row) => [row.acctType, row.acctTypeId]),
+    ) as Record<AcctTypeBase, number>;
+  }
+  return acctTypeRef;
 };
 
 // ============================== READ METHODS ====================================
@@ -121,7 +139,7 @@ export const getAllAccounts = async (): Promise<Account[]> => {
 const constructAccountsTree = (
   accountsData: Account[],
   parentId: number | null = null,
-): AccountNode[] => {
+): AccountNodeFull[] => {
   return accountsData
     .filter((node) => node.parentId === parentId)
     .map((node) => ({
@@ -130,20 +148,32 @@ const constructAccountsTree = (
     }));
 };
 
-// Returns account data of the specified account type (acctType)
-export const getAccountType = async ([_, acctType]: [
+// Returns account data of the specified account type ID(acctTypeId)
+export const getAccountType = async ([_, acctTypeId]: [
   string,
-  AcctTypeBase,
-]): Promise<AccountNode[]> => {
+  number,
+]): Promise<AccountNodeFull[]> => {
   db = await loadDb();
   const data: Account[] = await db.select(
-    `SELECT acctId,acctType,name,parentId,icon,currency,hidden
-    FROM accounts INNER JOIN acctType USING(acctTypeId)
-    WHERE acctType = $1`,
-    [acctType],
+    `SELECT acctId,acctTypeId,name,parentId,icon,currency,hidden
+    FROM accounts
+    WHERE acctTypeId = $1`,
+    [acctTypeId],
   );
-  console.log(constructAccountsTree(data));
   return constructAccountsTree(data);
+};
+
+// Return account categories for the specified account type (acctType)
+export const getCategoriesType = async ([_, acctTypeId]: [string, number]) => {
+  const accountsTree = await getAccountType([_, acctTypeId]);
+  const root = accountsTree[0];
+  return root.children
+    .filter((category) => !category.icon)
+    .map((category) => ({
+      acctId: category.acctId,
+      name: category.name,
+    }))
+    .concat([{ acctId: root.acctId, name: "Uncategorized" }]);
 };
 
 // Returns a list of accounts based on a simplified account type ("income","expenses","accounts")
@@ -279,6 +309,26 @@ export const addTransaction = async (
   }
   console.log(result);
   return result;
+};
+
+export const addAccount = async (acctData: AddAccount) => {
+  db = await loadDb();
+
+  const res = await db.execute(
+    `INSERT INTO accounts (acctTypeId,name,parentId,icon,currency,hidden)
+    VALUES ($1,$2,$3,$4,$5,$6)`,
+    [
+      acctData.acctTypeId,
+      acctData.name,
+      acctData.parentId,
+      acctData.icon,
+      acctData.currency,
+      0,
+    ],
+  );
+
+  console.log(res);
+  return res;
 };
 
 // ============================== UPDATE METHODS =================================
