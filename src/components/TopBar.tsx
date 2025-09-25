@@ -1,15 +1,24 @@
 "use client";
+import {
+  ChevronLeft,
+  Grid2X2Plus,
+  ListFilter,
+  SquareMenuIcon,
+  SquarePen,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useAccountFilterStore } from "@/store/dropdownStores";
+import { useDrawerState } from "@/store/uiStateStores";
 
 type Buttons =
   | "transactions-button"
   | "back-button"
   | "filter-button"
-  | "edit-accounts-button";
+  | "edit-accounts-button"
+  | "add-account-button";
 
 interface ClassName {
   className: string;
@@ -29,10 +38,13 @@ interface TopBarProps extends OnClick {
   rightIcon?: Buttons;
 }
 
+const buttonStyle =
+  "cursor-pointer hover:bg-white/50 rounded-full p-2 border-2 border-transparent";
+
 const FilterButton = ({ className }: ClassName) => {
   return (
-    <button type="button" className={cn("cursor-pointer", className)}>
-      <Image src="/filter.svg" alt="filter" width={32} height={32} />
+    <button type="button" className={cn(buttonStyle, className)}>
+      <ListFilter size={30} strokeWidth={1.25} />
     </button>
   );
 };
@@ -42,12 +54,12 @@ const BackButton = ({ className }: ClassName) => {
   return (
     <button
       type="button"
-      className={cn("cursor-pointer", className)}
+      className={cn(buttonStyle, "p-0", className)}
       onClick={() => {
         router.back();
       }}
     >
-      <Image src="/back.svg" alt="back" width={32} height={32} />
+      <ChevronLeft size={40} strokeWidth={1.25} />
     </button>
   );
 };
@@ -58,36 +70,39 @@ const TransactionsButton = ({ className }: ClassName) => {
     <Link
       href="/transactions"
       onClick={() => setFilter("0")}
-      className={className}
+      className={cn(buttonStyle, className)}
     >
-      <Image
-        src="/transactions.svg"
-        alt="transactions"
-        width={32}
-        height={32}
-      />
+      <SquareMenuIcon size={30} strokeWidth={1.25} />
     </Link>
   );
 };
 
-const EditAccountsButton = ({
-  onClick: setOpen,
-  className,
-}: ClassName & OnClick) => {
+const EditAccountsButton = ({ className }: ClassName) => {
   return (
-    <button
-      type="button"
-      className={cn("cursor-pointer", className)}
-      onClick={() => {
-        setOpen?.(true);
-      }}
-    >
-      <Image src="/edit.svg" alt="edit" width={32} height={32} />
+    <button type="button" className={cn(buttonStyle, className)}>
+      <SquarePen size={30} strokeWidth={1.25} />
     </button>
   );
 };
 
-const PageButtonBase = ({ icon, onClick, className }: PageButtonProps) => {
+const AddAccountButton = ({ className }: ClassName) => {
+  const openDrawer = useDrawerState((s) => s.openDrawer);
+  const setOpenDrawer = useDrawerState((s) => s.setOpenDrawer);
+  return (
+    <button
+      type="button"
+      className={cn(buttonStyle, openDrawer && "border-2 bg-white", className)}
+      onClick={() => {
+        setOpenDrawer(!openDrawer);
+      }}
+    >
+      <Grid2X2Plus size={30} strokeWidth={1.25} />
+      {/* <SquarePen size={30} strokeWidth={1.25} /> */}
+    </button>
+  );
+};
+
+const PageButtonBase = ({ icon, className }: PageButtonProps) => {
   switch (icon) {
     case "transactions-button":
       return <TransactionsButton className={className} />;
@@ -96,7 +111,9 @@ const PageButtonBase = ({ icon, onClick, className }: PageButtonProps) => {
     case "filter-button":
       return <FilterButton className={className} />;
     case "edit-accounts-button":
-      return <EditAccountsButton onClick={onClick} className={className} />;
+      return <EditAccountsButton className={className} />;
+    case "add-account-button":
+      return <AddAccountButton className={className} />;
     default:
       return (
         <div className={className}>
@@ -113,7 +130,7 @@ export const TopBar = ({
   onClick,
 }: TopBarProps) => {
   return (
-    <div className="w-full grid grid-cols-[20%_60%_20%] items-center pt-8 px-[5vw]">
+    <div className="w-full grid grid-cols-[20%_60%_20%] items-center pt-6 px-[5vw]">
       {leftIcon && (
         <PageButtonBase
           icon={leftIcon}

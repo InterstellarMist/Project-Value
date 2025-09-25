@@ -1,12 +1,11 @@
-import { addCollection } from "@iconify/react";
+import { addCollection, listIcons } from "@iconify/react";
+import type { IconifyCategories, IconifyJSON } from "@iconify/types";
 import {
   BaseDirectory,
   readTextFile,
   writeTextFile,
 } from "@tauri-apps/plugin-fs";
-import type { IconifyCategories, IconifyJSON } from "@iconify/types";
 import MiniSearch from "minisearch";
-import { listIcons } from "@iconify/react";
 
 let fluentIconCategories: IconifyCategories | null = null;
 
@@ -24,10 +23,7 @@ const handleIconSetData = (data: IconifyJSON) => {
     minisearch.addAll(preprocessIconSet(data));
   } catch {}
   addCollection(data);
-  console.log(data);
-  console.log(data.categories ?? {});
   fluentIconCategories = data.categories ?? {};
-  console.log(fluentIconCategories);
 };
 
 export const loadEmojis = async () => {
@@ -49,10 +45,6 @@ export const loadEmojis = async () => {
 };
 
 export const getIconCategories = () => {
-  if (!fluentIconCategories) {
-    console.log(fluentIconCategories);
-  }
-  console.log(fluentIconCategories);
   return Object.keys(fluentIconCategories ?? {});
 };
 
@@ -68,7 +60,6 @@ const preprocessIconSet = (iconSet: IconifyJSON) => {
       });
     }
   }
-  console.log(searchData);
   return searchData;
 };
 
@@ -77,8 +68,7 @@ export const searchIcons = (query: string, category: string) => {
     if (category === "All") {
       return listIcons("", "fluent-emoji-flat");
     } else {
-      console.log(fluentIconCategories?.[category]);
-      return fluentIconCategories?.[category];
+      return fluentIconCategories?.[category] ?? [];
     }
   }
 

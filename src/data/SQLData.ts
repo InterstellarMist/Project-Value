@@ -16,6 +16,10 @@ import type {
   TxnType,
 } from "@/types/transaction";
 
+interface AccountNode extends Account {
+  children: AccountNode[];
+}
+
 let db: Database | null = null;
 let txnTypeRef: Record<TxnType, number> | null = null;
 
@@ -113,18 +117,33 @@ export const getAllAccounts = async (): Promise<Account[]> => {
   );
 };
 
+// Constructs a tree representation of the accounts
+const constructAccountsTree = (
+  accountsData: Account[],
+  parentId: number | null = null,
+): AccountNode[] => {
+  return accountsData
+    .filter((node) => node.parentId === parentId)
+    .map((node) => ({
+      ...node,
+      children: constructAccountsTree(accountsData, node.acctId), // recursive call
+    }));
+};
+
 // Returns account data of the specified account type (acctType)
 export const getAccountType = async ([_, acctType]: [
   string,
   AcctTypeBase,
-]): Promise<Account[]> => {
+]): Promise<AccountNode[]> => {
   db = await loadDb();
-  return db.select(
+  const data: Account[] = await db.select(
     `SELECT acctId,acctType,name,parentId,icon,currency,hidden
     FROM accounts INNER JOIN acctType USING(acctTypeId)
     WHERE acctType = $1`,
     [acctType],
   );
+  console.log(constructAccountsTree(data));
+  return constructAccountsTree(data);
 };
 
 // Returns a list of accounts based on a simplified account type ("income","expenses","accounts")

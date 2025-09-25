@@ -62,7 +62,7 @@ export const AccountCarousel = ({
   setOpen: (value: boolean) => void;
 }) => {
   const { data: accountIds, isLoading } = useSWR(
-    ["/db/accounts", acctType],
+    ["/db/accounts/simple", acctType],
     getAccountIdSimple,
   );
 

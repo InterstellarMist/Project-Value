@@ -16,5 +16,3 @@ const createFilterStore = (initialValue: string) =>
 export const useAccountFilterStore = createFilterStore("0");
 // Account Types (Assets,Liabilities,Income,Expense)
 export const useAcctTypeFilterStore = createFilterStore("1");
-// Account Categories for Account Type
-export const useCategoryFilterStore = createFilterStore("1");

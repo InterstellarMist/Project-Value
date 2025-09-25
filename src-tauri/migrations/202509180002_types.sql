@@ -5,8 +5,7 @@ VALUES
   ("liabilities"),
   ("income"),
   ("expenses"),
-  ("equity"),
-  ("root");
+  ("equity");
 
 INSERT INTO
   txnType (txnType)

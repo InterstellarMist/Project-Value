@@ -1,8 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format, startOfToday } from "date-fns";
-import { Archive } from "lucide-react";
-import Image from "next/image";
+import { Archive, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type Control, type UseFormWatch, useForm } from "react-hook-form";
 import { type ScopedMutator, useSWRConfig } from "swr";
@@ -29,15 +28,15 @@ import { AccountsPicker } from "./AccountsPicker";
 import { DateTimePicker } from "./DateTimePicker";
 import { Button } from "./ui/button";
 
-export type FormTypes = z.infer<typeof FormSchema>;
+export type addTransactionFormTypes = z.infer<typeof FormSchema>;
 
-type FormDefaults = Omit<FormTypes, "debit" | "credit"> & {
+type FormDefaults = Omit<addTransactionFormTypes, "debit" | "credit"> & {
   debit: number | undefined;
   credit: number | undefined;
 };
 
 export interface ControlType {
-  control: Control<FormTypes>;
+  control: Control<addTransactionFormTypes>;
 }
 
 const FormSchema = z.object({
@@ -55,7 +54,7 @@ const FormSchema = z.object({
 const AmountInput = ({
   control,
   watch,
-}: ControlType & { watch: UseFormWatch<FormTypes> }) => {
+}: ControlType & { watch: UseFormWatch<addTransactionFormTypes> }) => {
   const txnType = watch("txnType");
   return (
     <FormField
@@ -188,11 +187,11 @@ export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
         debit: undefined,
       };
 
-  const form = useForm<FormTypes>({
+  const form = useForm<addTransactionFormTypes>({
     resolver: zodResolver(FormSchema),
     defaultValues: defaultValues,
   });
-  const onSubmit = async (data: FormTypes) => {
+  const onSubmit = async (data: addTransactionFormTypes) => {
     console.log(JSON.stringify(data, null, 2));
     router.back();
 
@@ -238,9 +237,9 @@ export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
         <AttachmentInput control={form.control} />
         <button
           type="submit"
-          className="absolute top-[calc(2rem+env(safe-area-inset-bottom)/2)] right-6 cursor-pointer"
+          className="absolute top-[calc(1.5rem+env(safe-area-inset-bottom)/2)] right-6 cursor-pointer hover:bg-white/50 rounded-full p-2"
         >
-          <Image src="/check.svg" alt="filter" width={32} height={32} />
+          <Check size={30} strokeWidth={1.25} />
         </button>
       </form>
       {isEdit && (

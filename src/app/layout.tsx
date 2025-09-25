@@ -3,8 +3,8 @@ import "@/styles/globals.css";
 import type { Viewport } from "next";
 import { Inter_Tight, Playfair_Display } from "next/font/google";
 import { Suspense } from "react";
-import { NavigationBar } from "@/components/NavigationBar";
 import { InitIconLoader } from "@/components/init/initIconLoader";
+import { NavigationBar } from "@/components/NavigationBar";
 
 const interTight = Inter_Tight({
   variable: "--font-inter-tight",
