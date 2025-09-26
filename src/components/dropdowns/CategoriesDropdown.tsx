@@ -1,4 +1,5 @@
 "use client";
+import useSWR from "swr";
 import { FormField, FormItem, FormMessage } from "@/components/ui/form";
 import {
   Select,
@@ -7,10 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { AddAccountControlTypes } from "../AddAccountDrawer";
 import { getCategoriesType } from "@/data/SQLData";
-import useSWR from "swr";
 import { useAcctTypeFilterStore } from "@/store/dropdownStores";
+import type { AddAccountControlTypes } from "../AddAccountDrawer";
 
 export const CategoriesDropdown = ({ control }: AddAccountControlTypes) => {
   const acctTypeId = Number(useAcctTypeFilterStore((s) => s.filter));

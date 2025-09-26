@@ -24,13 +24,18 @@ export const AccountEmoji = ({
 
   return inline ? (
     <InlineIcon
-      icon={emoji}
+      icon={!emoji ? "fluent-emoji-flat:eyes" : emoji}
       width={width}
       height={height}
       className={className}
     />
   ) : (
-    <Icon icon={emoji} width={width} height={height} className={className} />
+    <Icon
+      icon={!emoji ? "fluent-emoji-flat:eyes" : emoji}
+      width={width}
+      height={height}
+      className={className}
+    />
   );
 };
 

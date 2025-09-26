@@ -42,6 +42,12 @@ pub fn run() {
       sql: include_str!("../migrations/202509180005_test_data_postings.sql"),
       kind: MigrationKind::Up,
     },
+    Migration {
+      version: 6,
+      description: "update children account nodes on delete trigger",
+      sql: include_str!("../migrations/202509260006_update_children_delete_trigger.sql"),
+      kind: MigrationKind::Up,
+    },
   ];
 
   tauri::Builder::default()

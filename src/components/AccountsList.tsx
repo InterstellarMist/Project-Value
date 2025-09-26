@@ -11,11 +11,11 @@ import {
   useAccountFilterStore,
   useAcctTypeFilterStore,
 } from "@/store/dropdownStores";
+import { useDrawerState } from "@/store/uiStateStores";
+import { useAcctStore } from "@/store/useAcctStore";
 import type { Account } from "@/types/accounts";
 import { CardContainer } from "./CardContainer";
 import { AccountEmoji, AccountEmojiWithText } from "./EmojiLoader";
-import { useAcctStore } from "@/store/useAcctStore";
-import { useDrawerState } from "@/store/uiStateStores";
 
 export const NetWorthHomepage = () => {
   const { data: balances, isLoading } = useSWR(
@@ -85,7 +85,7 @@ export const AccountSummary = () => {
   );
 };
 
-const AccountCard = ({ acctId, acctType, name, currency }: Account) => {
+const AccountCard = ({ acctId, acctTypeId, name, currency }: Account) => {
   const setFilter = useAccountFilterStore((s) => s.setFilter);
   const { data: balances, isLoading } = useSWR("/db/balances", getBalanceSheet);
 
@@ -94,7 +94,7 @@ const AccountCard = ({ acctId, acctType, name, currency }: Account) => {
 
   // Prettify output: negate liabilities, zero empty accounts
   const balance =
-    (acctType === "liabilities" && balances[acctId] !== undefined ? -1 : 1) *
+    (acctTypeId === 2 && balances[acctId] !== undefined ? -1 : 1) *
     (balances[acctId] ?? 0);
 
   return (
@@ -129,7 +129,7 @@ export const AccountsHomepage = () => {
   return (
     <div className="w-9/10 grid grid-cols-3 gap-2">
       {accounts
-        .filter((account) => !account.hidden)
+        .filter((account) => !account.hidden && account.icon)
         .slice(0, 3) // TODO: Temporary Preview
         .map((account) => (
           <AccountCard key={account.acctId} {...account} />
@@ -138,6 +138,7 @@ export const AccountsHomepage = () => {
   );
 };
 
+// TODO: Update accounts fetching
 export const AccountsList = () => {
   const { data: accounts, isLoading } = useSWR(
     "/db/accounts/all",
@@ -152,7 +153,10 @@ export const AccountsList = () => {
       <h2 className="text-lg font-bold">Assets</h2>
       <div className="w-full grid grid-cols-3 gap-2">
         {accounts
-          .filter((account) => account.acctType === "assets" && !account.hidden)
+          .filter(
+            (account) =>
+              account.acctTypeId === 1 && !account.hidden && account.icon,
+          )
           .map((account) => (
             <AccountCard key={account.acctId} {...account} />
           ))}
@@ -161,7 +165,8 @@ export const AccountsList = () => {
       <div className="w-full grid grid-cols-3 gap-2">
         {accounts
           .filter(
-            (account) => account.acctType === "liabilities" && !account.hidden,
+            (account) =>
+              account.acctTypeId === 2 && !account.hidden && account.icon,
           )
           .map((account) => (
             <AccountCard key={account.acctId} {...account} />
@@ -172,7 +177,7 @@ export const AccountsList = () => {
       </h2>
       <div className="w-full grid grid-cols-3 gap-2">
         {accounts
-          .filter((account) => account.hidden)
+          .filter((account) => account.hidden && account.icon)
           .map((account) => (
             <AccountCard key={account.acctId} {...account} />
           ))}
@@ -197,6 +202,8 @@ export const ManageAccountsList = () => {
   const uncategorized = accounts[0].children.filter(
     (acc) => acc.children.length === 0 && acc.icon,
   );
+
+  console.log(accounts, uncategorized);
 
   return (
     <div className="w-[calc(90%+2rem)] flex flex-col gap-4 flex-1 overflow-y-auto pb-24 px-4">

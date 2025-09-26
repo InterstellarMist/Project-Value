@@ -1,8 +1,8 @@
+import { ManageAccountsList } from "@/components/AccountsList";
 import { AddAccountDrawer } from "@/components/AddAccountDrawer";
 import { AcctTypeDropdown } from "@/components/dropdowns/AcctTypeDropdown";
 import { ManageCategoriesDropdown } from "@/components/dropdowns/ManageCategoriesDropdown";
 import { TopBar } from "@/components/TopBar";
-import { ManageAccountsList } from "@/components/AccountsList";
 
 export default function ManageAccounts() {
   return (

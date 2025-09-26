@@ -7,16 +7,6 @@ export type AcctTypeBase =
   | "expenses"
   | "equity";
 
-export interface AccountOld {
-  acctId: number;
-  name: string;
-  acctType: AcctTypeBase;
-  parentId?: number;
-  icon?: string;
-  currency?: string;
-  hidden?: boolean;
-}
-
 export interface Account {
   acctId: number;
   name: string;
@@ -27,6 +17,4 @@ export interface Account {
   hidden?: boolean;
 }
 
-export interface AddAccount extends Omit<Account, "acctId" | "acctType"> {
-  acctTypeId: number;
-}
+export type AddAccount = Omit<Account, "acctId" | "acctType">;

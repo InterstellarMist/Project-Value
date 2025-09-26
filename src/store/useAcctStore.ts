@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import type { AccountNodeFull } from "@/data/dbTypes";
+import type { AccountNode } from "@/data/dbTypes";
 
 interface AcctStore {
-  AcctSelected: AccountNodeFull;
-  setAcctSelected: (data: AccountNodeFull) => void;
+  AcctSelected: AccountNode;
+  setAcctSelected: (data: AccountNode) => void;
 }
 
 // stores selected transaction data for edit transactions page

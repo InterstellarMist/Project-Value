@@ -1,9 +1,10 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
-import { Check, CircleCheck } from "lucide-react";
+import { Archive, Check, CircleCheck } from "lucide-react";
 import { useState } from "react";
 import { type Control, useForm } from "react-hook-form";
+import { type ScopedMutator, useSWRConfig } from "swr";
 import { z } from "zod";
 import { CardContainer } from "@/components/CardContainer";
 import { CategoriesDropdown } from "@/components/dropdowns/CategoriesDropdown";
@@ -32,13 +33,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getIconCategories, searchIcons } from "@/data/iconifyFetch";
+import { addAccount, deleteAccount, editAccount } from "@/data/SQLData";
 import { cn } from "@/lib/utils";
 import { useAcctTypeFilterStore } from "@/store/dropdownStores";
 import { useDrawerState } from "@/store/uiStateStores";
-import type { AddAccount } from "@/types/accounts";
-import { addAccount } from "@/data/SQLData";
-import { type ScopedMutator, useSWRConfig } from "swr";
 import { useAcctStore } from "@/store/useAcctStore";
+import type { AddAccount } from "@/types/accounts";
 
 type FormTypes = z.infer<typeof FormSchema>;
 
@@ -164,7 +164,6 @@ const EmojiPicker = ({
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
-            console.log(searchIcons(e.target.value, emojiCategory));
           }}
           className="w-46 h-10 p-2 flex-1 placeholder:text-gray-500 border-2 rounded-lg mb-2"
         />
@@ -254,8 +253,6 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
   const setOpenDrawer = useDrawerState((s) => s.setOpenDrawer);
   const { mutate } = useSWRConfig();
 
-  console.log(isEdit, acctSelected);
-
   const defaultValues = isEdit
     ? {
         name: acctSelected.name,
@@ -286,8 +283,21 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
 
     console.log(JSON.stringify(formattedData, null, 2));
 
-    await addAccount(formattedData);
+    if (isEdit) {
+      await editAccount(acctSelected.acctId, formattedData);
+    } else {
+      await addAccount(formattedData);
+    }
+
     revalidateAccounts(mutate, acctTypeId);
+  };
+
+  const onDelete = () => {
+    console.log("Delete", acctSelected.acctId);
+    deleteAccount(acctSelected.acctId);
+    revalidateAccounts(mutate, acctTypeId);
+    setOpenDrawer(false, false);
+    return;
   };
 
   return (
@@ -333,6 +343,16 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
         >
           <Check size={30} strokeWidth={1.25} />
         </button>
+        {isEdit && (
+          <Button
+            variant="destructive"
+            className="font-normal h-8 absolute top-[calc(2rem+env(safe-area-inset-bottom)/2)] left-6"
+            onClick={onDelete}
+          >
+            <Archive />
+            Archive
+          </Button>
+        )}
       </form>
     </Form>
   );

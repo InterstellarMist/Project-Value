@@ -10,6 +10,7 @@ import {
 import { getAccountIdSimple } from "@/data/SQLData";
 import type { AcctTypeSimple } from "@/types/accounts";
 import { AccountEmojiWithText } from "./EmojiLoader";
+import { useFilterBarStore } from "@/store/uiStateStores";
 
 const SelectionGrid = ({
   accountIds,
@@ -21,13 +22,13 @@ const SelectionGrid = ({
   setOpen: (value: boolean) => void;
 }) => {
   return (
-    <div className="w-[8/10] grid grid-cols-3 px-4 pb-4 gap-y-3 gap-x-10">
+    <div className="w-[8/10] grid grid-cols-3 px-4 pb-4 gap-y-1 gap-x-10 justify-items-center">
       {accountIds.map((val) => {
         return (
           <button
             key={val}
             type="button"
-            className="flex flex-col items-center justify-items-center gap-2 p-1 rounded-xl"
+            className="w-24 not-first-of-type:gap-2 p-2 rounded-xl hover:bg-black/10 cursor-pointer"
             onClick={() => {
               onSelect(val);
               setOpen(false);
@@ -61,11 +62,12 @@ export const AccountCarousel = ({
   onSelect: (value: number) => void;
   setOpen: (value: boolean) => void;
 }) => {
-  const { data: accountIds, isLoading } = useSWR(
+  const { data: acctIds, isLoading } = useSWR(
     ["/db/accounts/simple", acctType],
     getAccountIdSimple,
   );
 
+  const category = useFilterBarStore((s) => s.category);
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [scrollList, setScrollList] = useState<number[]>([]);
@@ -82,19 +84,22 @@ export const AccountCarousel = ({
   }, [api]);
 
   if (isLoading) return <p>Loading...</p>;
-  if (!accountIds) return <p>No data</p>;
+  if (!acctIds) return <p>No data</p>;
+
+  console.log(acctIds);
 
   return (
     <div>
       <Carousel setApi={setApi}>
         <CarouselContent>
-          {generateGridPages(accountIds).map((page) => {
-            return (
-              <CarouselItem key={page[0]}>
-                <SelectionGrid {...props} accountIds={page} />
-              </CarouselItem>
-            );
-          })}
+          {acctIds[category] &&
+            generateGridPages(acctIds[category]).map((page) => {
+              return (
+                <CarouselItem key={page[0]}>
+                  <SelectionGrid {...props} accountIds={page} />
+                </CarouselItem>
+              );
+            })}
         </CarouselContent>
       </Carousel>
       <div className="flex justify-center pb-4">

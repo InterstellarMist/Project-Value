@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { AcctTypeSimple } from "@/types/accounts";
 import type { PostingType } from "@/types/transaction";
 import { AccountCarousel } from "./AccountCarousel";
+import { CategoriesFilterBar } from "./CategoriesFilterBar";
 import { AccountEmojiWithText } from "./EmojiLoader";
 import type { addTransactionFormTypes, ControlType } from "./TransactionForm";
 import {
@@ -85,6 +86,7 @@ const AccountsDrawer = ({
                 </DrawerTitle>
                 <DrawerDescription>Select one</DrawerDescription>
               </DrawerHeader>
+              <CategoriesFilterBar acctType={acctType} />
               <AccountCarousel
                 setOpen={setOpen}
                 onSelect={field.onChange}

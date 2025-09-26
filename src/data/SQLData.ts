@@ -1,12 +1,12 @@
 import Database from "@tauri-apps/plugin-sql";
 import type {
   AccountName,
+  AccountNode,
   AcctTypeTable,
   BalanceSheet,
   BalanceSummary,
   EmojiEntry,
   TxnTypeTable,
-  AccountNodeFull,
 } from "@/data/dbTypes";
 import type {
   Account,
@@ -130,8 +130,8 @@ export const getAccNames = async (): Promise<Record<string, string>> => {
 export const getAllAccounts = async (): Promise<Account[]> => {
   db = await loadDb();
   return db.select(
-    `SELECT acctId,acctType,name,parentId,icon,currency,hidden
-    FROM accounts INNER JOIN acctType USING(acctTypeId)`,
+    `SELECT acctId,acctTypeId,name,parentId,icon,currency,hidden
+    FROM accounts`,
   );
 };
 
@@ -139,7 +139,7 @@ export const getAllAccounts = async (): Promise<Account[]> => {
 const constructAccountsTree = (
   accountsData: Account[],
   parentId: number | null = null,
-): AccountNodeFull[] => {
+): AccountNode[] => {
   return accountsData
     .filter((node) => node.parentId === parentId)
     .map((node) => ({
@@ -152,7 +152,7 @@ const constructAccountsTree = (
 export const getAccountType = async ([_, acctTypeId]: [
   string,
   number,
-]): Promise<AccountNodeFull[]> => {
+]): Promise<AccountNode[]> => {
   db = await loadDb();
   const data: Account[] = await db.select(
     `SELECT acctId,acctTypeId,name,parentId,icon,currency,hidden
@@ -163,41 +163,94 @@ export const getAccountType = async ([_, acctTypeId]: [
   return constructAccountsTree(data);
 };
 
-// Return account categories for the specified account type (acctType)
+// Return account categories for the specified account type ID (acctTypeID)
 export const getCategoriesType = async ([_, acctTypeId]: [string, number]) => {
   const accountsTree = await getAccountType([_, acctTypeId]);
   const root = accountsTree[0];
-  return root.children
+  const categories = root.children
     .filter((category) => !category.icon)
     .map((category) => ({
       acctId: category.acctId,
       name: category.name,
-    }))
-    .concat([{ acctId: root.acctId, name: "Uncategorized" }]);
+    }));
+
+  return [...categories, { acctId: root.acctId, name: "Uncategorized" }];
+};
+
+// Returns a list of categories based on a simplified account type ("income","expenses","accounts")
+export const getCategoriesSimple = async ([_, acctType]: [
+  string,
+  AcctTypeSimple,
+]) => {
+  switch (acctType) {
+    case "accounts": {
+      const assetCategories = await getCategoriesType([_, 1]);
+      const liabilitiesCategories = await getCategoriesType([_, 2]);
+      return [
+        ...assetCategories.map((cat) =>
+          cat.name === "Uncategorized" ? { ...cat, name: "Assets" } : cat,
+        ),
+        ...liabilitiesCategories.map((cat) =>
+          cat.name === "Uncategorized" ? { ...cat, name: "Liabilities" } : cat,
+        ),
+      ];
+    }
+    case "income": {
+      const categories = await getCategoriesType([_, 3]);
+      return categories.map((cat) =>
+        cat.name === "Uncategorized" ? { ...cat, name: "Income" } : cat,
+      );
+    }
+    case "expenses": {
+      const categories = await getCategoriesType([_, 4]);
+      return categories.map((cat) =>
+        cat.name === "Uncategorized" ? { ...cat, name: "Expenses" } : cat,
+      );
+    }
+  }
 };
 
 // Returns a list of accounts based on a simplified account type ("income","expenses","accounts")
 export const getAccountIdSimple = async ([_, acctType]: [
   string,
   AcctTypeSimple,
-]): Promise<number[]> => {
-  db = await loadDb();
-  let data: { acctId: number }[];
-  if (acctType === "accounts") {
-    data = await db.select(
-      `SELECT acctId
-    FROM accounts INNER JOIN acctType USING(acctTypeId)
-    WHERE acctType = "liabilities" OR acctType = "assets"`,
+]): Promise<Record<number, number[]>> => {
+  const getAcctIds = (node: AccountNode): Record<number, number[]>[] => [
+    {
+      [node.acctId]: node.children.flatMap((child) =>
+        child.icon ? child.acctId : [],
+      ),
+    },
+    ...node.children.flatMap((child) => getAcctIds(child)),
+  ];
+
+  const formatList = (
+    iconList: Record<number, number[]>[],
+  ): Record<number, number[]> => {
+    return Object.assign(
+      {},
+      ...iconList.filter((row) => Object.values(row)[0].length > 0),
     );
-  } else {
-    data = await db.select(
-      `SELECT acctId
-      FROM accounts INNER JOIN acctType USING(acctTypeId)
-      WHERE acctType = $1`,
-      [acctType],
-    );
+  };
+
+  switch (acctType) {
+    case "accounts": {
+      const assets = await getAccountType([_, 1]);
+      const liabilities = await getAccountType([_, 2]);
+      return formatList([
+        ...assets.flatMap(getAcctIds),
+        ...liabilities.flatMap(getAcctIds),
+      ]);
+    }
+    case "income": {
+      const income = await getAccountType([_, 3]);
+      return formatList(income.flatMap(getAcctIds));
+    }
+    case "expenses": {
+      const expenses = await getAccountType([_, 4]);
+      return formatList(expenses.flatMap(getAcctIds));
+    }
   }
-  return data.map((acc) => acc.acctId);
 };
 
 // =================== BALANCE METHODS =========================
@@ -377,6 +430,27 @@ export const editTransaction = async (
   return result;
 };
 
+export const editAccount = async (acctId: number, acctData: AddAccount) => {
+  db = await loadDb();
+
+  const res = await db.execute(
+    `UPDATE accounts
+    SET acctTypeId =$1, name=$2, parentId=$3, icon=$4, currency=$5
+    WHERE acctId = $6`,
+    [
+      acctData.acctTypeId,
+      acctData.name,
+      acctData.parentId,
+      acctData.icon,
+      acctData.currency,
+      acctId,
+    ],
+  );
+
+  console.log(res);
+  return res;
+};
+
 // ============================== DELETE METHODS =================================
 
 export const deleteTransaction = async (txnId: number) => {
@@ -385,6 +459,17 @@ export const deleteTransaction = async (txnId: number) => {
     `DELETE FROM transactions 
     WHERE txnId = $1`,
     [txnId],
+  );
+  console.log(res);
+  return res;
+};
+
+export const deleteAccount = async (AcctId: number) => {
+  db = await loadDb();
+  const res = await db.execute(
+    `DELETE FROM accounts 
+    WHERE acctId = $1`,
+    [AcctId],
   );
   console.log(res);
   return res;
