@@ -1,115 +1,99 @@
-# Tauri 2.0 + Next.js 15 App Router Template
+# Project Value
 
-![Tauri window screenshot](public/tauri-nextjs-template-2_screenshot.png)
+  <p align="center" style="display: flex; gap: 16px; justify-content: center;">
+    <img src="images/homepage.png" alt="Project Value Home" width="300" style="display: inline-block; vertical-align: top; margin-right: 8px;" />
+    <img src="images/add transaction.png" alt="Add Transaction" width="300" style="display: inline-block; vertical-align: top;" />
+    <img src="images/transactions page.png" alt="Transactions Page" width="300" style="display: inline-block; vertical-align: top;" />
+  </p>
 
-This is a [Tauri](https://v2.tauri.app/) project template using [Next.js](https://nextjs.org/),
-bootstrapped by combining [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app)
-and [`create tauri-app`](https://v2.tauri.app/start/create-project/).
+  **Project Value** is a minimal, offline-first personal finance app focused on simple and intuitive UX, while leveraging the power of double-entry accounting. Designed for users who want a fast, distraction-free way to track their finances, Project Value emphasizes clarity, speed, and visual delight.
 
-This template uses [`pnpm`](https://pnpm.io/) as the Node.js dependency
-manager, and uses the [App Router](https://nextjs.org/docs/app) model for Next.js.
+  ## Key Features
 
-## Template Features
+  - **Offline-First:** All data is stored locally using SQLite, ensuring privacy and instant access.
+  - **Double-Entry Accounting:** Robust, accurate financial tracking with a proven accounting method.
+  - **Intuitive UX:** Minimalist design with a focus on ease of use and quick navigation.
+  - **Visually Pleasing Emojis:** Emojis are central to the experience, making transaction creation and management fun and instantly recognizable.
+  - **Fast Search:** Lightning-fast transaction and account search powered by MiniSearch.
+  - **Modern UI:** Built with shadcn/ui and TailwindCSS for a clean, responsive interface.
 
-- TypeScript frontend using [Next.js 15](https://nextjs.org/) React framework
-- [TailwindCSS 4](https://tailwindcss.com/) as a utility-first atomic CSS framework
-  - The example page in this template app has been updated to use only TailwindCSS
-  - While not included by default, consider using
-    [React Aria components](https://react-spectrum.adobe.com/react-aria/index.html)
-    and/or [HeadlessUI components](https://headlessui.com/) for completely unstyled and
-    fully accessible UI components, which integrate nicely with TailwindCSS
-- Opinionated formatting and linting already setup and enabled
-  - [Biome](https://biomejs.dev/) for a combination of fast formatting, linting, and
-    import sorting of TypeScript code, and [ESLint](https://eslint.org/) for any missing
-    Next.js linter rules not covered by Biome
-  - [clippy](https://github.com/rust-lang/rust-clippy) and
-    [rustfmt](https://github.com/rust-lang/rustfmt) for Rust code
-- GitHub Actions to check code formatting and linting for both TypeScript and Rust
+  ## The Power of Emojis
 
-## Getting Started
+  Emojis are more than decoration—they are the heart of Project Value’s user experience. By associating accounts, categories, and transactions with expressive, beautiful emojis, the app makes it easy to scan, create, and manage your finances at a glance. This approach simplifies complex financial data and brings joy to everyday money management.
 
-### Running development server and use Tauri window
+  > **Emoji Attribution:**  
+  > Emoji assets are provided by [Microsoft Fluent Emoji](https://github.com/microsoft/fluentui-emoji).
 
-After cloning for the first time, change your app identifier inside
-`src-tauri/tauri.conf.json` to your own:
+  ## Tech Stack & Key Libraries
 
-```jsonc
-{
-  // ...
-  // The default "com.tauri.dev" will prevent you from building in release mode
-  "identifier": "com.my-application-name.app",
-  // ...
-}
-```
+  - **[Next.js](https://nextjs.org/):** Modern React framework for fast, scalable UIs.
+  - **[Tauri](https://tauri.app/):** Secure, lightweight desktop app runtime.
+  - **[SQLite](https://www.sqlite.org/):** Embedded local database for offline data.
+  - **[zustand](https://github.com/pmndrs/zustand):** Simple, fast state management.
+  - **[react-swr](https://swr.vercel.app/):** Data fetching and caching for React.
+  - **[MiniSearch](https://github.com/lucaong/minisearch):** Full-text search in the browser.
+  - **[shadcn/ui](https://ui.shadcn.com/):** Accessible, unstyled UI components.
+  - **[TailwindCSS](https://tailwindcss.com/):** Utility-first CSS for rapid UI development.
 
-To develop and run the frontend in a Tauri window:
+  ### Other Suggestions
 
-```shell
-pnpm tauri dev
-```
+  - **Testing:** Consider [Vitest](https://vitest.dev/) for fast unit testing.
+  - **Type Safety:** [TypeScript](https://www.typescriptlang.org/) is already in use for robust type checking.
+  - **Linting & Formatting:** [Biome](https://biomejs.dev/) and ESLint for code quality.
+  - **Cross-Platform:** Tauri enables Windows, Linux, and macOS support.
 
-This will load the Next.js frontend directly in a Tauri webview window, in addition to
-starting a development server on `localhost:3000`.
-Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd> in a Chromium based WebView (e.g. on
-Windows) to open the web developer console from the Tauri window.
+  ## Getting Started
 
-### Building for release
+  ### Prerequisites
 
-To export the Next.js frontend via SSG and build the Tauri application for release:
+  - [pnpm](https://pnpm.io/) (recommended)
+  - [Rust](https://www.rust-lang.org/) (for Tauri backend)
+  - [Node.js](https://nodejs.org/)
 
-```shell
-pnpm tauri build
-```
+  ### Installation
 
-### Source structure
+  1. **Clone the repository:**
+     ```sh
+     git clone <repo-url>
+     cd Project-Value
+     ```
+  2. **Install dependencies:**
+     ```sh
+     pnpm install
+     ```
+  3. **Run in development mode:**
+     ```sh
+     pnpm tauri dev
+     ```
 
-Next.js frontend source files are located in `src/` and Tauri Rust application source
-files are located in `src-tauri/`. Please consult the Next.js and Tauri documentation
-respectively for questions pertaining to either technology.
+  ### Building for Release
 
-## Caveats
+  ```sh
+  pnpm tauri build
+  ```
 
-### Static Site Generation / Pre-rendering
+  ## Project Structure
 
-Next.js is a great React frontend framework which supports server-side rendering (SSR)
-as well as static site generation (SSG or pre-rendering). For the purposes of creating a
-Tauri frontend, only SSG can be used since SSR requires an active Node.js server.
+  - `src/` – Next.js frontend (React, UI, logic)
+  - `src-tauri/` – Tauri backend (Rust, config)
+  - `images/` – App screenshots and emoji assets
+  - `public/` – Static files and icons
 
-Please read into the Next.js documentation for [Static Exports](https://nextjs.org/docs/app/building-your-application/deploying/static-exports)
-for an explanation of supported / unsupported features and caveats.
+  ## Other App Screenshots
 
-### `next/image`
+  <p align="center" style="display: flex; gap: 16px; justify-content: center;">
+    <img src="images/accounts page.png" alt="Accounts Page" width="300" style="display: inline-block; vertical-align: top; margin-right: 8px;" />
+    <img src="images/add account.png" alt="Add Account Page" width="300" style="display: inline-block; vertical-align: top;" />
+    <img src="images/settings.png" alt="Settings Page" width="300" style="display: inline-block; vertical-align: top;" />
+  </p>
 
-The [`next/image` component](https://nextjs.org/docs/basic-features/image-optimization)
-is an enhancement over the regular `<img>` HTML element with server-side optimizations
-to dynamically scale the image quality. This is only supported when deploying the
-frontend onto Vercel directly, and must be disabled to properly export the frontend
-statically. As such, the
-[`unoptimized` property](https://nextjs.org/docs/api-reference/next/image#unoptimized)
-is set to true for the `next/image` component in the `next.config.js` configuration.
-This will allow the image to be served as-is, without changes to its quality, size,
-or format.
+  ## Roadmap & Planned Features
 
-### ReferenceError: window/navigator is not defined
+  - **Cross-Platform Support:** Web, desktop (Tauri), and mobile (future release) for seamless access everywhere.
+  - **Cloud Syncing:** Securely sync your data across devices, with optional end-to-end encryption.
+  - **User Authentication:** Sign in to access your data anywhere, with privacy-first options.
+  - **Self-Hosting with Docker:** Run your own sync server for maximum control and privacy.
 
-If you are using Tauri's `invoke` function or any OS related Tauri function from within
-JavaScript, you may encounter this error when importing the function in a global,
-non-browser context. This is due to the nature of Next.js' dev server effectively
-running a Node.js server for SSR and hot module replacement (HMR), and Node.js does not
-have a notion of `window` or `navigator`.
+  ## License
 
-The solution is to ensure that the Tauri functions are imported as late as possible
-from within a client-side React component, or via [lazy loading](https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading).
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and
-  API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-And to learn more about Tauri, take a look at the following resources:
-
-- [Tauri Documentation - Guides](https://v2.tauri.app/start/) - learn about the Tauri
-  toolkit.
+  MIT License. See [LICENSE](LICENSE) for details.
