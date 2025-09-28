@@ -2,7 +2,6 @@
 
   <p align="center" style="display: flex; gap: 16px; justify-content: center;">
     <img src="images/homepage.png" alt="Project Value Home" width="300" style="display: inline-block; vertical-align: top; margin-right: 8px;" />
-    <img src="images/add transaction.png" alt="Add Transaction" width="300" style="display: inline-block; vertical-align: top;" />
     <img src="images/transactions page.png" alt="Transactions Page" width="300" style="display: inline-block; vertical-align: top;" />
   </p>
 
@@ -81,9 +80,10 @@
 
   ## Other App Screenshots
 
-  <p align="center" style="display: flex; gap: 16px; justify-content: center;">
+  <p align="center" style="display: grid;grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; justify-content: center;">
     <img src="images/accounts page.png" alt="Accounts Page" width="300" style="display: inline-block; vertical-align: top; margin-right: 8px;" />
     <img src="images/add account.png" alt="Add Account Page" width="300" style="display: inline-block; vertical-align: top;" />
+    <img src="images/add transaction.png" alt="Add Transaction" width="300" style="display: inline-block; vertical-align: top;" />
     <img src="images/settings.png" alt="Settings Page" width="300" style="display: inline-block; vertical-align: top;" />
   </p>
 
