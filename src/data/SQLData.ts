@@ -2,6 +2,7 @@ import Database from "@tauri-apps/plugin-sql";
 import type {
   AccountName,
   AccountNode,
+  AccountNodeSimple,
   AcctTypeTable,
   BalanceSheet,
   BalanceSummary,
@@ -163,6 +164,50 @@ export const getAccountType = async ([_, acctTypeId]: [
   return constructAccountsTree(data);
 };
 
+// Returns a list of categories based on a simplified account type (income,expenses,accounts)
+// along with the accountIds of its children
+export const getAccountsSimple = async ([_, acctType]: [
+  string,
+  AcctTypeSimple,
+]) => {
+  const filterData = (node: AccountNode): AccountNodeSimple[] => {
+    const children = node.children.flatMap((child) =>
+      child.icon ? child.acctId : [],
+    );
+
+    if (!children.length)
+      return [...node.children.flatMap((child) => filterData(child))];
+
+    return [
+      {
+        acctId: node.acctId,
+        name: node.name,
+        children: children,
+      },
+      ...node.children.flatMap((child) => filterData(child)),
+    ];
+  };
+
+  switch (acctType) {
+    case "accounts": {
+      const assets = await getAccountType([_, 1]);
+      const liabilities = await getAccountType([_, 2]);
+      return [
+        ...assets.flatMap(filterData),
+        ...liabilities.flatMap(filterData),
+      ];
+    }
+    case "income": {
+      const income = await getAccountType([_, 3]);
+      return income.flatMap(filterData);
+    }
+    case "expenses": {
+      const expenses = await getAccountType([_, 4]);
+      return expenses.flatMap(filterData);
+    }
+  }
+};
+
 // Return account categories for the specified account type ID (acctTypeID)
 export const getCategoriesType = async ([_, acctTypeId]: [string, number]) => {
   const accountsTree = await getAccountType([_, acctTypeId]);
@@ -175,82 +220,6 @@ export const getCategoriesType = async ([_, acctTypeId]: [string, number]) => {
     }));
 
   return [...categories, { acctId: root.acctId, name: "Uncategorized" }];
-};
-
-// Returns a list of categories based on a simplified account type ("income","expenses","accounts")
-export const getCategoriesSimple = async ([_, acctType]: [
-  string,
-  AcctTypeSimple,
-]) => {
-  switch (acctType) {
-    case "accounts": {
-      const assetCategories = await getCategoriesType([_, 1]);
-      const liabilitiesCategories = await getCategoriesType([_, 2]);
-      return [
-        ...assetCategories.map((cat) =>
-          cat.name === "Uncategorized" ? { ...cat, name: "Assets" } : cat,
-        ),
-        ...liabilitiesCategories.map((cat) =>
-          cat.name === "Uncategorized" ? { ...cat, name: "Liabilities" } : cat,
-        ),
-      ];
-    }
-    case "income": {
-      const categories = await getCategoriesType([_, 3]);
-      return categories.map((cat) =>
-        cat.name === "Uncategorized" ? { ...cat, name: "Income" } : cat,
-      );
-    }
-    case "expenses": {
-      const categories = await getCategoriesType([_, 4]);
-      return categories.map((cat) =>
-        cat.name === "Uncategorized" ? { ...cat, name: "Expenses" } : cat,
-      );
-    }
-  }
-};
-
-// Returns a list of accounts based on a simplified account type ("income","expenses","accounts")
-export const getAccountIdSimple = async ([_, acctType]: [
-  string,
-  AcctTypeSimple,
-]): Promise<Record<number, number[]>> => {
-  const getAcctIds = (node: AccountNode): Record<number, number[]>[] => [
-    {
-      [node.acctId]: node.children.flatMap((child) =>
-        child.icon ? child.acctId : [],
-      ),
-    },
-    ...node.children.flatMap((child) => getAcctIds(child)),
-  ];
-
-  const formatList = (
-    iconList: Record<number, number[]>[],
-  ): Record<number, number[]> => {
-    return Object.assign(
-      {},
-      ...iconList.filter((row) => Object.values(row)[0].length > 0),
-    );
-  };
-
-  switch (acctType) {
-    case "accounts": {
-      const assets = await getAccountType([_, 1]);
-      const liabilities = await getAccountType([_, 2]);
-      return formatList([
-        ...assets.flatMap(getAcctIds),
-        ...liabilities.flatMap(getAcctIds),
-      ]);
-    }
-    case "income": {
-      const income = await getAccountType([_, 3]);
-      return formatList(income.flatMap(getAcctIds));
-    }
-    case "expenses": {
-      const expenses = await getAccountType([_, 4]);
-      return formatList(expenses.flatMap(getAcctIds));
-    }
-  }
 };
 
 // =================== BALANCE METHODS =========================

@@ -34,3 +34,7 @@ export interface BalanceSummary {
 export interface AccountNode extends Account {
   children: AccountNode[];
 }
+
+export interface AccountNodeSimple extends Pick<Account, "acctId" | "name"> {
+  children: number[];
+}

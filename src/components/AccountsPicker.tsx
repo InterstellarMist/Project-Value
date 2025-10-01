@@ -14,7 +14,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { AcctTypeSimple } from "@/types/accounts";
 import type { PostingType } from "@/types/transaction";
 import { AccountCarousel } from "./AccountCarousel";
-import { CategoriesFilterBar } from "./CategoriesFilterBar";
 import { AccountEmojiWithText } from "./EmojiLoader";
 import type { addTransactionFormTypes, ControlType } from "./TransactionForm";
 import {
@@ -24,6 +23,7 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
+import { motion } from "motion/react";
 
 const labels = {
   income: "Income",
@@ -79,14 +79,13 @@ const AccountsDrawer = ({
             <FormLabel className="text-lg text-center font-normal">
               {labels[acctType]}
             </FormLabel>
-            <DrawerContent className="pb-[calc(env(safe-area-inset-bottom)/2)] min-w-[24rem]">
+            <DrawerContent className=" pb-[calc(env(safe-area-inset-bottom)/2)] min-w-[24rem]">
               <DrawerHeader className="pt-2">
                 <DrawerTitle className="font-serif text-2xl font-normal">
                   {labels[acctType]}
                 </DrawerTitle>
                 <DrawerDescription>Select one</DrawerDescription>
               </DrawerHeader>
-              <CategoriesFilterBar acctType={acctType} />
               <AccountCarousel
                 setOpen={setOpen}
                 onSelect={field.onChange}
