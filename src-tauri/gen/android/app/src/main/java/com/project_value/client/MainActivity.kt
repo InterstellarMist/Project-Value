@@ -1,4 +1,4 @@
-package com.project_value.dev
+package com.project_value.client
 
 import android.os.Bundle
 import android.view.KeyEvent

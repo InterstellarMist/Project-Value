@@ -15,17 +15,14 @@ val tauriProperties = Properties().apply {
 
 android {
     compileSdk = 36
-    namespace = "com.project_value.dev"
+    namespace = "com.project_value.client"
     defaultConfig {
         manifestPlaceholders["usesCleartextTraffic"] = "false"
-        applicationId = "com.project_value.dev"
+        applicationId = "com.project_value.client"
         minSdk = 24
         targetSdk = 36
         versionCode = tauriProperties.getProperty("tauri.android.versionCode", "1").toInt()
         versionName = tauriProperties.getProperty("tauri.android.versionName", "1.0")
-        ndk {
-          abiFilters += listOf("arm64-v8a")
-        }
     }
     buildTypes {
         getByName("debug") {
