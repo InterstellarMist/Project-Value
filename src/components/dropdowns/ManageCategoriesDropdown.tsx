@@ -93,9 +93,6 @@ export const ManageCategoriesDropdown = () => {
     } else {
       // Edit
       setCurrentRename(acctId);
-      // console.log(acctId, renameInputRef.current);
-      // console.log(renameInputRef.current);
-      // renameInputRef.current?.focus();
     }
   };
 

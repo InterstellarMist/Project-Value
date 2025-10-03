@@ -1,6 +1,9 @@
 "use client";
+import { motion, spring } from "motion/react";
 import { useEffect, useState } from "react";
+import useMeasure from "react-use-measure";
 import useSWR from "swr";
+import { CategoriesFilterBar } from "@/components/CategoriesFilterBar";
 import type { CarouselApi } from "@/components/ui/carousel";
 import {
   Carousel,
@@ -10,9 +13,6 @@ import {
 import { getAccountsSimple } from "@/data/SQLData";
 import type { AcctTypeSimple } from "@/types/accounts";
 import { AccountEmojiWithText } from "./EmojiLoader";
-import { CategoriesFilterBar } from "@/components/CategoriesFilterBar";
-import { motion, spring } from "motion/react";
-import useMeasure from "react-use-measure";
 
 const SelectionGrid = ({
   accountIds,
