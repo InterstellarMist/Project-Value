@@ -3,7 +3,7 @@ import "@/styles/globals.css";
 import type { Viewport } from "next";
 import { Inter_Tight, Playfair_Display } from "next/font/google";
 import { Suspense } from "react";
-import { InitIconLoader } from "@/components/init/initIconLoader";
+import { InitLoaders } from "@/components/init/initLoaders";
 import { NavigationBar } from "@/components/NavigationBar";
 
 const interTight = Inter_Tight({
@@ -32,7 +32,7 @@ export default function RootLayout({
       >
         <Suspense fallback={<>...Loading</>}>
           <div className="blurry-bg min-w-[24rem]">
-            <InitIconLoader>{children}</InitIconLoader>
+            <InitLoaders>{children}</InitLoaders>
           </div>
         </Suspense>
         <NavigationBar variant="glass" />

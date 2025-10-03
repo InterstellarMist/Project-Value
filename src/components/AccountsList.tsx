@@ -203,8 +203,6 @@ export const ManageAccountsList = () => {
     (acc) => acc.children.length === 0 && acc.icon,
   );
 
-  console.log(accounts, uncategorized);
-
   return (
     <div className="w-[calc(90%+2rem)] flex flex-col gap-4 flex-1 overflow-y-auto pb-24 px-4">
       {accounts[0].children

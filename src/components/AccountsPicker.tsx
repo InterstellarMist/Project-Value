@@ -23,7 +23,6 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
-import { motion } from "motion/react";
 
 const labels = {
   income: "Income",

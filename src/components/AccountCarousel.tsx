@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, type Ref } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import type { CarouselApi } from "@/components/ui/carousel";
 import {
@@ -11,7 +11,7 @@ import { getAccountsSimple } from "@/data/SQLData";
 import type { AcctTypeSimple } from "@/types/accounts";
 import { AccountEmojiWithText } from "./EmojiLoader";
 import { CategoriesFilterBar } from "@/components/CategoriesFilterBar";
-import { AnimatePresence, motion, spring } from "motion/react";
+import { motion, spring } from "motion/react";
 import useMeasure from "react-use-measure";
 
 const SelectionGrid = ({
@@ -58,7 +58,6 @@ const generateGridPages = (accountIds: number[], chunk = 9) => {
 
 const CarouselResizeWrapper = ({ children }: { children: React.ReactNode }) => {
   const [ref, bounds] = useMeasure();
-  // console.log(bounds.height);
   return (
     <motion.div
       animate={{ height: bounds.height }}

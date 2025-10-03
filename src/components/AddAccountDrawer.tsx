@@ -119,7 +119,6 @@ const OpeningBalanceInput = ({ control }: AddAccountControlTypes) => {
   );
 };
 
-// TODO: dynamic accounts
 const IconCategorySelect = ({
   categoryList,
   value,
@@ -292,18 +291,17 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
     revalidateAccounts(mutate, acctTypeId);
   };
 
-  const onDelete = () => {
+  const onDelete = async () => {
     console.log("Delete", acctSelected.acctId);
-    deleteAccount(acctSelected.acctId);
+    await deleteAccount(acctSelected.acctId);
     revalidateAccounts(mutate, acctTypeId);
     setOpenDrawer(false, false);
-    return;
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex flex-col items-center gap-8 mb-8">
+        <div className="max-h-[70dvh] flex flex-col items-center gap-6 mb-[calc(max(env(safe-area-inset-bottom),2em)/2)] box-sizing overflow-y-auto">
           <CategoriesDropdown control={form.control} />
           <FormField
             control={form.control}
@@ -365,6 +363,7 @@ export const AddAccountDrawer = () => {
 
   return (
     <Drawer
+      repositionInputs={false}
       open={openDrawer}
       onOpenChange={(open) => setOpenDrawer(open, false)}
       snapPoints={snapPoints}

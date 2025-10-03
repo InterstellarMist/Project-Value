@@ -219,12 +219,11 @@ export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
     revalidateTransactions(mutate, account);
   };
 
-  const onDelete = () => {
+  const onDelete = async () => {
     console.log("Delete", txnId);
-    deleteTransaction(txnId);
+    await deleteTransaction(txnId);
     revalidateTransactions(mutate, account);
     router.back();
-    return;
   };
 
   return (
