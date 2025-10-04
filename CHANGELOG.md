@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [0.1.0] - 2025-10-03
+## [0.1.0] - 2025-10-04
 ### Added
 - Initial release of the Android app (Tauri + React).
 - Double-entry accounting based finance tracking.
