@@ -64,7 +64,7 @@ jobs:
         run: pnpm install
 
       - name: Build Tauri Android App
-        run: pnpm tauri android build --apk --target aarch64 --debug
+        run: pnpm tauri android build --apk --target aarch64
 
       - name: Read version from tauri.conf.json
         id: tauri_version
