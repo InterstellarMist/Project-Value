@@ -39,8 +39,9 @@ import { useAcctTypeFilterStore } from "@/store/dropdownStores";
 import { useDrawerState } from "@/store/uiStateStores";
 import { useAcctStore } from "@/store/useAcctStore";
 import type { AddAccount } from "@/types/accounts";
+import { OpeningBalanceInput } from "./AmountInput";
 
-type FormTypes = z.infer<typeof FormSchema>;
+export type AddAccountFormTypes = z.infer<typeof FormSchema>;
 
 const FormSchema = z.object({
   name: z
@@ -51,12 +52,13 @@ const FormSchema = z.object({
     .transform(Number)
     .pipe(z.number("Enter a number"))
     .optional(),
+  currency: z.string("Choose a currency"),
   parentId: z.string().refine((val) => Number(val) > 0, "Choose a category"),
   icon: z.string("Select an icon").min(1, "Select an icon"),
 });
 
 export interface AddAccountControlTypes {
-  control: Control<FormTypes>;
+  control: Control<AddAccountFormTypes>;
 }
 
 interface EmojiSelectionHook {
@@ -87,28 +89,6 @@ const AccountNameInput = ({ control }: AddAccountControlTypes) => {
               type="text"
               placeholder="Account Name"
               className="w-46 h-10 p-2 placeholder:text-gray-500 glass-shadow rounded-lg"
-              {...field}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-};
-
-const OpeningBalanceInput = ({ control }: AddAccountControlTypes) => {
-  return (
-    <FormField
-      control={control}
-      name="openingBalance"
-      render={({ field }) => (
-        <FormItem>
-          <FormControl>
-            <Input
-              type="text"
-              placeholder="Opening Balance"
-              className="w-46 h-10 p-2 placeholder:text-gray-500 glass-shadow"
               {...field}
             />
           </FormControl>
@@ -263,15 +243,16 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
         parentId: "0",
         name: "",
         openingBalance: undefined,
+        currency: "CUR",
       };
 
-  const form = useForm<FormTypes>({
+  const form = useForm<AddAccountFormTypes>({
     resolver: zodResolver(FormSchema),
     defaultValues: defaultValues,
   });
 
-  const onSubmit = async (data: FormTypes) => {
-    setOpenDrawer(false, false);
+  const onSubmit = async (data: AddAccountFormTypes) => {
+    // setOpenDrawer(false, false);
     const formattedData: AddAccount = {
       name: data.name,
       parentId: Number(data.parentId),
@@ -286,11 +267,11 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
 
     console.log(JSON.stringify(formattedData, null, 2));
 
-    if (isEdit) {
-      await editAccount(acctSelected.acctId, formattedData);
-    } else {
-      await addAccount(formattedData);
-    }
+    // if (isEdit) {
+    //   await editAccount(acctSelected.acctId, formattedData);
+    // } else {
+    //   await addAccount(formattedData);
+    // }
 
     revalidateAccounts(mutate, acctTypeId);
   };
@@ -328,7 +309,10 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
                 </div>
                 <AccountNameInput control={form.control} />
                 {!isEdit && (acctTypeId === 1 || acctTypeId === 2) && (
-                  <OpeningBalanceInput control={form.control} />
+                  <OpeningBalanceInput
+                    control={form.control}
+                    watch={form.watch}
+                  />
                 )}
                 <EmojiPicker
                   emojiSelection={field.value}

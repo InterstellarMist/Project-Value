@@ -28,15 +28,15 @@ import { AccountsPicker } from "./AccountsPicker";
 import { DateTimePicker } from "./DateTimePicker";
 import { Button } from "./ui/button";
 
-export type addTransactionFormTypes = z.infer<typeof FormSchema>;
+export type AddTransactionFormTypes = z.infer<typeof FormSchema>;
 
-type FormDefaults = Omit<addTransactionFormTypes, "debit" | "credit"> & {
+type FormDefaults = Omit<AddTransactionFormTypes, "debit" | "credit"> & {
   debit: number | undefined;
   credit: number | undefined;
 };
 
 export interface ControlType {
-  control: Control<addTransactionFormTypes>;
+  control: Control<AddTransactionFormTypes>;
 }
 
 const FormSchema = z.object({
@@ -54,7 +54,7 @@ const FormSchema = z.object({
 const AmountInput = ({
   control,
   watch,
-}: ControlType & { watch: UseFormWatch<addTransactionFormTypes> }) => {
+}: ControlType & { watch: UseFormWatch<AddTransactionFormTypes> }) => {
   const txnType = watch("txnType");
   return (
     <FormField
@@ -187,11 +187,11 @@ export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
         debit: undefined,
       };
 
-  const form = useForm<addTransactionFormTypes>({
+  const form = useForm<AddTransactionFormTypes>({
     resolver: zodResolver(FormSchema),
     defaultValues: defaultValues,
   });
-  const onSubmit = async (data: addTransactionFormTypes) => {
+  const onSubmit = async (data: AddTransactionFormTypes) => {
     console.log(JSON.stringify(data, null, 2));
     router.back();
 

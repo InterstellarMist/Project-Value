@@ -35,7 +35,7 @@ export const CategoriesDropdown = ({ control }: AddAccountControlTypes) => {
               size="sm"
               className="border-0 bg-zinc-800 rounded-full text-white cursor-pointer"
             >
-              <SelectValue placeholder="Choose Category" />
+              <SelectValue />
             </SelectTrigger>
             <FormMessage />
             <SelectContent>

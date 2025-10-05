@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 ### Added
-- Placeholder section for upcoming features and fixes.
+- Account opening balances during creation
+- Basic currency selection
 
 ### Fixed
 - Negative zero liabilities in account summary
@@ -25,4 +26,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Local SQLite database integration.
 - SWR data caching and revalidation.
 - Form validation with Zod + React Hook Form.
-- Shadcn-based UI for interactive and accessible components.
+- Shadcn-based UI for interactive and accessible components.****
