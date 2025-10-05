@@ -46,7 +46,7 @@ const FormSchema = z.object({
   amount: z.transform(Number).pipe(z.number("Enter a number")),
   date: z.date("Pick a date"),
   time: z.iso.time(),
-  txnType: z.literal(["income", "expense", "transfer"]),
+  txnType: z.literal(["income", "expense", "transfer", "equity"]),
   debit: z.number("Oops, choose one."),
   credit: z.number("Oops, choose one."),
 });

@@ -17,4 +17,6 @@ export interface Account {
   hidden?: boolean;
 }
 
-export type AddAccount = Omit<Account, "acctId" | "acctType">;
+export interface AddAccount extends Omit<Account, "acctId"> {
+  openingBalance?: number;
+}

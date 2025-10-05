@@ -73,7 +73,7 @@ interface SetSnap {
   setSnap: (val: number | string | null) => void;
 }
 
-const snapPoints = [0.65, 1];
+const snapPoints = [0.68, 1];
 
 const AccountNameInput = ({ control }: AddAccountControlTypes) => {
   return (
@@ -278,6 +278,10 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
       icon: data.icon,
       acctTypeId: acctTypeId,
       currency: "USD",
+      openingBalance:
+        data.openingBalance && acctTypeId === 2
+          ? -data.openingBalance
+          : data.openingBalance,
     };
 
     console.log(JSON.stringify(formattedData, null, 2));
@@ -323,7 +327,9 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
                   <FormMessage />
                 </div>
                 <AccountNameInput control={form.control} />
-                <OpeningBalanceInput control={form.control} />
+                {!isEdit && (acctTypeId === 1 || acctTypeId === 2) && (
+                  <OpeningBalanceInput control={form.control} />
+                )}
                 <EmojiPicker
                   emojiSelection={field.value}
                   setEmojiSelection={field.onChange}

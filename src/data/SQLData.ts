@@ -335,7 +335,6 @@ export const addTransaction = async (
 
 export const addAccount = async (acctData: AddAccount) => {
   db = await loadDb();
-
   const res = await db.execute(
     `INSERT INTO accounts (acctTypeId,name,parentId,icon,currency,hidden)
     VALUES ($1,$2,$3,$4,$5,$6)`,
@@ -348,8 +347,23 @@ export const addAccount = async (acctData: AddAccount) => {
       0,
     ],
   );
-
   console.log(res);
+  if (!acctData.openingBalance || !res.lastInsertId) return res;
+  await addTransaction(
+    {
+      txnType: "equity",
+      description: "Opening Balance",
+      date: new Date().toISOString(),
+      tags: null,
+      attachment: null,
+    },
+    {
+      debit: res.lastInsertId,
+      credit: 6, // opening-balances acctId
+      amount: acctData.openingBalance,
+      currency: acctData.currency ?? "USD",
+    },
+  );
   return res;
 };
 

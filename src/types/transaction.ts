@@ -1,5 +1,5 @@
 export type PostingType = "debit" | "credit";
-export type TxnType = "income" | "expense" | "transfer";
+export type TxnType = "income" | "expense" | "transfer" | "equity";
 
 export interface Transaction {
   txnId: number;

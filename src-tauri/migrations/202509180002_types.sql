@@ -12,4 +12,5 @@ INSERT INTO
 VALUES
   ("income"),
   ("expense"),
-  ("transfer");
+  ("transfer"),
+  ("equity");

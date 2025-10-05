@@ -66,6 +66,7 @@ const renderTransactionsByDate = (transactions: Transaction[]) => {
   );
 };
 
+// TODO: update transfer and equity transaction format
 export const TransactionEntry = ({
   isHome = false,
   ...transaction
@@ -85,7 +86,7 @@ export const TransactionEntry = ({
   if (!postings) return <p>No data</p>;
 
   const left =
-    txnType === "income" || txnType === "transfer"
+    txnType === "income" || txnType === "transfer" || txnType === "equity"
       ? postings.at(0)
       : postings.at(-1);
   const right = txnType === "expense" ? postings.at(0) : postings.at(-1);
