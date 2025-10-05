@@ -50,7 +50,7 @@ export const AccountSummary = () => {
   if (isLoading) return <p>Loading...</p>;
   if (!balances) return <p>No data</p>;
   const assets = balances.assets ?? 0;
-  const liabilities = balances.liabilities ?? 0;
+  const liabilities = balances.liabilities ? -balances.liabilities : 0;
 
   return (
     <div className="w-9/10 h-16 flex justify-space-between gap-2">
@@ -69,7 +69,7 @@ export const AccountSummary = () => {
           {new Intl.NumberFormat("en-US", {
             style: "currency",
             currency: "USD",
-          }).format(-liabilities)}
+          }).format(liabilities)}
         </p>
       </div>
       <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-zinc-800 text-white rounded-2xl">

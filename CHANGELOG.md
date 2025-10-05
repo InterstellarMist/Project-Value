@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 - Placeholder section for upcoming features and fixes.
 
+### Fixed
+- Negative zero liabilities in account summary
+
 ---
 
 ## [0.1.0] - 2025-10-04
