@@ -1,4 +1,5 @@
 "use client";
+import useSWR from "swr";
 import {
   Select,
   SelectContent,
@@ -6,13 +7,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getAllAccounts } from "@/data/SQLData";
 import { useAccountFilterStore } from "@/store/dropdownStores";
 import { AccountEmoji } from "../EmojiLoader";
 
-// TODO: dynamic accounts
 export const AccountsDropdown = () => {
   const filter = useAccountFilterStore((s) => s.filter);
   const setFilter = useAccountFilterStore((s) => s.setFilter);
+
+  const { data: accounts, isLoading } = useSWR(
+    "/db/accounts/all",
+    getAllAccounts,
+  );
+
+  if (isLoading) return <p>Loading...</p>;
+  if (!accounts) return <p>No data</p>;
+
+  const accountsFiltered = accounts
+    .filter((acc) => (acc.acctTypeId === 1 || acc.acctTypeId === 2) && acc.icon)
+    .map((acc) => ({ acctId: acc.acctId, name: acc.name }));
 
   return (
     <Select value={filter} onValueChange={setFilter}>
@@ -30,10 +43,11 @@ export const AccountsDropdown = () => {
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="0">All Accounts</SelectItem>
-        <SelectItem value="6">Cash</SelectItem>
-        <SelectItem value="7">Debit Card</SelectItem>
-        <SelectItem value="8">Credit Card</SelectItem>
-        <SelectItem value="9">Loans</SelectItem>
+        {accountsFiltered.map((acc) => (
+          <SelectItem key={acc.acctId} value={`${acc.acctId}`}>
+            {acc.name}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );
