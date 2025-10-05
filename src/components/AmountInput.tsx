@@ -11,42 +11,84 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "./ui/button";
 import type {
   AddAccountControlTypes,
   AddAccountFormTypes,
 } from "./AddAccountDrawer";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 import type { UseFormWatch } from "react-hook-form";
+import { useState } from "react";
 
 const CurrencyCombobox = ({ control }: AddAccountControlTypes) => {
+  const [open, setOpen] = useState(false);
   const currencies = Intl.supportedValuesOf("currency");
+  const currNames = new Intl.DisplayNames(["en"], {
+    style: "long",
+    type: "currency",
+  });
   return (
     <FormField
       control={control}
       name="currency"
       render={({ field }) => (
         <FormItem>
-          <Select value={field.value} onValueChange={field.onChange}>
-            <SelectTrigger
-              iconSize={16}
-              className="!h-auto border-0 shadow-none gap-1 p-0"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="CUR">(CUR)</SelectItem>
-              {currencies.map((curr) => (
-                <SelectItem key={curr} value={curr}>
-                  {curr}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                role="combobox"
+                aria-expanded={open}
+                className="has-[>svg]:px-1.5 py-0.5 h-auto border-1 border-transparent hover:bg-black/5 hover:border-gray-300"
+              >
+                {field.value ? field.value : "test"}
+                <ChevronsUpDown className="opacity-75" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-60 p-0">
+              <Command className="pointer-events-auto">
+                <CommandInput placeholder="Search" />
+                <CommandList className="pointer-events-auto">
+                  <CommandEmpty>No Found</CommandEmpty>
+                  <CommandGroup className="pointer-events-auto">
+                    {currencies.map((curr) => (
+                      <CommandItem
+                        key={curr}
+                        value={curr}
+                        keywords={currNames.of(curr)?.split(" ")}
+                        onSelect={(currentValue) => {
+                          field.onChange(
+                            currentValue === field.value ? "CUR" : currentValue,
+                          );
+                        }}
+                      >
+                        {`${currNames.of(curr)} (${curr})`}
+                        <Check
+                          className={cn(
+                            "ml-auto",
+                            field.value === curr ? "opacity-100" : "opacity-0",
+                          )}
+                        />
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
           <FormMessage />
         </FormItem>
       )}
@@ -70,12 +112,12 @@ export const OpeningBalanceInput = ({
       name="openingBalance"
       render={({ field }) => (
         <FormItem>
-          <InputGroup className="w-60 h-10 placeholder:text-gray-500 glass-shadow">
+          <InputGroup className="w-57 h-10 placeholder:text-gray-500 glass-shadow">
             <FormControl>
-              <InputGroupInput placeholder="Opening Bal" {...field} />
+              <InputGroupInput placeholder="Opening Balance" {...field} />
             </FormControl>
             <InputGroupAddon>{currSymbols.of(selectedCurr)}</InputGroupAddon>
-            <InputGroupAddon align="inline-end">
+            <InputGroupAddon align="inline-end" className="pr-1">
               <CurrencyCombobox control={control} />
             </InputGroupAddon>
           </InputGroup>

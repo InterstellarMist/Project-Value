@@ -258,7 +258,7 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
       parentId: Number(data.parentId),
       icon: data.icon,
       acctTypeId: acctTypeId,
-      currency: "USD",
+      currency: data.currency,
       openingBalance:
         data.openingBalance && acctTypeId === 2
           ? -data.openingBalance
