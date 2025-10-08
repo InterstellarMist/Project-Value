@@ -40,7 +40,7 @@ import { snapPoints, useDrawerState } from "@/store/uiStateStores";
 import { useAcctStore } from "@/store/useAcctStore";
 import { useSetting } from "@/store/userSettingsStore";
 import type { AddAccount } from "@/types/accounts";
-import { OpeningBalanceInput } from "./input/AmountInput";
+import { OpeningBalanceField } from "./input/AmountInput";
 
 export type AddAccountFormTypes = z.infer<typeof FormSchema>;
 
@@ -216,6 +216,7 @@ const AddAccountForm = () => {
         parentId: acctSelected.parentId?.toString(),
         icon: acctSelected.icon,
         openingBalance: 0,
+        currency: defaultCurrency,
       }
     : {
         parentId: "0",
@@ -282,7 +283,8 @@ const AddAccountForm = () => {
                 </div>
                 <AccountNameInput control={form.control} />
                 {!isEdit && (acctTypeId === 1 || acctTypeId === 2) && (
-                  <OpeningBalanceInput
+                  <OpeningBalanceField<AddAccountFormTypes>
+                    name="openingBalance"
                     control={form.control}
                     watch={form.watch}
                   />

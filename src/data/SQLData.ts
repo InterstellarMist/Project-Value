@@ -361,7 +361,7 @@ export const addAccount = async (acctData: AddAccount) => {
       debit: res.lastInsertId,
       credit: 6, // opening-balances acctId
       amount: acctData.openingBalance,
-      currency: acctData.currency ?? "USD",
+      currency: acctData.currency,
     },
   );
   return res;

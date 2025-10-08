@@ -11,7 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import type { ControlType } from "./TransactionForm";
+import type { AddTransactionControlTypes } from "./TransactionForm";
 import {
   FormControl,
   FormField,
@@ -20,7 +20,7 @@ import {
   FormMessage,
 } from "./ui/form";
 
-export const DateTimePicker = ({ control }: ControlType) => {
+export const DateTimePicker = ({ control }: AddTransactionControlTypes) => {
   return (
     <div className="flex gap-8">
       <FormField

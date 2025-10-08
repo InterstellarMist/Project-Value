@@ -74,7 +74,7 @@ export default function Settings() {
           <div className="h-full flex justify-center border-2 border-gray-700 rounded-md">
             <CurrencyComboboxInput
               value={currency}
-              onChange={setCurrency}
+              onChange={(val) => typeof val === "string" && setCurrency(val)}
               className="text-base py-0 font-normal"
             />
           </div>

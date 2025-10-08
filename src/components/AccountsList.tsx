@@ -13,6 +13,7 @@ import {
 } from "@/store/dropdownStores";
 import { useDrawerState } from "@/store/uiStateStores";
 import { useAcctStore } from "@/store/useAcctStore";
+import { useSetting } from "@/store/userSettingsStore";
 import type { Account } from "@/types/accounts";
 import { CardContainer } from "./CardContainer";
 import { AccountEmoji, AccountEmojiWithText } from "./EmojiLoader";
@@ -22,6 +23,7 @@ export const NetWorthHomepage = () => {
     "/db/balance/summary",
     getBalanceSummary,
   );
+  const defaultCurrency = useSetting.currency();
 
   if (isLoading) return <p>Loading...</p>;
   if (!balances) return <p>No data</p>;
@@ -34,7 +36,7 @@ export const NetWorthHomepage = () => {
       <h1 className="text-6xl text-center font-light">
         {new Intl.NumberFormat("en-US", {
           style: "currency",
-          currency: "USD",
+          currency: defaultCurrency,
         }).format(assets + liabilities)}
       </h1>
     </CardContainer>

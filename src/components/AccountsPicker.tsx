@@ -15,7 +15,10 @@ import type { AcctTypeSimple } from "@/types/accounts";
 import type { PostingType } from "@/types/transaction";
 import { AccountCarousel } from "./AccountCarousel";
 import { AccountEmojiWithText } from "./EmojiLoader";
-import type { AddTransactionFormTypes, ControlType } from "./TransactionForm";
+import type {
+  AddTransactionControlTypes,
+  AddTransactionFormTypes,
+} from "./TransactionForm";
 import {
   FormControl,
   FormField,
@@ -59,7 +62,7 @@ const AccountsDrawer = ({
 }: {
   acctType: AcctTypeSimple;
   postingType: PostingType;
-} & ControlType) => {
+} & AddTransactionControlTypes) => {
   const [open, setOpen] = useState(false);
   return (
     <FormField
@@ -112,7 +115,9 @@ const handleTabChange = (
 export const AccountsPicker = ({
   control,
   reset,
-}: ControlType & { reset: UseFormResetField<AddTransactionFormTypes> }) => {
+}: AddTransactionControlTypes & {
+  reset: UseFormResetField<AddTransactionFormTypes>;
+}) => {
   return (
     <FormField
       control={control}

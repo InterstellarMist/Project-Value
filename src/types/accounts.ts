@@ -13,7 +13,7 @@ export interface Account {
   acctTypeId: number;
   parentId?: number;
   icon?: string;
-  currency?: string;
+  currency: string;
   hidden?: boolean;
 }
 

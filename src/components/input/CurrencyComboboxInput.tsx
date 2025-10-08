@@ -17,10 +17,10 @@ import {
 import { cn } from "@/lib/utils";
 import { useDrawerState } from "@/store/uiStateStores";
 import { useSetting } from "@/store/userSettingsStore";
-import type { FormFieldProps } from "@/types/forms";
+import type { FieldProps } from "@/types/forms";
 import { Button } from "../ui/button";
 
-interface CurrencyComboboxProps extends FormFieldProps<string> {
+interface CurrencyComboboxProps extends FieldProps<string> {
   className?: string;
 }
 
@@ -35,7 +35,7 @@ export const CurrencyComboboxInput = ({
   onChange,
   className,
 }: CurrencyComboboxProps) => {
-  const setSnap = useDrawerState((s) => s.setSnap);
+  const setSnap = useDrawerState((s) => s.setSnap); // Drawer expand
   const defaultCurrency = useSetting.currency();
   const [open, setOpen] = useState(false);
   return (
@@ -66,7 +66,10 @@ export const CurrencyComboboxInput = ({
         onTouchMove={(e) => e.stopPropagation()}
       >
         <Command>
-          <CommandInput placeholder="Search" />
+          <CommandInput
+            placeholder="Search"
+            onClick={(e) => e.stopPropagation()}
+          />
           <CommandList>
             <CommandEmpty>No Found</CommandEmpty>
             <CommandGroup>

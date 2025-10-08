@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { format, startOfToday } from "date-fns";
 import { Archive, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { type Control, type UseFormWatch, useForm } from "react-hook-form";
+import { type Control, useForm } from "react-hook-form";
 import { type ScopedMutator, useSWRConfig } from "swr";
 import { z } from "zod";
 import {
@@ -20,12 +20,14 @@ import {
   deleteTransaction,
   editTransaction,
 } from "@/data/SQLData";
-import { cn, dateTimeMerge, dateTimeSplit } from "@/lib/utils";
+import { dateTimeMerge, dateTimeSplit } from "@/lib/utils";
 import { useAccountFilterStore } from "@/store/dropdownStores";
+import { useSetting } from "@/store/userSettingsStore";
 import { useTxnStore } from "@/store/useTxnStore";
 import type { AddPosting, AddTransaction } from "@/types/transaction";
 import { AccountsPicker } from "./AccountsPicker";
 import { DateTimePicker } from "./DateTimePicker";
+import { AddTxnAmountField } from "./input/AmountInput";
 import { Button } from "./ui/button";
 
 export type AddTransactionFormTypes = z.infer<typeof FormSchema>;
@@ -35,7 +37,7 @@ type FormDefaults = Omit<AddTransactionFormTypes, "debit" | "credit"> & {
   credit: number | undefined;
 };
 
-export interface ControlType {
+export interface AddTransactionControlTypes {
   control: Control<AddTransactionFormTypes>;
 }
 
@@ -43,49 +45,19 @@ const FormSchema = z.object({
   description: z.string().min(1, "What's the transaction?"),
   tags: z.string().optional().nullable(),
   attachment: z.file().optional().nullable(),
-  amount: z.transform(Number).pipe(z.number("Enter a number")),
+  amount: z
+    .transform(Number)
+    .pipe(z.number("Enter Amount").gt(0, "Enter Amount")),
   date: z.date("Pick a date"),
   time: z.iso.time(),
   txnType: z.literal(["income", "expense", "transfer", "equity"]),
   debit: z.number("Oops, choose one."),
   credit: z.number("Oops, choose one."),
+  currency: z.string("Choose a currency"),
 });
 
-const AmountInput = ({
-  control,
-  watch,
-}: ControlType & { watch: UseFormWatch<AddTransactionFormTypes> }) => {
-  const txnType = watch("txnType");
-  return (
-    <FormField
-      control={control}
-      name="amount"
-      render={({ field }) => (
-        <FormItem className="glass-shadow flex flex-col items-center rounded-2xl p-2 gap-2">
-          <FormLabel className="font-bold text-lg justify-center">
-            Amount
-          </FormLabel>
-          <FormControl>
-            <Input
-              type="text"
-              className={cn(
-                "w-full h-full text-center text-4xl border-0 shadow-none text-blue-500 py-0 ",
-                txnType === "income" &&
-                  "text-green-500 placeholder:text-green-500",
-                txnType === "expense" &&
-                  "text-red-500 placeholder:text-red-500",
-              )}
-              {...field}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-};
-
-const AttachmentInput = ({ control }: ControlType) => {
+// TODO: abstraction
+const AttachmentInput = ({ control }: AddTransactionControlTypes) => {
   return (
     <FormField
       control={control}
@@ -112,7 +84,7 @@ const AttachmentInput = ({ control }: ControlType) => {
   );
 };
 
-const DescriptionInput = ({ control }: ControlType) => {
+const DescriptionInput = ({ control }: AddTransactionControlTypes) => {
   return (
     <FormField
       control={control}
@@ -151,6 +123,7 @@ const editTxValues = () => {
   const { txnId, date, ...values } = txnSelected.transaction;
   const amount = Math.abs(txnSelected.postings[0].amount);
   const postingIds = txnSelected.postings.map((post) => post.postingId);
+  const currency = txnSelected.postings[0].currency;
 
   if (txnSelected.postings?.[0].amount < 0) {
     [credit, debit] = txnSelected.postings.map((post) => post.acctId);
@@ -164,6 +137,7 @@ const editTxValues = () => {
     amount,
     credit,
     debit,
+    currency,
   };
   return { txnId, postingIds, txValues };
 };
@@ -173,6 +147,7 @@ export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
   const { mutate } = useSWRConfig();
   const filter = useAccountFilterStore((s) => s.filter);
   const account = parseInt(filter, 10);
+  const defaultCurrency = useSetting.currency();
 
   const { txnId, postingIds, txValues } = editTxValues();
   const defaultValues: FormDefaults = isEdit
@@ -185,6 +160,7 @@ export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
         txnType: "expense",
         credit: undefined,
         debit: undefined,
+        currency: defaultCurrency,
       };
 
   const form = useForm<AddTransactionFormTypes>({
@@ -207,8 +183,7 @@ export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
         debit: data.debit,
         credit: data.credit,
         amount: data.amount,
-        currency: "USD",
-        // TODO: fix currency selection
+        currency: data.currency,
       },
     ];
     if (isEdit) {
@@ -230,7 +205,12 @@ export const TransactionForm = ({ isEdit }: { isEdit?: boolean }) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-8/10 space-y-4">
         <AccountsPicker control={form.control} reset={form.resetField} />
-        <AmountInput control={form.control} watch={form.watch} />
+        <AddTxnAmountField<AddTransactionFormTypes>
+          name="amount"
+          label="Amount"
+          control={form.control}
+          watch={form.watch}
+        />
         <DescriptionInput control={form.control} />
         <DateTimePicker control={form.control} />
         <AttachmentInput control={form.control} />
