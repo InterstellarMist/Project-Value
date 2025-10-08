@@ -1,18 +1,43 @@
+"use client";
 import {
   BellRing,
   ChevronRight,
+  CircleDollarSign,
   CircleUserRound,
   Download,
   Info,
-  Moon,
+  Languages,
+  SunMoon,
   Wallet,
 } from "lucide-react";
 import Link from "next/link";
 import { CardContainer } from "@/components/CardContainer";
 import { TopBar } from "@/components/TopBar";
 import { Switch } from "@/components/ui/switch";
+import { useSetting } from "@/store/userSettingsStore";
+import { capitalize } from "@/lib/utils";
+import { CurrencyComboboxInput } from "@/components/input/CurrencyComboboxInput";
+import { useState } from "react";
 
 export default function Settings() {
+  const settings = useSetting;
+  console.log(settings);
+
+  const language = new Intl.DisplayNames("en", {
+    type: "language",
+    languageDisplay: "standard",
+  }).of(settings.language());
+  // const currency = settings.currency();
+
+  const notification = settings.notification();
+  const setNotification = settings.setNotification();
+
+  const theme = settings.theme();
+
+  // const [value, setValue] = useState("USD");
+
+  // console.log(settings.currency());
+
   return (
     <div className="flex flex-col gap-6 items-center pb-24">
       <TopBar title="Settings" />
@@ -46,6 +71,19 @@ export default function Settings() {
           </div>
           <ChevronRight />
         </div>
+        <div className="flex gap-4 items-center">
+          <CircleDollarSign />
+          <div className="flex-1">
+            <p className="text-lg">Default Currency</p>
+          </div>
+          <div className="h-full px-2 flex justify-center border-2 border-gray-700 rounded-md">
+            {settings.currency()}
+          </div>
+          <CurrencyComboboxInput
+            value={settings.currency()}
+            onChange={settings.setCurrency()}
+          />
+        </div>
       </CardContainer>
       <CardContainer className="w-9/10 p-6 flex flex-col gap-6">
         <div className="flex gap-4 items-center">
@@ -53,14 +91,25 @@ export default function Settings() {
           <div className="flex-1">
             <p className="text-lg">Notification</p>
           </div>
-          <Switch />
+          <Switch checked={notification} onCheckedChange={setNotification} />
         </div>
         <div className="flex gap-4 items-center">
-          <Moon />
+          <Languages />
           <div className="flex-1">
-            <p className="text-lg">Dark Mode</p>
+            <p className="text-lg">Language</p>
           </div>
-          <Switch />
+          <div className="h-full px-2 flex justify-center border-2 border-gray-700 rounded-md">
+            {language}
+          </div>
+        </div>
+        <div className="flex gap-4 items-center">
+          <SunMoon />
+          <div className="flex-1">
+            <p className="text-lg">Appearance</p>
+          </div>
+          <div className="h-full px-2 flex justify-center border-2 border-gray-700 rounded-md">
+            {capitalize(theme)}
+          </div>
         </div>
         <div className="flex gap-4 items-center">
           <Info />

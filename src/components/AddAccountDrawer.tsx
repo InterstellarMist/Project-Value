@@ -39,7 +39,8 @@ import { useAcctTypeFilterStore } from "@/store/dropdownStores";
 import { useDrawerState } from "@/store/uiStateStores";
 import { useAcctStore } from "@/store/useAcctStore";
 import type { AddAccount } from "@/types/accounts";
-import { OpeningBalanceInput } from "./AmountInput";
+import { OpeningBalanceInput } from "./input/AmountInput";
+import { CurrencyComboboxInput } from "./input/CurrencyComboboxInput";
 
 export type AddAccountFormTypes = z.infer<typeof FormSchema>;
 
@@ -237,12 +238,12 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
         name: acctSelected.name,
         parentId: acctSelected.parentId?.toString(),
         icon: acctSelected.icon,
-        openingBalance: undefined,
+        openingBalance: 0,
       }
     : {
         parentId: "0",
         name: "",
-        openingBalance: undefined,
+        openingBalance: 0,
         currency: "CUR",
       };
 
