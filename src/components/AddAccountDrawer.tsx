@@ -36,11 +36,11 @@ import { getIconCategories, searchIcons } from "@/data/iconifyFetch";
 import { addAccount, deleteAccount, editAccount } from "@/data/SQLData";
 import { cn } from "@/lib/utils";
 import { useAcctTypeFilterStore } from "@/store/dropdownStores";
-import { useDrawerState } from "@/store/uiStateStores";
+import { snapPoints, useDrawerState } from "@/store/uiStateStores";
 import { useAcctStore } from "@/store/useAcctStore";
+import { useSetting } from "@/store/userSettingsStore";
 import type { AddAccount } from "@/types/accounts";
 import { OpeningBalanceInput } from "./input/AmountInput";
-import { CurrencyComboboxInput } from "./input/CurrencyComboboxInput";
 
 export type AddAccountFormTypes = z.infer<typeof FormSchema>;
 
@@ -66,17 +66,6 @@ interface EmojiSelectionHook {
   emojiSelection: string;
   setEmojiSelection: (val: string) => void;
 }
-
-interface OpenEmojiPickerHook {
-  openEmojiPicker: boolean;
-  setOpenEmojiPicker: (val: boolean) => void;
-}
-
-interface SetSnap {
-  setSnap: (val: number | string | null) => void;
-}
-
-const snapPoints = [0.68, 1];
 
 const AccountNameInput = ({ control }: AddAccountControlTypes) => {
   return (
@@ -128,14 +117,11 @@ const IconCategorySelect = ({
 const EmojiPicker = ({
   emojiSelection,
   setEmojiSelection,
-  openEmojiPicker,
-  setOpenEmojiPicker,
-  setSnap,
-}: SetSnap & OpenEmojiPickerHook & EmojiSelectionHook) => {
+}: EmojiSelectionHook) => {
+  const toggleSnap = useDrawerState((s) => s.toggleSnap);
   const [emojiCategory, setEmojiCategory] = useState("All");
   const [search, setSearch] = useState("");
   const categories = getIconCategories();
-
   return (
     <CardContainer className="w-9/10 ">
       <div className="flex gap-2">
@@ -156,10 +142,7 @@ const EmojiPicker = ({
           type="button"
           size="icon"
           variant="secondary"
-          onClick={() => {
-            setOpenEmojiPicker(!openEmojiPicker);
-            openEmojiPicker ? setSnap(snapPoints[0]) : setSnap(snapPoints[1]);
-          }}
+          onClick={toggleSnap}
           className="size-10 border-2 bg-transparent rounded-lg hover:bg-border"
         >
           <CircleCheck />
@@ -198,22 +181,16 @@ const EmojiPicker = ({
   );
 };
 
-const EmojiSelectionField = ({
-  icon: emojiSelection,
-  setSnap,
-  openEmojiPicker,
-  setOpenEmojiPicker,
-}: SetSnap & OpenEmojiPickerHook & { icon: string }) => {
+const EmojiSelectionField = ({ icon: emojiSelection }: { icon: string }) => {
+  const snap = useDrawerState((s) => s.snap);
+  const toggleSnap = useDrawerState((s) => s.toggleSnap);
   return (
     <button
       type="button"
-      onClick={() => {
-        setOpenEmojiPicker(!openEmojiPicker);
-        openEmojiPicker ? setSnap(snapPoints[0]) : setSnap(snapPoints[1]);
-      }}
+      onClick={toggleSnap}
       className={cn(
         "size-20 flex flex-col shrink-0 items-center justify-center glass-shadow rounded-2xl ring-blue-700",
-        openEmojiPicker && "empty:ring-4",
+        snap === 1 && "empty:ring-4",
       )}
     >
       {emojiSelection && <Icon icon={emojiSelection} width={64} height={64} />}
@@ -225,8 +202,8 @@ const revalidateAccounts = (mutate: ScopedMutator, acctTypeId: number) => {
   mutate(["/db/accounts", acctTypeId]);
 };
 
-const AddAccountForm = ({ setSnap }: SetSnap) => {
-  const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
+const AddAccountForm = () => {
+  const defaultCurrency = useSetting.currency();
   const acctTypeId = Number(useAcctTypeFilterStore((s) => s.filter));
   const acctSelected = useAcctStore((s) => s.AcctSelected);
   const isEdit = useDrawerState((s) => s.isEdit);
@@ -244,7 +221,7 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
         parentId: "0",
         name: "",
         openingBalance: 0,
-        currency: "CUR",
+        currency: defaultCurrency,
       };
 
   const form = useForm<AddAccountFormTypes>({
@@ -253,7 +230,7 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
   });
 
   const onSubmit = async (data: AddAccountFormTypes) => {
-    // setOpenDrawer(false, false);
+    setOpenDrawer(false, false);
     const formattedData: AddAccount = {
       name: data.name,
       parentId: Number(data.parentId),
@@ -268,11 +245,11 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
 
     console.log(JSON.stringify(formattedData, null, 2));
 
-    // if (isEdit) {
-    //   await editAccount(acctSelected.acctId, formattedData);
-    // } else {
-    //   await addAccount(formattedData);
-    // }
+    if (isEdit) {
+      await editAccount(acctSelected.acctId, formattedData);
+    } else {
+      await addAccount(formattedData);
+    }
 
     revalidateAccounts(mutate, acctTypeId);
   };
@@ -296,12 +273,7 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
               <FormItem className="w-full flex flex-col items-center gap-4">
                 <div className="flex flex-col items-center">
                   <FormControl>
-                    <EmojiSelectionField
-                      icon={field.value}
-                      setSnap={setSnap}
-                      openEmojiPicker={openEmojiPicker}
-                      setOpenEmojiPicker={setOpenEmojiPicker}
-                    />
+                    <EmojiSelectionField icon={field.value} />
                   </FormControl>
                   <FormLabel className="font-base text-sm justify-center pt-2">
                     Account Icon
@@ -318,9 +290,6 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
                 <EmojiPicker
                   emojiSelection={field.value}
                   setEmojiSelection={field.onChange}
-                  openEmojiPicker={openEmojiPicker}
-                  setOpenEmojiPicker={setOpenEmojiPicker}
-                  setSnap={setSnap}
                 />
               </FormItem>
             )}
@@ -350,7 +319,8 @@ const AddAccountForm = ({ setSnap }: SetSnap) => {
 export const AddAccountDrawer = () => {
   const openDrawer = useDrawerState((s) => s.openDrawer);
   const setOpenDrawer = useDrawerState((s) => s.setOpenDrawer);
-  const [snap, setSnap] = useState<number | string | null>(snapPoints[0]);
+  const snap = useDrawerState((s) => s.snap);
+  const setSnap = useDrawerState((s) => s.setSnap);
 
   return (
     <Drawer
@@ -368,7 +338,7 @@ export const AddAccountDrawer = () => {
           </DrawerTitle>
           <DrawerDescription>Create an account</DrawerDescription>
         </DrawerHeader>
-        <AddAccountForm setSnap={setSnap} />
+        <AddAccountForm />
       </DrawerContent>
     </Drawer>
   );

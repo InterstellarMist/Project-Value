@@ -1,4 +1,5 @@
 "use client";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 import {
   Command,
@@ -13,37 +14,56 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "../ui/button";
-import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useDrawerState } from "@/store/uiStateStores";
+import { useSetting } from "@/store/userSettingsStore";
 import type { FormFieldProps } from "@/types/forms";
+import { Button } from "../ui/button";
+
+interface CurrencyComboboxProps extends FormFieldProps<string> {
+  className?: string;
+}
+
+const currencies = Intl.supportedValuesOf("currency");
+const currencyNames = new Intl.DisplayNames(["en"], {
+  style: "long",
+  type: "currency",
+});
 
 export const CurrencyComboboxInput = ({
   value,
   onChange,
-}: FormFieldProps<string>) => {
+  className,
+}: CurrencyComboboxProps) => {
+  const setSnap = useDrawerState((s) => s.setSnap);
+  const defaultCurrency = useSetting.currency();
   const [open, setOpen] = useState(false);
-  const currencies = Intl.supportedValuesOf("currency");
-  const currNames = new Intl.DisplayNames(["en"], {
-    style: "long",
-    type: "currency",
-  });
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(val) => {
+        setOpen(val);
+        if (val) setSnap(1);
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className="has-[>svg]:px-1.5 py-0.5 h-auto border-1 border-transparent hover:bg-black/5 hover:border-gray-300"
+          className={cn(
+            "has-[>svg]:px-1.5 py-0.5 h-auto border-1 border-transparent hover:bg-black/5 hover:border-gray-300",
+            className,
+          )}
         >
           {value ? value : "test"}
           <ChevronsUpDown className="opacity-75" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-50 h-60 p-0 pointer-events-auto"
+        className="w-55 h-60 p-0 pointer-events-auto"
         onWheel={(e) => e.stopPropagation()}
+        onTouchMove={(e) => e.stopPropagation()}
       >
         <Command>
           <CommandInput placeholder="Search" />
@@ -54,12 +74,24 @@ export const CurrencyComboboxInput = ({
                 <CommandItem
                   key={curr}
                   value={curr}
-                  keywords={currNames.of(curr)?.split(" ")}
+                  keywords={currencyNames.of(curr)?.split(" ")}
                   onSelect={(currentValue) => {
-                    onChange(currentValue === value ? "CUR" : currentValue);
+                    onChange(
+                      currentValue === value ? defaultCurrency : currentValue,
+                    );
                   }}
                 >
-                  {`${currNames.of(curr)} (${curr})`}
+                  <p className="text-balance">
+                    {`${currencyNames.of(curr)} (${curr})`}{" "}
+                    <span
+                      className={cn(
+                        "inline",
+                        curr === defaultCurrency ? "font-bold" : "font-normal",
+                      )}
+                    >
+                      {curr === defaultCurrency && "[Default]"}
+                    </span>
+                  </p>
                   <Check
                     className={cn(
                       "ml-auto",

@@ -74,6 +74,7 @@ function InputGroupAddon({
         }
         e.currentTarget.parentElement?.querySelector("input")?.focus();
       }}
+      onKeyDown={() => {}}
       {...props}
     />
   );

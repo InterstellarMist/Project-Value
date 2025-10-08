@@ -12,31 +12,26 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { CardContainer } from "@/components/CardContainer";
+import { CurrencyComboboxInput } from "@/components/input/CurrencyComboboxInput";
 import { TopBar } from "@/components/TopBar";
 import { Switch } from "@/components/ui/switch";
-import { useSetting } from "@/store/userSettingsStore";
 import { capitalize } from "@/lib/utils";
-import { CurrencyComboboxInput } from "@/components/input/CurrencyComboboxInput";
-import { useState } from "react";
+import { useSetting } from "@/store/userSettingsStore";
 
 export default function Settings() {
-  const settings = useSetting;
-  console.log(settings);
+  const currency = useSetting.currency();
+  const setCurrency = useSetting.setCurrency();
+  const language = useSetting.language();
+  // const setLanguage = useSetting.setLanguage();
+  const notification = useSetting.notification();
+  const setNotification = useSetting.setNotification();
+  const theme = useSetting.theme();
+  // const setTheme = useSetting.setTheme();
 
-  const language = new Intl.DisplayNames("en", {
+  const languageFormatted = new Intl.DisplayNames("en", {
     type: "language",
     languageDisplay: "standard",
-  }).of(settings.language());
-  // const currency = settings.currency();
-
-  const notification = settings.notification();
-  const setNotification = settings.setNotification();
-
-  const theme = settings.theme();
-
-  // const [value, setValue] = useState("USD");
-
-  // console.log(settings.currency());
+  }).of(language);
 
   return (
     <div className="flex flex-col gap-6 items-center pb-24">
@@ -76,13 +71,13 @@ export default function Settings() {
           <div className="flex-1">
             <p className="text-lg">Default Currency</p>
           </div>
-          <div className="h-full px-2 flex justify-center border-2 border-gray-700 rounded-md">
-            {settings.currency()}
+          <div className="h-full flex justify-center border-2 border-gray-700 rounded-md">
+            <CurrencyComboboxInput
+              value={currency}
+              onChange={setCurrency}
+              className="text-base py-0 font-normal"
+            />
           </div>
-          <CurrencyComboboxInput
-            value={settings.currency()}
-            onChange={settings.setCurrency()}
-          />
         </div>
       </CardContainer>
       <CardContainer className="w-9/10 p-6 flex flex-col gap-6">
@@ -99,7 +94,7 @@ export default function Settings() {
             <p className="text-lg">Language</p>
           </div>
           <div className="h-full px-2 flex justify-center border-2 border-gray-700 rounded-md">
-            {language}
+            {languageFormatted}
           </div>
         </div>
         <div className="flex gap-4 items-center">

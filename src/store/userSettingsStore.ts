@@ -1,9 +1,9 @@
 import { load, type Store } from "@tauri-apps/plugin-store";
 import {
   create,
+  type StateCreator,
   type StoreApi,
   type UseBoundStore,
-  type StateCreator,
 } from "zustand";
 import { capitalize } from "@/lib/utils";
 
