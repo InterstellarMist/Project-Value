@@ -41,7 +41,10 @@ export const CurrencyComboboxInput = ({
           <ChevronsUpDown className="opacity-75" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-50 h-60 p-0">
+      <PopoverContent
+        className="w-50 h-60 p-0 pointer-events-auto"
+        onWheel={(e) => e.stopPropagation()}
+      >
         <Command>
           <CommandInput placeholder="Search" />
           <CommandList>

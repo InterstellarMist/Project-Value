@@ -63,6 +63,7 @@ const saveStore = async (key: keyof SettingsStoreValues, value: unknown) => {
   await localStore.set(key, value);
 };
 
+// TODO: rewrite grouped settings
 export const useSettingsStore = create<SettingsStore>((set) => ({
   ...defaults,
   ...createSetters(set),
