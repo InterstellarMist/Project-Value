@@ -6,13 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 ### Added
-- Account opening balances during creation
-- Basic currency selection and default currency option
-- User settings persistence through Tauri's `plugin-store`
+
 
 ### Fixed
-- Negative zero liabilities in account summary
-- Dynamic account dropdown filter in transactions page
+
 
 ---
 
